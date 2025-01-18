@@ -78,14 +78,16 @@ export default function Index() {
           <h1 className="text-3xl font-bold">Coffee Bean Journey</h1>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={handleImport}
-          >
-            <Download className="h-4 w-4" />
-            Import Data
-          </Button>
+          {beans.length === 0 && (
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={handleImport}
+            >
+              <Download className="h-4 w-4" />
+              Import Data
+            </Button>
+          )}
           <Link to="/recommendations">
             <Button variant="outline" className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
