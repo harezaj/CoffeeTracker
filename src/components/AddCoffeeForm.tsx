@@ -210,6 +210,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       weight: Number(formData.get("weight")),
       orderAgain,
       grindSize: Number(formData.get("grindSize")),
+      purchaseCount: 1, // Add default purchase count
     };
 
     onAdd(newBean);

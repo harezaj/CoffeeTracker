@@ -15,7 +15,8 @@ const sampleBeans = [
     price: 19.99,
     weight: 340,
     orderAgain: true,
-    grindSize: 15
+    grindSize: 15,
+    purchaseCount: 1
   },
   {
     name: "Guatemala Antigua",
@@ -31,7 +32,8 @@ const sampleBeans = [
     price: 16.99,
     weight: 340,
     orderAgain: true,
-    grindSize: 16
+    grindSize: 16,
+    purchaseCount: 1
   },
   {
     name: "Sumatra Mandheling",
@@ -47,7 +49,8 @@ const sampleBeans = [
     price: 18.99,
     weight: 340,
     orderAgain: false,
-    grindSize: 14
+    grindSize: 14,
+    purchaseCount: 1
   },
   {
     name: "Kenya AA",
@@ -63,7 +66,8 @@ const sampleBeans = [
     price: 21.99,
     weight: 340,
     orderAgain: true,
-    grindSize: 15
+    grindSize: 15,
+    purchaseCount: 1
   },
   {
     name: "Colombia Supremo",
@@ -79,7 +83,8 @@ const sampleBeans = [
     price: 17.99,
     weight: 340,
     orderAgain: true,
-    grindSize: 16
+    grindSize: 16,
+    purchaseCount: 1
   }
 ];
 

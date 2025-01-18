@@ -142,20 +142,21 @@ export const importCoffeeBeans = async () => {
     
     const beanData = {
       name: item.Name,
-      roaster: item.Name.split(" ")[0], // Extract roaster from name
+      roaster: item.Name.split(" ")[0],
       origin: "Not specified",
       roastLevel: parseRoastLevel(item.Roast),
       notes: parseNotes(item.Notes),
       generalNotes: item["Dose and time"] || "",
-      rank: 3, // Default rank
+      rank: 3,
       gramsIn,
       mlOut,
       brewTime,
-      temperature: 93, // Default temperature
+      temperature: 93,
       price: parsePrice(item.Price),
       weight: parseWeight(item.Oz),
-      orderAgain: true, // Default to true
-      grindSize: parseGrindSize(item["Grind Setting"])
+      orderAgain: true,
+      grindSize: parseGrindSize(item["Grind Setting"]),
+      purchaseCount: 1, // Add default purchase count
     };
 
     try {
