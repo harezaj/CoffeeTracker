@@ -230,6 +230,18 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-gray-600">Weight Unit</span>
+                <ToggleGroup
+                  type="single"
+                  value={weightUnit}
+                  onValueChange={(value) => value && setWeightUnit(value as 'oz' | 'kg')}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                  <ToggleGroupItem value="kg" className="px-2 py-1">kg</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -246,22 +258,11 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                     <span className="text-gray-700 font-medium">Price</span>
                     <span className="text-gray-600">${bean.price}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-700 font-medium">Weight</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-600">
-                        {weightUnit === 'oz' ? (bean.weight / 28.35).toFixed(1) : (bean.weight / 1000).toFixed(2)} {weightUnit}
-                      </span>
-                      <ToggleGroup
-                        type="single"
-                        value={weightUnit}
-                        onValueChange={(value) => value && setWeightUnit(value as 'oz' | 'kg')}
-                        className="border rounded-md"
-                      >
-                        <ToggleGroupItem value="oz" className="px-2 py-1 text-xs">oz</ToggleGroupItem>
-                        <ToggleGroupItem value="kg" className="px-2 py-1 text-xs">kg</ToggleGroupItem>
-                      </ToggleGroup>
-                    </div>
+                    <span className="text-gray-600">
+                      {weightUnit === 'oz' ? (bean.weight / 28.35).toFixed(1) : (bean.weight / 1000).toFixed(2)} {weightUnit}
+                    </span>
                   </div>
                 </div>
               </div>
