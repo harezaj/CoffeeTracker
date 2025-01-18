@@ -43,8 +43,8 @@ export function Settings() {
     };
   });
   
-  const [zapierWebhook, setZapierWebhook] = useState(() => 
-    localStorage.getItem('zapier-webhook-url') || ''
+  const [webhookUrl, setWebhookUrl] = useState(() => 
+    localStorage.getItem('webhook-url') || ''
   );
   const [isTestingWebhook, setIsTestingWebhook] = useState(false);
 
@@ -195,19 +195,19 @@ export function Settings() {
 
   const handleWebhookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWebhook = e.target.value;
-    setZapierWebhook(newWebhook);
-    localStorage.setItem('zapier-webhook-url', newWebhook);
+    setWebhookUrl(newWebhook);
+    localStorage.setItem('webhook-url', newWebhook);
     toast({
       title: "Webhook URL Updated",
-      description: "Your Zapier webhook URL has been saved.",
+      description: "Your Make.com webhook URL has been saved.",
     });
   };
 
   const testWebhook = async () => {
-    if (!zapierWebhook) {
+    if (!webhookUrl) {
       toast({
         title: "Error",
-        description: "Please enter a Zapier webhook URL first",
+        description: "Please enter a Make.com webhook URL first",
         variant: "destructive",
       });
       return;
@@ -217,7 +217,7 @@ export function Settings() {
     try {
       const beans = localStorage.getItem('coffeeBeans');
       
-      const response = await fetch(zapierWebhook, {
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -232,13 +232,13 @@ export function Settings() {
 
       toast({
         title: "Request Sent",
-        description: "Test data was sent to Zapier. Please check your Zap's history to confirm it was triggered.",
+        description: "Test data was sent to Make.com. Please check your scenario's history to confirm it was triggered.",
       });
     } catch (error) {
       console.error("Error triggering webhook:", error);
       toast({
         title: "Error",
-        description: "Failed to trigger the Zapier webhook. Please check the URL and try again.",
+        description: "Failed to trigger the Make.com webhook. Please check the URL and try again.",
         variant: "destructive",
       });
     } finally {
@@ -290,16 +290,16 @@ export function Settings() {
           <div className="space-y-4">
             <Label>Daily Backup Settings</Label>
             <div className="space-y-2">
-              <Label htmlFor="zapier-webhook">
-                Zapier Webhook URL
+              <Label htmlFor="webhook">
+                Make.com Webhook URL
               </Label>
               <div className="mt-2 flex gap-2">
                 <Input
-                  id="zapier-webhook"
+                  id="webhook"
                   type="url"
-                  value={zapierWebhook}
+                  value={webhookUrl}
                   onChange={handleWebhookChange}
-                  placeholder="Enter your Zapier webhook URL"
+                  placeholder="Enter your Make.com webhook URL"
                   className="flex-1"
                 />
                 <Button
@@ -314,7 +314,7 @@ export function Settings() {
                 </Button>
               </div>
               <p className="mt-2 text-sm text-gray-500">
-                Create a Zap in Zapier that triggers on webhook and sends an email with the data. The webhook will be called daily to backup your coffee journal.
+                Create a scenario in Make.com that triggers on webhook and sends an email with the data. The webhook will be called daily to backup your coffee journal.
               </p>
             </div>
           </div>
