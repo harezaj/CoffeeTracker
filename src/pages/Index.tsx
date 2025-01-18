@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
+import { CoffeeListItem } from "@/components/CoffeeListItem";
 import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -8,12 +9,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, deleteBean, updateBean } from "@/lib/api";
 import { populateJournal } from "@/lib/sampleData";
 import { importCoffeeBeans } from "@/lib/importData";
+import { LayoutGrid, List, X } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const Index = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [version, setVersion] = useState(1);
   const [isPopulating, setIsPopulating] = useState(false);
+  const [viewMode, setViewMode] = useState<'tiles' | 'list'>('tiles');
+  const [selectedBean, setSelectedBean] = useState<CoffeeBean | null>(null);
 
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
@@ -163,6 +168,24 @@ const Index = () => {
             </p>
           </div>
           <div className="flex gap-4">
+            <div className="flex items-center border rounded-lg overflow-hidden">
+              <Button
+                variant={viewMode === 'tiles' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('tiles')}
+                className="rounded-none"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setViewMode('list')}
+                className="rounded-none"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
             <Link to="/recommendations">
               <Button variant="outline">Get AI Recommendations</Button>
             </Link>
@@ -200,20 +223,54 @@ const Index = () => {
               <h2 className="text-3xl font-semibold text-gray-900 mb-6">
                 Your Collection
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {beans.map((bean) => (
-                  <CoffeeCard 
-                    key={bean.id} 
-                    bean={bean} 
-                    onDelete={handleDeleteBean}
-                    onUpdate={handleUpdateBean}
-                  />
-                ))}
-              </div>
+              {viewMode === 'tiles' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {beans.map((bean) => (
+                    <CoffeeCard 
+                      key={bean.id} 
+                      bean={bean} 
+                      onDelete={handleDeleteBean}
+                      onUpdate={handleUpdateBean}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-200">
+                  {beans.map((bean) => (
+                    <CoffeeListItem
+                      key={bean.id}
+                      bean={bean}
+                      onClick={() => setSelectedBean(bean)}
+                    />
+                  ))}
+                </div>
+              )}
             </section>
           </div>
         )}
       </div>
+
+      <Dialog open={!!selectedBean} onOpenChange={() => setSelectedBean(null)}>
+        <DialogContent className="max-w-3xl">
+          {selectedBean && (
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0"
+                onClick={() => setSelectedBean(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <CoffeeCard
+                bean={selectedBean}
+                onDelete={handleDeleteBean}
+                onUpdate={handleUpdateBean}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
