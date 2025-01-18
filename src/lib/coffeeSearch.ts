@@ -31,7 +31,7 @@ export async function searchCoffeeDetails(
         messages: [
           {
             role: 'system',
-            content: `You are a coffee expert assistant. Always respond with valid JSON objects containing coffee details. Include only the fields that you are confident about. Use null for unknown values. Format numbers as plain numbers without units.`
+            content: 'You are a coffee expert assistant. Return only a valid JSON object with coffee details, no markdown, no comments.'
           },
           {
             role: 'user',
@@ -39,7 +39,7 @@ export async function searchCoffeeDetails(
               Roaster: ${roaster}
               Name: ${name}
               
-              Return a JSON object with these fields (include only if you're confident about the value):
+              Return a JSON object with these fields (include only if confident):
               {
                 "origin": "Country or region of origin",
                 "roastLevel": "One of: Light, Medium-Light, Medium, Medium-Dark, Dark",
@@ -75,13 +75,13 @@ export async function searchCoffeeDetails(
     const content = data.choices[0].message.content;
     console.log("Raw content:", content);
 
-    // Find the JSON object in the response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('No JSON object found in response');
-    }
+    // Clean the content to ensure it's valid JSON
+    const cleanedContent = content
+      .replace(/```json\s*|\s*```/g, '') // Remove markdown code blocks
+      .replace(/\/\/.*/g, '') // Remove single-line comments
+      .replace(/\/\*[\s\S]*?\*\//g, ''); // Remove multi-line comments
 
-    const parsedData = JSON.parse(jsonMatch[0]);
+    const parsedData = JSON.parse(cleanedContent);
     console.log("Parsed data:", parsedData);
 
     // Validate and clean the data
