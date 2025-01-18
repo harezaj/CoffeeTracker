@@ -15,7 +15,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 const Index = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [version] = useState("1.2.1");
+  const [version, setVersion] = useState("1.2.1");
   const [isPopulating, setIsPopulating] = useState(false);
   const [viewMode, setViewMode] = useState<'tiles' | 'list'>('tiles');
   const [selectedBean, setSelectedBean] = useState<CoffeeBean | null>(null);
@@ -69,7 +69,10 @@ const Index = () => {
     mutationFn: createBean,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
-      setVersion(prev => prev + 1);
+      setVersion(prev => {
+        const [major, minor, patch] = prev.split('.').map(Number);
+        return `${major}.${minor}.${patch + 1}`;
+      });
       toast({
         title: "Success",
         description: `${data.name} has been added to your collection.`,
