@@ -232,25 +232,25 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
             <AccordionContent className="pt-4 px-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-700 font-medium">Origin</span>
                     <span className="text-gray-600">{bean.origin}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-700 font-medium">Roast</span>
                     <span className="text-gray-600">{bean.roastLevel}</span>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-700 font-medium">Price</span>
                     <span className="text-gray-600">${bean.price}</span>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-gray-700 font-medium">Weight</span>
                     <div className="flex items-center gap-2">
                       <span className="text-gray-600">
-                        {displayWeight(bean.weight)} {weightUnit}
+                        {weightUnit === 'oz' ? (bean.weight / 28.35).toFixed(1) : (bean.weight / 1000).toFixed(2)} {weightUnit}
                       </span>
                       <ToggleGroup
                         type="single"
