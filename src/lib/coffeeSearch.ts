@@ -1,24 +1,28 @@
 export const searchCoffeeDetails = async (roaster: string, name: string, apiKey: string) => {
-  const prompt = `Find details about this coffee bean:
-    Roaster: ${roaster}
-    Bean Name: ${name}
-    
-    Return a JSON object with these properties (use null if not found):
-    {
-      "origin": string,
-      "roastLevel": "Light" | "Medium-Light" | "Medium" | "Medium-Dark" | "Dark",
-      "notes": string[],
-      "recommendedDose": number (in grams),
-      "recommendedYield": number (in ml),
-      "recommendedBrewTime": number (in seconds),
-      "price": number (in USD),
-      "weight": number (in grams),
-      "temperature": number (in Celsius),
-      "grindSize": number (1-30 scale),
-      "sources": string[]
-    }
-    
-    Important: Ensure the response is valid JSON. Do not include any explanatory text outside the JSON object.`;
+  const prompt = `Find details about this coffee bean from ${roaster} called "${name}".
+  
+Return a JSON object with ONLY these properties, using null for unknown values:
+{
+  "origin": "country or region name",
+  "roastLevel": one of ["Light", "Medium-Light", "Medium", "Medium-Dark", "Dark"],
+  "notes": ["note1", "note2", etc],
+  "recommendedDose": number in grams (e.g. 18),
+  "recommendedYield": number in ml (e.g. 36),
+  "recommendedBrewTime": number in seconds (e.g. 25-35),
+  "price": number in USD (e.g. 19.99),
+  "weight": number in grams (e.g. 340),
+  "temperature": number in Celsius (e.g. 93-96),
+  "grindSize": number from 1-30 (where 1 is finest, 30 is coarsest),
+  "sources": ["url1", "url2", etc]
+}
+
+Rules:
+1. Return ONLY the JSON object, no other text
+2. Use null for unknown values, don't guess
+3. For arrays (notes, sources), use empty array [] if none found
+4. All numbers must be plain numbers without units or ranges
+5. Temperature must be in Celsius
+6. Weight must be in grams`;
 
   try {
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -32,14 +36,14 @@ export const searchCoffeeDetails = async (roaster: string, name: string, apiKey:
         messages: [
           {
             role: 'system',
-            content: 'You are a coffee expert. Provide accurate, detailed information about coffee beans. Return data in the exact JSON format requested, with no additional text or formatting.'
+            content: 'You are a coffee expert API. Return only valid JSON objects with the exact structure requested. No explanations, no markdown, no additional text.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.3,
+        temperature: 0.1,
         max_tokens: 1000,
       }),
     });
@@ -49,38 +53,65 @@ export const searchCoffeeDetails = async (roaster: string, name: string, apiKey:
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
+    let content = data.choices[0].message.content.trim();
+
+    // Remove any potential markdown code block markers
+    content = content.replace(/^```json\s*/, '').replace(/\s*```$/, '');
     
-    // Clean up the content to ensure we only have JSON
-    const cleanedContent = content.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
-    
+    // Remove any text before the first { and after the last }
+    content = content.substring(
+      content.indexOf('{'),
+      content.lastIndexOf('}') + 1
+    );
+
     try {
-      const details = JSON.parse(cleanedContent);
-      console.log('Parsed coffee details:', details);
-      
-      // Validate the response structure
+      const parsedDetails = JSON.parse(content);
+
+      // Type validation and cleanup
       const validatedDetails = {
-        origin: details.origin || null,
-        roastLevel: details.roastLevel || null,
-        notes: Array.isArray(details.notes) ? details.notes : [],
-        recommendedDose: typeof details.recommendedDose === 'number' ? details.recommendedDose : null,
-        recommendedYield: typeof details.recommendedYield === 'number' ? details.recommendedYield : null,
-        recommendedBrewTime: typeof details.recommendedBrewTime === 'number' ? details.recommendedBrewTime : null,
-        price: typeof details.price === 'number' ? details.price : null,
-        weight: typeof details.weight === 'number' ? details.weight : null,
-        temperature: typeof details.temperature === 'number' ? details.temperature : null,
-        grindSize: typeof details.grindSize === 'number' ? details.grindSize : null,
-        sources: Array.isArray(details.sources) ? details.sources : []
+        origin: typeof parsedDetails.origin === 'string' ? parsedDetails.origin : null,
+        roastLevel: ['Light', 'Medium-Light', 'Medium', 'Medium-Dark', 'Dark'].includes(parsedDetails.roastLevel) 
+          ? parsedDetails.roastLevel 
+          : null,
+        notes: Array.isArray(parsedDetails.notes) 
+          ? parsedDetails.notes.filter(note => typeof note === 'string')
+          : [],
+        recommendedDose: typeof parsedDetails.recommendedDose === 'number' && !isNaN(parsedDetails.recommendedDose)
+          ? Math.round(parsedDetails.recommendedDose * 10) / 10
+          : null,
+        recommendedYield: typeof parsedDetails.recommendedYield === 'number' && !isNaN(parsedDetails.recommendedYield)
+          ? Math.round(parsedDetails.recommendedYield)
+          : null,
+        recommendedBrewTime: typeof parsedDetails.recommendedBrewTime === 'number' && !isNaN(parsedDetails.recommendedBrewTime)
+          ? Math.round(parsedDetails.recommendedBrewTime)
+          : null,
+        price: typeof parsedDetails.price === 'number' && !isNaN(parsedDetails.price)
+          ? Math.round(parsedDetails.price * 100) / 100
+          : null,
+        weight: typeof parsedDetails.weight === 'number' && !isNaN(parsedDetails.weight)
+          ? Math.round(parsedDetails.weight)
+          : null,
+        temperature: typeof parsedDetails.temperature === 'number' && !isNaN(parsedDetails.temperature)
+          ? Math.round(parsedDetails.temperature)
+          : null,
+        grindSize: typeof parsedDetails.grindSize === 'number' && !isNaN(parsedDetails.grindSize)
+          ? Math.round(parsedDetails.grindSize)
+          : null,
+        sources: Array.isArray(parsedDetails.sources)
+          ? parsedDetails.sources.filter(source => typeof source === 'string')
+          : []
       };
 
+      console.log('Validated coffee details:', validatedDetails);
       return validatedDetails;
     } catch (parseError) {
       console.error('Error parsing JSON:', parseError);
-      console.log('Content that failed to parse:', cleanedContent);
+      console.log('Raw content:', data.choices[0].message.content);
+      console.log('Cleaned content:', content);
       throw new Error('Invalid JSON response from API');
     }
   } catch (error) {
     console.error('Error searching coffee details:', error);
     throw error;
   }
-}
+};
