@@ -9,8 +9,23 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, deleteBean, updateBean } from "@/lib/api";
 import { populateJournal } from "@/lib/sampleData";
 import { importCoffeeBeans } from "@/lib/importData";
-import { LayoutGrid, List, X } from "lucide-react";
+import { LayoutGrid, List, X, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+
+type SortField = 'name' | 'roaster' | 'rank';
 
 const Index = () => {
   const { toast } = useToast();
@@ -19,6 +34,8 @@ const Index = () => {
   const [isPopulating, setIsPopulating] = useState(false);
   const [viewMode, setViewMode] = useState<'tiles' | 'list'>('tiles');
   const [selectedBean, setSelectedBean] = useState<CoffeeBean | null>(null);
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
@@ -139,6 +156,25 @@ const Index = () => {
     deleteBeanMutation.mutate(id);
   };
 
+  const sortBeans = (beans: CoffeeBean[]) => {
+    return [...beans].sort((a, b) => {
+      const modifier = sortDirection === 'asc' ? 1 : -1;
+      if (sortField === 'rank') {
+        return (b.rank - a.rank) * modifier;
+      }
+      return a[sortField].localeCompare(b[sortField]) * modifier;
+    });
+  };
+
+  const handleSort = (field: SortField) => {
+    if (field === sortField) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
@@ -155,6 +191,8 @@ const Index = () => {
     );
   }
 
+  const sortedBeans = sortBeans(beans);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="container py-12 space-y-12">
@@ -164,30 +202,67 @@ const Index = () => {
               <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
                 Coffee Bean Journal
               </h1>
-              <span className="text-sm text-gray-500">v{version}</span>
+              <HoverCard>
+                <HoverCardTrigger>
+                  <span className="text-sm text-gray-500 cursor-help">v{version}</span>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold">Version History</h4>
+                    <div className="text-sm space-y-1">
+                      <p>1.0.0 - Initial coffee journal implementation</p>
+                      <p>1.1.0 - Added list/tile view toggle</p>
+                      <p>1.2.0 - Enhanced recommendations</p>
+                      <p>1.2.1 - Added API key storage</p>
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
             </div>
             <p className="text-gray-600 text-lg">
               Track your coffee journey and discover new favorites
             </p>
           </div>
           <div className="flex gap-4">
-            <div className="flex items-center border rounded-lg overflow-hidden">
-              <Button
-                variant={viewMode === 'tiles' ? 'default' : 'ghost'}
-                size="icon"
-                onClick={() => setViewMode('tiles')}
-                className="rounded-none"
-              >
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="icon"
-                onClick={() => setViewMode('list')}
-                className="rounded-none"
-              >
-                <List className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    Sort by <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleSort('name')}>
+                    Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleSort('roaster')}>
+                    Roaster {sortField === 'roaster' && (sortDirection === 'asc' ? '↑' : '↓')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleSort('rank')}>
+                    Ranking {sortField === 'rank' && (sortDirection === 'asc' ? '↑' : '↓')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="flex items-center border rounded-lg overflow-hidden">
+                <Button
+                  variant={viewMode === 'tiles' ? 'default' : 'ghost'}
+                  size="icon"
+                  onClick={() => setViewMode('tiles')}
+                  className="rounded-none"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="icon"
+                  onClick={() => setViewMode('list')}
+                  className="rounded-none"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <Link to="/recommendations">
               <Button variant="outline">Get AI Recommendations</Button>
@@ -228,7 +303,7 @@ const Index = () => {
               </h2>
               {viewMode === 'tiles' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {beans.map((bean) => (
+                  {sortedBeans.map((bean) => (
                     <CoffeeCard 
                       key={bean.id} 
                       bean={bean} 
@@ -239,7 +314,7 @@ const Index = () => {
                 </div>
               ) : (
                 <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-200">
-                  {beans.map((bean) => (
+                  {sortedBeans.map((bean) => (
                     <CoffeeListItem
                       key={bean.id}
                       bean={bean}
