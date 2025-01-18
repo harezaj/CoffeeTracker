@@ -93,7 +93,7 @@ const Recommendations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-light to-white">
+    <div className="min-h-screen bg-white">
       <div className="container py-8 space-y-8">
         <header className="space-y-4">
           <div className="flex items-center justify-between">
@@ -115,7 +115,7 @@ const Recommendations = () => {
             <Link to="/">
               <Button 
                 variant="outline"
-                className="bg-white/80 hover:bg-white transition-colors border-coffee/20 text-coffee-dark hover:text-coffee"
+                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream-light transition-colors"
               >
                 Back to Journal
               </Button>
@@ -124,7 +124,7 @@ const Recommendations = () => {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-6 bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
+          <div className="space-y-6 bg-cream-light/50 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
             <h2 className="text-2xl font-semibold text-coffee-dark">
               Recommendation Settings
             </h2>
@@ -246,7 +246,7 @@ const Recommendations = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-white/80 rounded-xl backdrop-blur-sm border border-coffee/20 shadow-lg">
+              <div className="text-center py-16 bg-cream-light/50 rounded-xl backdrop-blur-sm border border-coffee/20 shadow-lg">
                 <p className="text-coffee-dark text-xl">
                   {recommendationType === "preferences"
                     ? "Fill in your preferences and click 'Get Recommendations' to discover new coffees!"
