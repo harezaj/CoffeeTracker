@@ -7,6 +7,7 @@ esbuild.buildSync({
   platform: 'node',
   target: 'node14',
   outfile: 'dist/server.js',
+  external: ['express', 'cors', 'better-sqlite3', 'path'],
 });
 
 const require = createRequire(import.meta.url);
