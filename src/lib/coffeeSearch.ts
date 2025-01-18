@@ -1,29 +1,24 @@
-export const searchCoffeeDetails = async (roaster: string, name: string, apiKey: string) => {
-  const prompt = `Find details about this coffee bean from ${roaster} called "${name}".
-  
-Return a JSON object with ONLY these properties, using null for unknown values:
-{
-  "origin": "country or region name",
-  "roastLevel": one of ["Light", "Medium-Light", "Medium", "Medium-Dark", "Dark"],
-  "notes": ["note1", "note2", etc],
-  "recommendedDose": number in grams (e.g. 18),
-  "recommendedYield": number in ml (e.g. 36),
-  "recommendedBrewTime": number in seconds (e.g. 25-35),
-  "price": number in USD (e.g. 19.99),
-  "weight": number in grams (e.g. 340),
-  "temperature": number in Celsius (e.g. 93-96),
-  "grindSize": number from 1-30 (where 1 is finest, 30 is coarsest),
-  "sources": ["url1", "url2", etc]
+export interface CoffeeDetails {
+  origin?: string;
+  roastLevel?: string;
+  notes?: string[];
+  recommendedDose?: number;
+  recommendedYield?: number;
+  recommendedBrewTime?: number;
+  price?: number;
+  weight?: number;
+  temperature?: number;
+  grindSize?: number;
+  sources?: string[];
 }
 
-Rules:
-1. Return ONLY the JSON object, no other text
-2. Use null for unknown values, don't guess
-3. For arrays (notes, sources), use empty array [] if none found
-4. All numbers must be plain numbers without units or ranges
-5. Temperature must be in Celsius
-6. Weight must be in grams`;
-
+export async function searchCoffeeDetails(
+  roaster: string,
+  name: string,
+  apiKey: string
+): Promise<CoffeeDetails> {
+  console.log("Searching coffee details for:", roaster, name);
+  
   try {
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
@@ -32,15 +27,32 @@ Rules:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-large-128k-online',
+        model: 'llama-3.1-sonar-small-128k-online',
         messages: [
           {
             role: 'system',
-            content: 'You are a coffee expert API. Return only valid JSON objects with the exact structure requested. No explanations, no markdown, no additional text.'
+            content: `You are a coffee expert assistant. Always respond with valid JSON objects containing coffee details. Include only the fields that you are confident about. Use null for unknown values. Format numbers as plain numbers without units.`
           },
           {
             role: 'user',
-            content: prompt
+            content: `Find details about this coffee:
+              Roaster: ${roaster}
+              Name: ${name}
+              
+              Return a JSON object with these fields (include only if you're confident about the value):
+              {
+                "origin": "Country or region of origin",
+                "roastLevel": "One of: Light, Medium-Light, Medium, Medium-Dark, Dark",
+                "notes": ["Array of flavor notes"],
+                "recommendedDose": number (in grams),
+                "recommendedYield": number (in ml),
+                "recommendedBrewTime": number (in seconds),
+                "price": number (in USD),
+                "weight": number (in grams),
+                "temperature": number (in Celsius),
+                "grindSize": number (from 1-30),
+                "sources": ["Array of sources used"]
+              }`
           }
         ],
         temperature: 0.1,
@@ -49,69 +61,50 @@ Rules:
     });
 
     if (!response.ok) {
+      console.error('API response not ok:', await response.text());
       throw new Error('Failed to fetch coffee details');
     }
 
     const data = await response.json();
-    let content = data.choices[0].message.content.trim();
+    console.log("API response:", data);
 
-    // Remove any potential markdown code block markers
-    content = content.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-    
-    // Remove any text before the first { and after the last }
-    content = content.substring(
-      content.indexOf('{'),
-      content.lastIndexOf('}') + 1
-    );
-
-    try {
-      const parsedDetails = JSON.parse(content);
-
-      // Type validation and cleanup
-      const validatedDetails = {
-        origin: typeof parsedDetails.origin === 'string' ? parsedDetails.origin : null,
-        roastLevel: ['Light', 'Medium-Light', 'Medium', 'Medium-Dark', 'Dark'].includes(parsedDetails.roastLevel) 
-          ? parsedDetails.roastLevel 
-          : null,
-        notes: Array.isArray(parsedDetails.notes) 
-          ? parsedDetails.notes.filter(note => typeof note === 'string')
-          : [],
-        recommendedDose: typeof parsedDetails.recommendedDose === 'number' && !isNaN(parsedDetails.recommendedDose)
-          ? Math.round(parsedDetails.recommendedDose * 10) / 10
-          : null,
-        recommendedYield: typeof parsedDetails.recommendedYield === 'number' && !isNaN(parsedDetails.recommendedYield)
-          ? Math.round(parsedDetails.recommendedYield)
-          : null,
-        recommendedBrewTime: typeof parsedDetails.recommendedBrewTime === 'number' && !isNaN(parsedDetails.recommendedBrewTime)
-          ? Math.round(parsedDetails.recommendedBrewTime)
-          : null,
-        price: typeof parsedDetails.price === 'number' && !isNaN(parsedDetails.price)
-          ? Math.round(parsedDetails.price * 100) / 100
-          : null,
-        weight: typeof parsedDetails.weight === 'number' && !isNaN(parsedDetails.weight)
-          ? Math.round(parsedDetails.weight)
-          : null,
-        temperature: typeof parsedDetails.temperature === 'number' && !isNaN(parsedDetails.temperature)
-          ? Math.round(parsedDetails.temperature)
-          : null,
-        grindSize: typeof parsedDetails.grindSize === 'number' && !isNaN(parsedDetails.grindSize)
-          ? Math.round(parsedDetails.grindSize)
-          : null,
-        sources: Array.isArray(parsedDetails.sources)
-          ? parsedDetails.sources.filter(source => typeof source === 'string')
-          : []
-      };
-
-      console.log('Validated coffee details:', validatedDetails);
-      return validatedDetails;
-    } catch (parseError) {
-      console.error('Error parsing JSON:', parseError);
-      console.log('Raw content:', data.choices[0].message.content);
-      console.log('Cleaned content:', content);
-      throw new Error('Invalid JSON response from API');
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid API response format');
     }
+
+    const content = data.choices[0].message.content;
+    console.log("Raw content:", content);
+
+    // Find the JSON object in the response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON object found in response');
+    }
+
+    const parsedData = JSON.parse(jsonMatch[0]);
+    console.log("Parsed data:", parsedData);
+
+    // Validate and clean the data
+    const cleanedData: CoffeeDetails = {
+      origin: typeof parsedData.origin === 'string' ? parsedData.origin : undefined,
+      roastLevel: ['Light', 'Medium-Light', 'Medium', 'Medium-Dark', 'Dark'].includes(parsedData.roastLevel) 
+        ? parsedData.roastLevel 
+        : undefined,
+      notes: Array.isArray(parsedData.notes) ? parsedData.notes.filter(note => typeof note === 'string') : undefined,
+      recommendedDose: typeof parsedData.recommendedDose === 'number' ? Math.round(parsedData.recommendedDose * 10) / 10 : undefined,
+      recommendedYield: typeof parsedData.recommendedYield === 'number' ? Math.round(parsedData.recommendedYield) : undefined,
+      recommendedBrewTime: typeof parsedData.recommendedBrewTime === 'number' ? Math.round(parsedData.recommendedBrewTime) : undefined,
+      price: typeof parsedData.price === 'number' ? Math.round(parsedData.price * 100) / 100 : undefined,
+      weight: typeof parsedData.weight === 'number' ? Math.round(parsedData.weight) : undefined,
+      temperature: typeof parsedData.temperature === 'number' ? Math.round(parsedData.temperature) : undefined,
+      grindSize: typeof parsedData.grindSize === 'number' ? Math.round(parsedData.grindSize) : undefined,
+      sources: Array.isArray(parsedData.sources) ? parsedData.sources.filter(source => typeof source === 'string') : undefined,
+    };
+
+    console.log("Cleaned data:", cleanedData);
+    return cleanedData;
   } catch (error) {
-    console.error('Error searching coffee details:', error);
+    console.error('Error in searchCoffeeDetails:', error);
     throw error;
   }
-};
+}
