@@ -5,8 +5,52 @@ import { Settings } from "@/components/Settings";
 import { Link } from "react-router-dom";
 import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
+import type { CoffeeBean } from "@/components/CoffeeCard";
 
 export default function Index() {
+  const queryClient = useQueryClient();
+
+  const { data: beans = [] } = useQuery({
+    queryKey: ['beans'],
+    queryFn: fetchBeans
+  });
+
+  const createMutation = useMutation({
+    mutationFn: createBean,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Omit<CoffeeBean, "id">> }) => 
+      updateBean(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteBean,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+    },
+  });
+
+  const handleAdd = (bean: Omit<CoffeeBean, "id">) => {
+    createMutation.mutate(bean);
+  };
+
+  const handleUpdate = (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
+    updateMutation.mutate({ id, updates });
+  };
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="flex justify-between items-center">
@@ -28,7 +72,12 @@ export default function Index() {
           <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
         </TabsList>
         <TabsContent value="collection">
-          <CollectionTab />
+          <CollectionTab 
+            beans={beans}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onAdd={handleAdd}
+          />
         </TabsContent>
         <TabsContent value="wishlist">
           <WishlistTab />
