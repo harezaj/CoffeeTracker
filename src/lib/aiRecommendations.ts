@@ -41,16 +41,49 @@ export const getAIRecommendations = async (
       ]`;
   } else {
     const topRatedBeans = request.journalEntries
-      ?.sort((a, b) => b.rank - a.rank)
+      ?.filter(bean => bean.rank >= 4) // Only consider highly rated beans
+      .sort((a, b) => b.rank - a.rank)
       .slice(0, 3);
 
-    prompt = `As a coffee expert, analyze these highly rated coffees from my journal:
+    const commonNotes = topRatedBeans?.reduce((acc, bean) => {
+      bean.notes.forEach(note => {
+        if (!acc.includes(note)) acc.push(note);
+      });
+      return acc;
+    }, [] as string[]);
+
+    const roastPreference = topRatedBeans?.reduce((acc, bean) => {
+      acc[bean.roastLevel] = (acc[bean.roastLevel] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const favoriteRoasters = topRatedBeans?.map(bean => bean.roaster);
+
+    prompt = `As a coffee expert, analyze these highly rated coffees from the user's journal:
       ${JSON.stringify(topRatedBeans, null, 2)}
       
-      Recommend 3 specific coffee beans similar to these. Format your response as a JSON array of exactly 3 coffee beans.
+      Key preferences identified:
+      - Favorite flavor notes: ${commonNotes?.join(', ')}
+      - Preferred roast levels: ${Object.entries(roastPreference || {}).map(([level, count]) => `${level} (${count}x)`).join(', ')}
+      - Favorite roasters: ${favoriteRoasters?.join(', ')}
+      
+      Based on this analysis, recommend 3 specific coffee beans that would appeal to this user's taste profile.
+      Consider these factors:
+      1. Similar flavor profiles to their highest-rated coffees
+      2. Matching roast level preferences
+      3. Beans from roasters they trust or similar specialty coffee roasters
+      4. Price points similar to their previous purchases
+      
+      Format your response as a JSON array of exactly 3 coffee beans.
       Each bean should have these properties:
       roaster (string), name (string), origin (string), roastLevel (string), notes (array of strings), 
-      price (number), weight (number in grams).`;
+      price (number), weight (number in grams).
+      
+      Make sure each recommendation includes:
+      - A clear explanation of why it matches their preferences
+      - Specific flavor notes that align with their taste profile
+      - A roast level that matches their preferences
+      - A price point similar to their previous purchases`;
   }
 
   try {
@@ -61,18 +94,18 @@ export const getAIRecommendations = async (
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
+        model: 'llama-3.1-sonar-large-128k-online', // Using larger model for better analysis
         messages: [
           {
             role: 'system',
-            content: 'You are a coffee expert. Always respond with valid JSON arrays containing coffee recommendations.'
+            content: 'You are a coffee expert specializing in specialty coffee recommendations. You have extensive knowledge of coffee roasters, origins, processing methods, and flavor profiles. Always provide specific, actionable recommendations based on user preferences and patterns.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.2,
+        temperature: 0.3, // Lower temperature for more focused recommendations
         max_tokens: 1000,
       }),
     });
@@ -84,19 +117,14 @@ export const getAIRecommendations = async (
     const data = await response.json();
     console.log("AI response:", data);
 
-    // Extract the content from the AI response
     const content = data.choices[0].message.content;
-    
-    // Find the JSON array in the response
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (!jsonMatch) {
       throw new Error('No valid JSON array found in AI response');
     }
 
-    // Parse the JSON array
     const recommendations = JSON.parse(jsonMatch[0]);
 
-    // Convert the parsed recommendations to CoffeeBean objects
     return recommendations.map((rec: any, index: number) => ({
       id: `ai-rec-${index}`,
       roaster: rec.roaster,
@@ -113,6 +141,7 @@ export const getAIRecommendations = async (
       weight: rec.weight,
       orderAgain: false,
       grindSize: 15,
+      generalNotes: rec.explanation || "", // Adding explanation from AI
     }));
   } catch (error) {
     console.error('Error getting AI recommendations:', error);
