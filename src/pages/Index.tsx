@@ -10,6 +10,7 @@ import { fetchBeans, createBean } from "@/lib/api";
 const Index = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [version, setVersion] = useState(1);
 
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
@@ -20,6 +21,7 @@ const Index = () => {
     mutationFn: createBean,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
+      setVersion(prev => prev + 1);
       toast({
         title: "Success",
         description: `${data.name} has been added to your collection.`,
@@ -74,9 +76,12 @@ const Index = () => {
       <div className="container py-12 space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-2">
-            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-              Coffee Bean Journal
-            </h1>
+            <div className="flex items-center gap-4">
+              <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                Coffee Bean Journal
+              </h1>
+              <span className="text-sm text-gray-500">v{version}</span>
+            </div>
             <p className="text-gray-600 text-lg">
               Track your coffee journey and discover new favorites
             </p>
