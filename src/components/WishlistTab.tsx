@@ -34,15 +34,15 @@ export function WishlistTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold text-gray-900">
+        <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
           Wishlist
         </h2>
         <AddWishlistForm onAdd={handleAddToWishlist} />
       </div>
       
       {wishlistBeans.length === 0 ? (
-        <div className="text-center py-12 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200">
-          <p className="text-gray-600 text-lg">
+        <div className="text-center py-12 bg-white/50 dark:bg-[#171717] rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800">
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
             Your wishlist is empty. Add some coffee beans you'd like to try!
           </p>
         </div>
