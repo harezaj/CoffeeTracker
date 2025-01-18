@@ -73,9 +73,14 @@ export default function Index() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-3">
-          <Coffee className="h-10 w-10 text-coffee" />
-          <h1 className="text-3xl font-bold">Coffee Bean Journey</h1>
+        <div className="flex items-center gap-4">
+          <Coffee className="h-12 w-12 text-coffee animate-pulse" />
+          <div className="flex flex-col">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-coffee-dark via-coffee to-coffee-light bg-clip-text text-transparent tracking-tight">
+              Coffee Bean
+            </h1>
+            <span className="text-2xl font-light text-coffee-dark tracking-wider">Journey</span>
+          </div>
         </div>
         <div className="flex gap-2">
           {beans.length === 0 && (
