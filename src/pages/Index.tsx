@@ -5,8 +5,29 @@ import { Settings } from "@/components/Settings";
 import { Link } from "react-router-dom";
 import { History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { CoffeeBean } from "@/components/CoffeeCard";
+import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Index() {
+  const { data: beans = [] } = useQuery<CoffeeBean[]>({
+    queryKey: ['beans'],
+    queryFn: fetchBeans,
+  });
+
+  const handleDelete = async (id: string) => {
+    await deleteBean(id);
+  };
+
+  const handleUpdate = async (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
+    await updateBean(id, updates);
+  };
+
+  const handleAdd = async (bean: Omit<CoffeeBean, "id">) => {
+    await createBean(bean);
+  };
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="flex justify-between items-center">
@@ -28,7 +49,12 @@ export default function Index() {
           <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
         </TabsList>
         <TabsContent value="collection">
-          <CollectionTab />
+          <CollectionTab 
+            beans={beans}
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            onAdd={handleAdd}
+          />
         </TabsContent>
         <TabsContent value="wishlist">
           <WishlistTab />
