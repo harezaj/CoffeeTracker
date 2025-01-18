@@ -93,7 +93,7 @@ const Recommendations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <div className="container py-8 space-y-8">
         <header className="space-y-4">
           <div className="flex items-center justify-between">
@@ -115,7 +115,7 @@ const Recommendations = () => {
             <Link to="/">
               <Button 
                 variant="outline"
-                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream-light transition-colors"
+                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream/10 transition-colors"
               >
                 Back to Journal
               </Button>
@@ -124,7 +124,7 @@ const Recommendations = () => {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-6 bg-cream-light/50 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
+          <div className="space-y-6 bg-background p-6 rounded-xl border border-coffee/20 shadow-lg">
             <h2 className="text-2xl font-semibold text-coffee-dark">
               Recommendation Settings
             </h2>
@@ -154,7 +154,7 @@ const Recommendations = () => {
                       setPreferences({ ...preferences, roastLevel: value })
                     }
                   >
-                    <SelectTrigger className="bg-white border-coffee/20">
+                    <SelectTrigger className="bg-background border-coffee/20">
                       <SelectValue placeholder="Select Roast Level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -173,7 +173,7 @@ const Recommendations = () => {
                     onChange={(e) =>
                       setPreferences({ ...preferences, notes: e.target.value })
                     }
-                    className="bg-white border-coffee/20"
+                    className="bg-background border-coffee/20"
                   />
                 </div>
 
@@ -185,7 +185,7 @@ const Recommendations = () => {
                       setPreferences({ ...preferences, priceRange: value })
                     }
                   >
-                    <SelectTrigger className="bg-white border-coffee/20">
+                    <SelectTrigger className="bg-background border-coffee/20">
                       <SelectValue placeholder="Select Price Range" />
                     </SelectTrigger>
                     <SelectContent>
@@ -212,7 +212,7 @@ const Recommendations = () => {
                   placeholder="Enter your API key"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-white border-coffee/20"
+                  className="bg-background border-coffee/20"
                 />
                 <p className="text-sm text-coffee">
                   Get your API key from{" "}
@@ -246,7 +246,7 @@ const Recommendations = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-cream-light/50 rounded-xl backdrop-blur-sm border border-coffee/20 shadow-lg">
+              <div className="text-center py-16 bg-background rounded-xl border border-coffee/20 shadow-lg">
                 <p className="text-coffee-dark text-xl">
                   {recommendationType === "preferences"
                     ? "Fill in your preferences and click 'Get Recommendations' to discover new coffees!"
