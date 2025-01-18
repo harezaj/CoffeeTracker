@@ -21,7 +21,7 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
             </h3>
             <p className="text-sm text-coffee">by {bean.roaster}</p>
             {bean.notes && (
-              <p className="text-sm text-coffee-light mt-1 italic">
+              <p className="text-sm text-coffee mt-1 italic">
                 {bean.notes.join(', ')}
               </p>
             )}
