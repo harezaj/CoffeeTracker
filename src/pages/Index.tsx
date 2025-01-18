@@ -77,7 +77,6 @@ export default function Index() {
             <Coffee 
               className="h-12 w-12 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
             />
-            <div className="absolute -bottom-2 -right-2 w-1 h-1 bg-coffee rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-[droplet_1s_ease-in_infinite] before:content-[''] before:absolute before:w-1 before:h-3 before:bg-coffee before:rounded-full before:-top-3 before:left-0" />
           </div>
           <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
             <h1 className="text-5xl font-black text-coffee-dark tracking-tight hover:text-coffee transition-colors duration-300">
