@@ -4,22 +4,61 @@ import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
 import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Index = () => {
-  const [beans, setBeans] = useState<CoffeeBean[]>([]);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const addBean = (newBean: Omit<CoffeeBean, "id">) => {
-    const beanWithId = {
-      ...newBean,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    setBeans([...beans, beanWithId]);
-    toast({
-      title: "Coffee Bean Added",
-      description: `${newBean.name} has been added to your collection.`,
-    });
-  };
+  // Fetch coffee beans
+  const { data: beans = [], isLoading } = useQuery({
+    queryKey: ['coffee-beans'],
+    queryFn: async () => {
+      const response = await fetch('http://localhost:3001/api/coffee-beans');
+      if (!response.ok) {
+        throw new Error('Failed to fetch coffee beans');
+      }
+      return response.json();
+    },
+  });
+
+  // Add new coffee bean
+  const addBeanMutation = useMutation({
+    mutationFn: async (newBean: Omit<CoffeeBean, "id">) => {
+      const beanWithId = {
+        ...newBean,
+        id: Math.random().toString(36).substr(2, 9),
+      };
+      
+      const response = await fetch('http://localhost:3001/api/coffee-beans', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(beanWithId),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to add coffee bean');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (newBean) => {
+      queryClient.invalidateQueries({ queryKey: ['coffee-beans'] });
+      toast({
+        title: "Coffee Bean Added",
+        description: `${newBean.name} has been added to your collection.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to add coffee bean. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const getRecommendations = () => {
     if (beans.length === 0) return [];
@@ -51,11 +90,15 @@ const Index = () => {
             <Link to="/recommendations">
               <Button variant="outline">Get AI Recommendations</Button>
             </Link>
-            <AddCoffeeForm onAdd={addBean} />
+            <AddCoffeeForm onAdd={(bean) => addBeanMutation.mutate(bean)} />
           </div>
         </div>
 
-        {beans.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16">
+            <p className="text-gray-600 text-xl">Loading...</p>
+          </div>
+        ) : beans.length === 0 ? (
           <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg animate-fade-in">
             <p className="text-gray-600 text-xl">
               No coffee beans added yet. Start by adding your first coffee bean!
