@@ -75,7 +75,7 @@ export default function Index() {
         <Link to="/" className="group flex items-center gap-4">
           <div className="relative">
             <Coffee 
-              className="h-12 w-12 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
+              className="h-16 w-16 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
             />
           </div>
           <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
