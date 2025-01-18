@@ -6,7 +6,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Coffee, Sparkles } from "lucide-react";
+import { Coffee, Sparkles, Download } from "lucide-react";
+import { importCoffeeBeans } from "@/lib/importData";
 
 export default function Index() {
   const { toast } = useToast();
@@ -48,6 +49,27 @@ export default function Index() {
     });
   };
 
+  const handleImport = async () => {
+    try {
+      await importCoffeeBeans();
+      // Refresh the beans from localStorage after import
+      const saved = localStorage.getItem('coffeeBeans');
+      if (saved) {
+        setBeans(JSON.parse(saved));
+        toast({
+          title: "Success",
+          description: "Coffee beans have been imported successfully.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to import coffee beans.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
@@ -55,12 +77,22 @@ export default function Index() {
           <Coffee className="h-10 w-10 text-coffee" />
           <h1 className="text-3xl font-bold">Coffee Bean Journey</h1>
         </div>
-        <Link to="/recommendations">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
-            Get AI Recommendations
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={handleImport}
+          >
+            <Download className="h-4 w-4" />
+            Import Data
           </Button>
-        </Link>
+          <Link to="/recommendations">
+            <Button variant="outline" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Get AI Recommendations
+            </Button>
+          </Link>
+        </div>
       </div>
       
       <Tabs defaultValue="collection" className="space-y-6">
