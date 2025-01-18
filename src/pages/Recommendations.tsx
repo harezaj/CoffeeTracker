@@ -44,16 +44,31 @@ const Recommendations = () => {
         throw new Error("Please enter your Perplexity API key");
       }
 
-      return getAIRecommendations(
-        {
-          type: recommendationType,
-          preferences: recommendationType === "preferences" ? preferences : undefined,
-          journalEntries: recommendationType === "journal" ? journalBeans : undefined,
-        },
-        apiKey
-      );
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
+
+      try {
+        const result = await getAIRecommendations(
+          {
+            type: recommendationType,
+            preferences: recommendationType === "preferences" ? preferences : undefined,
+            journalEntries: recommendationType === "journal" ? journalBeans : undefined,
+          },
+          apiKey,
+          { signal: controller.signal }
+        );
+        clearTimeout(timeoutId);
+        return result;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error("Request timed out after 60 seconds");
+        }
+        throw error;
+      }
     },
     enabled: false, // Query won't run automatically
+    retry: false, // Don't retry on failure
   });
 
   const handleGetRecommendations = () => {
@@ -82,9 +97,13 @@ const Recommendations = () => {
       <div className="container py-8 space-y-8">
         <header className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Coffee className="h-10 w-10 text-coffee" />
-              <div>
+            <Link to="/" className="group flex items-center gap-4">
+              <div className="relative">
+                <Coffee 
+                  className="h-16 w-16 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
+                />
+              </div>
+              <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
                 <h1 className="text-4xl font-bold text-coffee-dark">
                   Coffee Recommendations
                 </h1>
@@ -92,7 +111,7 @@ const Recommendations = () => {
                   Get personalized coffee suggestions based on your preferences or journal history
                 </p>
               </div>
-            </div>
+            </Link>
             <Link to="/">
               <Button 
                 variant="outline"

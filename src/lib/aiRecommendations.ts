@@ -12,7 +12,8 @@ interface RecommendationRequest {
 
 export const getAIRecommendations = async (
   request: RecommendationRequest,
-  apiKey: string
+  apiKey: string,
+  { signal }: { signal?: AbortSignal } = {}
 ): Promise<CoffeeBean[]> => {
   console.log("Getting AI recommendations for:", request);
 
@@ -94,7 +95,7 @@ export const getAIRecommendations = async (
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-large-128k-online', // Using larger model for better analysis
+        model: 'llama-3.1-sonar-large-128k-online',
         messages: [
           {
             role: 'system',
@@ -105,9 +106,10 @@ export const getAIRecommendations = async (
             content: prompt
           }
         ],
-        temperature: 0.3, // Lower temperature for more focused recommendations
+        temperature: 0.3,
         max_tokens: 1000,
       }),
+      signal, // Add the AbortController signal here
     });
 
     if (!response.ok) {
