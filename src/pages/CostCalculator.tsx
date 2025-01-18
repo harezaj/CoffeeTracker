@@ -34,7 +34,7 @@ export default function CostCalculator() {
     // Calculate coffee cost per serving
     const gramsPerServing = selectedBean.gramsIn;
     const costPerGram = selectedBean.price / selectedBean.weight;
-    const coffeeCost = gramsPerGram * costPerGram;
+    const coffeeCost = gramsPerServing * costPerGram;
 
     // Add additional costs if applicable
     const totalMilkCost = usesMilk ? milkCost : 0;
@@ -169,4 +169,4 @@ export default function CostCalculator() {
       </div>
     </div>
   );
-}
+};
