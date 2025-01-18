@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getAIRecommendations } from "@/lib/aiRecommendations";
+import { fetchBeans } from "@/lib/api";
 
 const Recommendations = () => {
   const [recommendationType, setRecommendationType] = useState<"preferences" | "journal">("preferences");
@@ -17,32 +19,30 @@ const Recommendations = () => {
     notes: "",
     priceRange: "",
   });
+  const [apiKey, setApiKey] = useState("");
   const { toast } = useToast();
+
+  // Fetch existing beans for journal-based recommendations
+  const { data: journalBeans } = useQuery({
+    queryKey: ["beans"],
+    queryFn: fetchBeans,
+  });
 
   const { data: recommendations, isLoading, refetch } = useQuery({
     queryKey: ["recommendations", recommendationType, preferences],
     queryFn: async () => {
-      // TODO: Implement Tavily API integration here
-      // This is a placeholder that returns mock data
-      return [
+      if (!apiKey) {
+        throw new Error("Please enter your Perplexity API key");
+      }
+
+      return getAIRecommendations(
         {
-          id: "rec1",
-          roaster: "Sample Roaster",
-          name: "Ethiopian Yirgacheffe",
-          origin: "Ethiopia",
-          roastLevel: "Medium",
-          notes: ["Floral", "Citrus", "Bergamot"],
-          rank: 4,
-          gramsIn: 18,
-          mlOut: 36,
-          brewTime: 28,
-          temperature: 93,
-          price: 16.99,
-          weight: 250,
-          orderAgain: true,
-          grindSize: 15,
+          type: recommendationType,
+          preferences: recommendationType === "preferences" ? preferences : undefined,
+          journalEntries: recommendationType === "journal" ? journalBeans : undefined,
         },
-      ] as CoffeeBean[];
+        apiKey
+      );
     },
     enabled: false, // Query won't run automatically
   });
@@ -88,8 +88,31 @@ const Recommendations = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="col-span-full md:col-span-1 space-y-6 bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-200 shadow-lg">
             <h2 className="text-2xl font-semibold text-gray-900">
-              Recommendation Method
+              Recommendation Settings
             </h2>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Perplexity API Key</Label>
+                <Input
+                  type="password"
+                  placeholder="Enter your API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+                <p className="text-sm text-gray-500">
+                  Get your API key from{" "}
+                  <a
+                    href="https://www.perplexity.ai/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    Perplexity AI
+                  </a>
+                </p>
+              </div>
+            </div>
             
             <RadioGroup
               value={recommendationType}
@@ -141,7 +164,7 @@ const Recommendations = () => {
                 <div className="space-y-2">
                   <Label>Price Range</Label>
                   <Select
-                    value={preferences.priceRange}
+                    value={preferences.pricePrice}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, priceRange: value })
                     }
@@ -168,7 +191,7 @@ const Recommendations = () => {
             <Button
               className="w-full"
               onClick={handleGetRecommendations}
-              disabled={isLoading}
+              disabled={isLoading || !apiKey}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Get Recommendations
