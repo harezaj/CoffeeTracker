@@ -4,7 +4,7 @@ import { CoffeeBean } from "@/components/CoffeeCard";
 import { CollectionTab } from "@/components/CollectionTab";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Coffee } from "lucide-react";
+import { Coffee } from "lucide-react";
 
 export default function PurchaseHistory() {
   const { data: beans = [], isLoading, error } = useQuery<CoffeeBean[]>({
@@ -25,19 +25,32 @@ export default function PurchaseHistory() {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <header className="space-y-4 mb-8">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="group flex items-center gap-4">
+            <div className="relative">
+              <Coffee 
+                className="h-12 w-12 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
+              />
+            </div>
+            <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
+              <h1 className="text-4xl font-black text-coffee-dark tracking-tight hover:text-coffee transition-colors duration-300">
+                Coffee Bean
+              </h1>
+              <span className="text-xl font-light text-coffee-dark tracking-wider">Journey</span>
+            </div>
+          </Link>
           <Link to="/">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
+            <Button 
+              variant="outline"
+              className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream/10 transition-colors"
+            >
+              Back to Journal
             </Button>
           </Link>
-          <div className="flex items-center gap-2">
-            <Coffee className="h-8 w-8 text-coffee" />
-            <h1 className="text-4xl font-bold">Purchase History</h1>
-          </div>
         </div>
-      </div>
+      </header>
+
       <CollectionTab
         beans={purchasedBeans}
         onDelete={() => {}} // Purchases cannot be deleted
