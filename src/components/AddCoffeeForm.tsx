@@ -34,7 +34,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [rank, setRank] = useState(5);
   const [orderAgain, setOrderAgain] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [dataSources, setDataSources] = useState<string[]>([]);
+  const [dataSources, setDataSources] = useState<{ url?: string; displayText: string }[]>([]);
   const [showDataSources, setShowDataSources] = useState(false);
 
   const handleAutoPopulate = async (formData: FormData) => {
@@ -114,19 +114,52 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       }
 
       if (details.sources) {
-        // Clean up the sources to ensure they have proper URLs
         const cleanedSources = details.sources.map(source => {
-          // Extract URL if it exists in the text
-          const urlMatch = source.match(/(https?:\/\/[^\s]+)/);
-          if (urlMatch) {
-            const url = urlMatch[0];
-            // Get the text without the URL, or use the domain name if no other text
-            const domain = new URL(url).hostname.replace('www.', '');
-            const text = source.replace(url, '').trim() || domain;
-            return `${url} ${text}`;
+          try {
+            const urlRegex = /(https?:\/\/[^\s]+)/;
+            const match = source.match(urlRegex);
+            
+            if (match) {
+              const url = match[0];
+              let displayText = source.replace(url, '').trim();
+              
+              if (!displayText) {
+                const domain = new URL(url).hostname.replace('www.', '');
+                displayText = domain;
+              }
+              
+              return {
+                url,
+                displayText
+              };
+            }
+            
+            const knownDomains = {
+              'Onyx Coffee Lab': 'https://onyxcoffeelab.com',
+              'Beanz': 'https://beanz.com',
+              'Crema': 'https://crema.co',
+              'Fellow Products': 'https://fellowproducts.com'
+            };
+            
+            for (const [domain, url] of Object.entries(knownDomains)) {
+              if (source.toLowerCase().includes(domain.toLowerCase())) {
+                return {
+                  url,
+                  displayText: source
+                };
+              }
+            }
+            
+            return {
+              displayText: source
+            };
+          } catch (e) {
+            return {
+              displayText: source
+            };
           }
-          return source;
         });
+        
         setDataSources(cleanedSources);
       }
 
@@ -241,30 +274,22 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </DialogHeader>
               <div className="space-y-2">
                 <ul className="list-disc pl-4 space-y-2">
-                  {dataSources.map((source, index) => {
-                    const urlMatch = source.match(/(https?:\/\/[^\s]+)/);
-                    if (urlMatch) {
-                      const url = urlMatch[0];
-                      const text = source.replace(url, '').trim();
-                      return (
-                        <li key={index} className="text-sm">
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-coffee hover:text-coffee-dark underline"
-                          >
-                            {text || url}
-                          </a>
-                        </li>
-                      );
-                    }
-                    return (
-                      <li key={index} className="text-sm">
-                        {source}
-                      </li>
-                    );
-                  })}
+                  {dataSources.map((source, index) => (
+                    <li key={index} className="text-sm">
+                      {source.url ? (
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-coffee hover:text-coffee-dark underline"
+                        >
+                          {source.displayText}
+                        </a>
+                      ) : (
+                        <span>{source.displayText}</span>
+                      )}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </DialogContent>
