@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getAIRecommendations } from "@/lib/aiRecommendations";
 import { fetchBeans } from "@/lib/api";
 import { Settings } from "@/components/Settings";
+import { Star } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +26,8 @@ const Recommendations = () => {
     roastLevel: "",
     notes: "",
     priceRange: "",
+    brewMethod: "",
+    minRating: 0,
   });
   const { toast } = useToast();
 
@@ -43,7 +46,7 @@ const Recommendations = () => {
       }
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
 
       try {
         const result = await getAIRecommendations(
@@ -71,7 +74,7 @@ const Recommendations = () => {
 
   const handleGetRecommendations = () => {
     if (recommendationType === "preferences" && 
-        (!preferences.roastLevel || !preferences.notes || !preferences.priceRange)) {
+        (!preferences.roastLevel || !preferences.notes || !preferences.priceRange || !preferences.brewMethod)) {
       toast({
         title: "Missing Information",
         description: "Please fill in all preference fields before getting recommendations.",
@@ -172,6 +175,50 @@ const Recommendations = () => {
                       <SelectItem value="dark">Dark</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-coffee-dark">Brew Method</Label>
+                  <Select
+                    value={preferences.brewMethod}
+                    onValueChange={(value) =>
+                      setPreferences({ ...preferences, brewMethod: value })
+                    }
+                  >
+                    <SelectTrigger className="bg-background border-coffee/20">
+                      <SelectValue placeholder="Select Brew Method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="espresso">Espresso</SelectItem>
+                      <SelectItem value="drip">Drip Coffee</SelectItem>
+                      <SelectItem value="pourover">Pour Over</SelectItem>
+                      <SelectItem value="french-press">French Press</SelectItem>
+                      <SelectItem value="aeropress">AeroPress</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-coffee-dark">Minimum Rating</Label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <Button
+                        key={rating}
+                        type="button"
+                        variant={preferences.minRating >= rating ? "default" : "outline"}
+                        className={`p-2 ${preferences.minRating >= rating ? "bg-yellow-400 hover:bg-yellow-500" : ""}`}
+                        onClick={() => setPreferences({ ...preferences, minRating: rating })}
+                      >
+                        <Star
+                          className={`w-4 h-4 ${
+                            preferences.minRating >= rating
+                              ? "fill-white text-white"
+                              : "text-gray-400"
+                          }`}
+                        />
+                      </Button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
