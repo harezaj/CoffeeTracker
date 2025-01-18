@@ -1,5 +1,6 @@
-import { Star } from "lucide-react";
+import { Trash2, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export interface CoffeeBean {
   id: string;
@@ -19,14 +20,33 @@ export interface CoffeeBean {
   grindSize: number;
 }
 
-export function CoffeeCard({ bean }: { bean: CoffeeBean }) {
+interface CoffeeCardProps {
+  bean: CoffeeBean;
+  onDelete?: (id: string) => void;
+}
+
+export function CoffeeCard({ bean, onDelete }: CoffeeCardProps) {
   return (
     <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
       <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
-        <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
-          {bean.name}
-        </CardTitle>
-        <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
+              {bean.name}
+            </CardTitle>
+            <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
+          </div>
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-red-600 -mt-1 -mr-2"
+              onClick={() => onDelete(bean.id)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-4">
         <div className="grid grid-cols-2 gap-4">

@@ -29,3 +29,16 @@ export const createBean = async (bean: Omit<CoffeeBean, "id">): Promise<CoffeeBe
     throw error;
   }
 };
+
+// Delete a bean from localStorage
+export const deleteBean = async (id: string): Promise<void> => {
+  try {
+    const beans = await fetchBeans();
+    const updatedBeans = beans.filter(bean => bean.id !== id);
+    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
+    console.log('Bean deleted, remaining beans:', updatedBeans);
+  } catch (error) {
+    console.error('Error deleting bean:', error);
+    throw error;
+  }
+};

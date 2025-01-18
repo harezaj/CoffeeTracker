@@ -5,7 +5,7 @@ import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchBeans, createBean } from "@/lib/api";
+import { fetchBeans, createBean, deleteBean } from "@/lib/api";
 
 const Index = () => {
   const { toast } = useToast();
@@ -37,22 +37,31 @@ const Index = () => {
     },
   });
 
+  const deleteBeanMutation = useMutation({
+    mutationFn: deleteBean,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee bean has been removed from your collection.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete coffee bean",
+        variant: "destructive",
+      });
+      console.error('Error deleting bean:', error);
+    },
+  });
+
   const handleAddBean = (newBean: Omit<CoffeeBean, "id">) => {
     createBeanMutation.mutate(newBean);
   };
 
-  const getRecommendations = () => {
-    if (beans.length === 0) return [];
-    
-    const highestRated = beans.reduce((max, bean) => 
-      bean.rank > max.rank ? bean : max
-    );
-
-    return beans.filter(bean => 
-      bean.id !== highestRated.id && 
-      (bean.roastLevel === highestRated.roastLevel || 
-       bean.origin === highestRated.origin)
-    ).slice(0, 3);
+  const handleDeleteBean = (id: string) => {
+    deleteBeanMutation.mutate(id);
   };
 
   if (isLoading) {
@@ -108,7 +117,11 @@ const Index = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {beans.map((bean) => (
-                  <CoffeeCard key={bean.id} bean={bean} />
+                  <CoffeeCard 
+                    key={bean.id} 
+                    bean={bean} 
+                    onDelete={handleDeleteBean}
+                  />
                 ))}
               </div>
             </section>
