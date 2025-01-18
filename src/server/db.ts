@@ -19,7 +19,7 @@ db.exec(`
     temperature INTEGER NOT NULL,
     price REAL NOT NULL,
     weight INTEGER NOT NULL,
-    orderAgain BOOLEAN NOT NULL,
+    orderAgain INTEGER NOT NULL,
     grindSize INTEGER NOT NULL
   )
 `);

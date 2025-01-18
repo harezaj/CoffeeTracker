@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import db from './db';
+import { CoffeeBean } from '../components/CoffeeCard';
 
 const app = express();
 app.use(cors());
@@ -8,17 +9,17 @@ app.use(express.json());
 
 // Get all coffee beans
 app.get('/api/coffee-beans', (req, res) => {
-  const beans = db.prepare('SELECT * FROM coffee_beans').all();
+  const beans = db.prepare('SELECT * FROM coffee_beans').all() as Omit<CoffeeBean, 'notes' | 'orderAgain'>[];
   res.json(beans.map(bean => ({
     ...bean,
-    notes: JSON.parse(bean.notes),
+    notes: JSON.parse(bean.notes as unknown as string),
     orderAgain: Boolean(bean.orderAgain)
   })));
 });
 
 // Add a new coffee bean
 app.post('/api/coffee-beans', (req, res) => {
-  const bean = req.body;
+  const bean = req.body as CoffeeBean;
   try {
     const stmt = db.prepare(`
       INSERT INTO coffee_beans (
@@ -50,7 +51,7 @@ app.post('/api/coffee-beans', (req, res) => {
     
     res.status(201).json(bean);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 });
 
