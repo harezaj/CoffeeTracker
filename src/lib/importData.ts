@@ -2,7 +2,7 @@ import { CoffeeBean } from "@/components/CoffeeCard";
 import { createBean } from "./api";
 
 const parsePrice = (price: string): number => {
-  return Number(price.replace('$', ''));
+  return Number(price);
 };
 
 const parseWeight = (oz: string): number => {
@@ -34,13 +34,18 @@ const parseGrindSize = (grind: string | null): number => {
   return Number(grind);
 };
 
+const parseNotes = (notes: string | null): string[] => {
+  if (!notes) return [];
+  return notes.split(',').map(note => note.trim());
+};
+
 export const importCoffeeBeans = async () => {
   const data = [
     {
       "Name": "Onyx Monarch",
       "Roast": "Dark",
-      "Notes": "Did 10.5. 30s got me 50g",
-      "Price": "$16.15",
+      "Notes": "Dark Chocolate, Molasses, Red Wine",
+      "Price": "16.15",
       "Oz": "10",
       "Grind Setting": "10",
       "Dose and time": "19g in, 47g out in 23-27s"
@@ -49,7 +54,7 @@ export const importCoffeeBeans = async () => {
       "Name": "Prodigal Milk Blend",
       "Roast": null,
       "Notes": null,
-      "Price": "$14.50",
+      "Price": "14.50",
       "Oz": "8.81849",
       "Grind Setting": null,
       "Dose and time": null
@@ -57,8 +62,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "B&W The Traditional",
       "Roast": "Dark",
-      "Notes": null,
-      "Price": "$15.20",
+      "Notes": "Dark Chocolate, Cherry, Marzipan",
+      "Price": "15.20",
       "Oz": "12",
       "Grind Setting": null,
       "Dose and time": null
@@ -66,8 +71,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "La Prima Cafe Studioso",
       "Roast": "Medium",
-      "Notes": null,
-      "Price": "$19.85",
+      "Notes": "Hazelnut, Marshmallow, Blackberry",
+      "Price": "19.85",
       "Oz": "16",
       "Grind Setting": "11",
       "Dose and time": null
@@ -75,8 +80,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "La Prima Bar",
       "Roast": "Medium Dark",
-      "Notes": null,
-      "Price": "$19.30",
+      "Notes": "Cinnamon, Brown Sugar, Bitter Chocolate",
+      "Price": "19.30",
       "Oz": "16",
       "Grind Setting": "12",
       "Dose and time": null
@@ -84,8 +89,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "La Prima Miscela Bar",
       "Roast": "Light",
-      "Notes": null,
-      "Price": "$18.50",
+      "Notes": "Tobacco, Sweet Cream, Peanuts",
+      "Price": "18.50",
       "Oz": "16",
       "Grind Setting": "12",
       "Dose and time": null
@@ -93,8 +98,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "B&W The Classic",
       "Roast": "Medium Dark",
-      "Notes": null,
-      "Price": "$36.00",
+      "Notes": "Caramel, Black Cherry, Milk Chocolate",
+      "Price": "36.00",
       "Oz": "32",
       "Grind Setting": null,
       "Dose and time": "Ratio 1:2 in 24s"
@@ -102,8 +107,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "Devocion Toro",
       "Roast": null,
-      "Notes": null,
-      "Price": "$18.00",
+      "Notes": "Cacao, Vanilla, Cherry, Almond",
+      "Price": "18.00",
       "Oz": "12",
       "Grind Setting": "12",
       "Dose and time": "12"
@@ -111,8 +116,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "Olympia Morning Sun",
       "Roast": "Medium Dark",
-      "Notes": null,
-      "Price": "$14.40",
+      "Notes": "Dark Chocolate, Hazelnut, Vanilla",
+      "Price": "14.40",
       "Oz": "12",
       "Grind Setting": "11",
       "Dose and time": "22g in, 56g out in 25-30s"
@@ -120,8 +125,8 @@ export const importCoffeeBeans = async () => {
     {
       "Name": "Onyx Tropical Weather",
       "Roast": "Light",
-      "Notes": "19g in , 46 out in 28s",
-      "Price": "$18.70",
+      "Notes": null,
+      "Price": "18.70",
       "Oz": "10",
       "Grind Setting": "10",
       "Dose and time": "18g in, 50g out in 25s - might need to go half coarser"
@@ -140,7 +145,8 @@ export const importCoffeeBeans = async () => {
       roaster: item.Name.split(" ")[0], // Extract roaster from name
       origin: "Not specified",
       roastLevel: parseRoastLevel(item.Roast),
-      notes: item.Notes ? [item.Notes] : [],
+      notes: parseNotes(item.Notes),
+      generalNotes: item["Dose and time"] || "",
       rank: 3, // Default rank
       gramsIn,
       mlOut,
