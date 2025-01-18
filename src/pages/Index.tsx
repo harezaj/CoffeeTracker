@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
 import type { CoffeeBean } from "@/components/CoffeeCard";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +76,7 @@ export default function Index() {
           </div>
         </Link>
         <div className="flex gap-4">
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
