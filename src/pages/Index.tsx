@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, deleteBean, updateBean } from "@/lib/api";
 import { populateJournal } from "@/lib/sampleData";
+import { importCoffeeBeans } from "@/lib/importData";
 
 const Index = () => {
   const { toast } = useToast();
@@ -32,6 +33,26 @@ const Index = () => {
       toast({
         title: "Error",
         description: "Failed to add sample coffee beans",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPopulating(false);
+    }
+  };
+
+  const handleImportData = async () => {
+    setIsPopulating(true);
+    try {
+      await importCoffeeBeans();
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee beans have been imported to your journal.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to import coffee beans",
         variant: "destructive",
       });
     } finally {
@@ -160,13 +181,22 @@ const Index = () => {
               <Button variant="outline">Get AI Recommendations</Button>
             </Link>
             {beans.length === 0 && (
-              <Button 
-                variant="outline" 
-                onClick={handlePopulateJournal}
-                disabled={isPopulating}
-              >
-                {isPopulating ? "Adding Samples..." : "Add Sample Beans"}
-              </Button>
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={handlePopulateJournal}
+                  disabled={isPopulating}
+                >
+                  {isPopulating ? "Adding Samples..." : "Add Sample Beans"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleImportData}
+                  disabled={isPopulating}
+                >
+                  Import Your Beans
+                </Button>
+              </>
             )}
             <AddCoffeeForm onAdd={handleAddBean} />
           </div>
