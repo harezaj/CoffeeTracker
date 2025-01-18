@@ -51,33 +51,33 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-coffee hover:bg-coffee-dark">
+        <Button className="bg-coffee hover:bg-coffee-dark transition-all duration-300 shadow-lg hover:shadow-xl">
           <Plus className="mr-2 h-4 w-4" /> Add Coffee Bean
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-cream">
+      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-cream-light to-white border-cream">
         <DialogHeader>
-          <DialogTitle>Add New Coffee Bean</DialogTitle>
+          <DialogTitle className="text-coffee-dark text-2xl">Add New Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" required className="bg-white" />
+            <Label htmlFor="name" className="text-coffee-dark">Name</Label>
+            <Input id="name" name="name" required className="bg-white border-cream focus:border-coffee" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="roaster">Roaster</Label>
-            <Input id="roaster" name="roaster" required className="bg-white" />
+            <Label htmlFor="roaster" className="text-coffee-dark">Roaster</Label>
+            <Input id="roaster" name="roaster" required className="bg-white border-cream focus:border-coffee" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="origin">Origin</Label>
-            <Input id="origin" name="origin" required className="bg-white" />
+            <Label htmlFor="origin" className="text-coffee-dark">Origin</Label>
+            <Input id="origin" name="origin" required className="bg-white border-cream focus:border-coffee" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="roastLevel">Roast Level</Label>
+            <Label htmlFor="roastLevel" className="text-coffee-dark">Roast Level</Label>
             <select
               id="roastLevel"
               name="roastLevel"
-              className="w-full rounded-md border border-input bg-white px-3 py-2"
+              className="w-full rounded-md border border-cream bg-white px-3 py-2 focus:border-coffee outline-none"
               required
             >
               <option value="Light">Light</option>
@@ -88,14 +88,14 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             </select>
           </div>
           <div className="space-y-2">
-            <Label>Rating</Label>
+            <Label className="text-coffee-dark">Rating</Label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((value) => (
                 <Button
                   key={value}
                   type="button"
                   variant={rating >= value ? "default" : "outline"}
-                  className={rating >= value ? "bg-coffee hover:bg-coffee-dark" : ""}
+                  className={rating >= value ? "bg-coffee hover:bg-coffee-dark border-coffee" : "border-cream hover:border-coffee"}
                   onClick={() => setRating(value)}
                 >
                   {value}
@@ -104,13 +104,13 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Tasting Notes</Label>
+            <Label className="text-coffee-dark">Tasting Notes</Label>
             <div className="flex gap-2">
               <Input
                 value={tastingNote}
                 onChange={(e) => setTastingNote(e.target.value)}
                 placeholder="Add tasting note"
-                className="bg-white"
+                className="bg-white border-cream focus:border-coffee"
               />
               <Button
                 type="button"
@@ -124,13 +124,13 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               {tastingNotes.map((note) => (
                 <span
                   key={note}
-                  className="px-2 py-1 rounded-full bg-coffee/10 text-coffee text-sm flex items-center gap-1"
+                  className="px-3 py-1 rounded-full bg-cream text-coffee text-sm font-medium group flex items-center gap-2"
                 >
                   {note}
                   <button
                     type="button"
                     onClick={() => setTastingNotes(tastingNotes.filter((n) => n !== note))}
-                    className="text-coffee hover:text-coffee-dark"
+                    className="text-coffee/50 hover:text-coffee-dark transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -138,7 +138,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               ))}
             </div>
           </div>
-          <Button type="submit" className="w-full bg-coffee hover:bg-coffee-dark">
+          <Button type="submit" className="w-full bg-coffee hover:bg-coffee-dark transition-all duration-300">
             Add Coffee Bean
           </Button>
         </form>

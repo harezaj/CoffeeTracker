@@ -34,24 +34,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream-light">
-      <div className="container py-8 space-y-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl font-bold text-coffee-dark">Coffee Bean Journal</h1>
+    <div className="min-h-screen bg-gradient-to-br from-cream-light to-white">
+      <div className="container py-12 space-y-12">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-coffee-dark to-coffee bg-clip-text text-transparent">
+            Coffee Bean Journal
+          </h1>
           <AddCoffeeForm onAdd={addBean} />
         </div>
 
         {beans.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-coffee text-lg">
+          <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-cream">
+            <p className="text-coffee text-xl">
               No coffee beans added yet. Start by adding your first coffee bean!
             </p>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-12">
             <section>
-              <h2 className="text-2xl font-semibold text-coffee-dark mb-4">Your Collection</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <h2 className="text-3xl font-semibold text-coffee-dark mb-6 inline-block">
+                Your Collection
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {beans.map((bean) => (
                   <CoffeeCard key={bean.id} bean={bean} />
                 ))}
@@ -60,10 +64,10 @@ const Index = () => {
 
             {getRecommendations().length > 0 && (
               <section>
-                <h2 className="text-2xl font-semibold text-coffee-dark mb-4">
+                <h2 className="text-3xl font-semibold text-coffee-dark mb-6 inline-block">
                   Recommended Based on Your Taste
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {getRecommendations().map((bean) => (
                     <CoffeeCard key={bean.id} bean={bean} />
                   ))}
