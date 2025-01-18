@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CollectionTab } from "@/components/WishlistTab";
+import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
 import { Settings } from "@/components/Settings";
 import { Link } from "react-router-dom";
