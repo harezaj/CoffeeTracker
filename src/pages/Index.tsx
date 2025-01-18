@@ -4,22 +4,39 @@ import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
 import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchBeans, createBean } from "@/lib/api";
 
 const Index = () => {
   const { toast } = useToast();
-  const [beans, setBeans] = useState<CoffeeBean[]>([]);
+  const queryClient = useQueryClient();
+
+  const { data: beans = [], isLoading, error } = useQuery({
+    queryKey: ['beans'],
+    queryFn: fetchBeans,
+  });
+
+  const createBeanMutation = useMutation({
+    mutationFn: createBean,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee bean added successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to add coffee bean",
+        variant: "destructive",
+      });
+      console.error('Error creating bean:', error);
+    },
+  });
 
   const handleAddBean = (newBean: Omit<CoffeeBean, "id">) => {
-    const beanWithId = {
-      ...newBean,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    
-    setBeans(prev => [...prev, beanWithId]);
-    toast({
-      title: "Coffee Bean Added",
-      description: `${beanWithId.name} has been added to your collection.`,
-    });
+    createBeanMutation.mutate(newBean);
   };
 
   const getRecommendations = () => {
@@ -35,6 +52,22 @@ const Index = () => {
        bean.origin === highestRated.origin)
     ).slice(0, 3);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-gray-600 text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+        <div className="text-red-600 text-xl">Error loading coffee beans</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
