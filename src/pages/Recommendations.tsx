@@ -202,7 +202,7 @@ const Recommendations = () => {
             {recommendations?.length ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {recommendations.map((bean) => (
-                  <CoffeeCard key={bean.id} bean={bean} />
+                  <CoffeeCard key={bean.id} bean={bean} isRecommendation={true} />
                 ))}
               </div>
             ) : (

@@ -1,7 +1,8 @@
-import { Trash2, Star } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UpdateCoffeeForm } from "./UpdateCoffeeForm";
+import { Trash2, Star } from "lucide-react";
 
 export interface CoffeeBean {
   id: string;
@@ -25,9 +26,63 @@ interface CoffeeCardProps {
   bean: CoffeeBean;
   onDelete?: (id: string) => void;
   onUpdate?: (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => void;
+  isRecommendation?: boolean;
 }
 
-export function CoffeeCard({ bean, onDelete, onUpdate }: CoffeeCardProps) {
+export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false }: CoffeeCardProps) {
+  if (isRecommendation) {
+    return (
+      <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
+        <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
+                {bean.name}
+              </CardTitle>
+              <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-blue-600"
+              asChild
+            >
+              <a
+                href={`https://www.google.com/search?q=${encodeURIComponent(
+                  `${bean.roaster} ${bean.name} coffee`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-semibold text-gray-900">${bean.price}</span>
+            <span className="text-gray-600">{(bean.weight / 28.35).toFixed(1)} oz</span>
+          </div>
+          
+          <div>
+            <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
+            <div className="flex flex-wrap gap-2">
+              {bean.notes.map((note) => (
+                <span
+                  key={note}
+                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  {note}
+                </span>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
       <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
