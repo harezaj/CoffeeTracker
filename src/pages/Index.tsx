@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
@@ -8,6 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Coffee, Sparkles, Download } from "lucide-react";
 import { Settings } from "@/components/Settings";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Index() {
   const { toast } = useToast();
@@ -15,39 +25,21 @@ export default function Index() {
     const saved = localStorage.getItem('coffeeBeans');
     return saved ? JSON.parse(saved) : [];
   });
+  const [showExportReminder, setShowExportReminder] = useState(false);
 
-  const handleAddBean = (bean: Omit<CoffeeBean, "id">) => {
-    const newBean = { ...bean, id: Math.random().toString(36).substr(2, 9) };
-    const updatedBeans = [...beans, newBean];
-    setBeans(updatedBeans);
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    toast({
-      title: "Success",
-      description: `${bean.name} has been added to your collection.`,
-    });
-  };
+  useEffect(() => {
+    const checkLastReminder = () => {
+      const lastReminder = localStorage.getItem('lastExportReminder');
+      const today = new Date().toDateString();
+      
+      if (!lastReminder || lastReminder !== today) {
+        setShowExportReminder(true);
+        localStorage.setItem('lastExportReminder', today);
+      }
+    };
 
-  const handleDeleteBean = (id: string) => {
-    const updatedBeans = beans.filter(bean => bean.id !== id);
-    setBeans(updatedBeans);
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    toast({
-      title: "Success",
-      description: "Coffee bean has been removed from your collection.",
-    });
-  };
-
-  const handleUpdateBean = (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
-    const updatedBeans = beans.map(bean => 
-      bean.id === id ? { ...bean, ...updates } : bean
-    );
-    setBeans(updatedBeans);
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    toast({
-      title: "Success",
-      description: "Coffee bean has been updated.",
-    });
-  };
+    checkLastReminder();
+  }, []);
 
   const handleExport = () => {
     try {
@@ -66,6 +58,7 @@ export default function Index() {
         title: "Success",
         description: "Your coffee journal has been exported successfully.",
       });
+      setShowExportReminder(false);
     } catch (error) {
       toast({
         title: "Error",
@@ -77,6 +70,21 @@ export default function Index() {
 
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen bg-cream-light/50 backdrop-blur-sm">
+      <AlertDialog open={showExportReminder} onOpenChange={setShowExportReminder}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Daily Backup Reminder</AlertDialogTitle>
+            <AlertDialogDescription>
+              It's time for your daily coffee journal backup! Would you like to export your journal now?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Remind Me Later</AlertDialogCancel>
+            <AlertDialogAction onClick={handleExport}>Export Now</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="flex justify-between items-center mb-8">
         <Link to="/" className="group flex items-center gap-4">
           <div className="relative">
