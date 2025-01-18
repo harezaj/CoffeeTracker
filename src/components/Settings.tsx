@@ -53,9 +53,26 @@ export function Settings() {
   const handleExport = () => {
     try {
       const savedBeans = localStorage.getItem('coffeeBeans');
+      const costSettings = localStorage.getItem('costSettings');
       const beans = savedBeans ? JSON.parse(savedBeans) : [];
       
-      const jsonData = JSON.stringify(beans, null, 2);
+      // Add cost settings to each bean for export
+      const beansWithCosts = beans.map(bean => {
+        const costs = calculateCosts(bean);
+        return {
+          ...bean,
+          costAnalysis: {
+            costPerGram: costs.costPerGram,
+            costPerShot: costs.costPerShot,
+            shotsPerBag: costs.shotsPerBag,
+            costPerOz: costs.costPerOz,
+            costPerLatte: costs.costPerLatte,
+            costSettings: costSettings ? JSON.parse(costSettings) : null
+          }
+        };
+      });
+      
+      const jsonData = JSON.stringify(beansWithCosts, null, 2);
       const blob = new Blob([jsonData], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
