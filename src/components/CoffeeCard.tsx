@@ -2,7 +2,13 @@ import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UpdateCoffeeForm } from "./UpdateCoffeeForm";
-import { Trash2, Star, DollarSign } from "lucide-react";
+import { Trash2, Star, DollarSign, Coffee, Timer } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export interface CoffeeBean {
   id: string;
@@ -124,132 +130,152 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Origin</span>
-              <span className="text-gray-600">{bean.origin}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Roast</span>
-              <span className="text-gray-600">{bean.roastLevel}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Rank</span>
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 transition-colors ${
-                      i < bean.rank
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Price</span>
-              <span className="text-gray-600">${bean.price}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Weight</span>
-              <span className="text-gray-600">{bean.weight}g</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-700 font-medium">Order Again</span>
-              <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
-                bean.orderAgain 
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}>
-                {bean.orderAgain ? "Yes" : "No"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-100 pt-4">
-          <h4 className="text-gray-700 font-medium mb-2 flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
-            Cost Analysis
-          </h4>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Cost per Shot</span>
-                <span className="font-medium">${costs.costPerShot}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Cost per Gram</span>
-                <span className="font-medium">${costs.costPerGram}</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Shots per Bag</span>
-                <span className="font-medium">{costs.shotsPerBag}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Cost per oz</span>
-                <span className="font-medium">${costs.costPerOz}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="border-t border-gray-100 pt-4">
-          <h4 className="text-gray-700 font-medium mb-2">Brew Details</h4>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Grind Size</span>
-                <span className="font-medium">{bean.grindSize}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Dose</span>
-                <span className="font-medium">{bean.gramsIn}g</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Yield</span>
-                <span className="font-medium">{bean.mlOut}ml</span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Time</span>
-                <span className="font-medium">{bean.brewTime}s</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Temperature</span>
-                <span className="font-medium">{bean.temperature}°C</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-100 pt-4">
-          <h4 className="text-gray-700 font-medium mb-2">Notes</h4>
-          <p className="text-gray-600 whitespace-pre-wrap">{bean.generalNotes}</p>
-        </div>
-
-        <div className="border-t border-gray-100 pt-4">
-          <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
-          <div className="flex flex-wrap gap-2">
-            {bean.notes.map((note) => (
-              <span
-                key={note}
-                className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-              >
-                {note}
-              </span>
+      <CardContent className="pt-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-4 h-4 transition-colors ${
+                  i < bean.rank
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                }`}
+              />
             ))}
           </div>
+          <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
+            bean.orderAgain 
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}>
+            {bean.orderAgain ? "Will Order Again" : "Won't Order Again"}
+          </span>
         </div>
+
+        <Accordion type="single" collapsible className="space-y-4">
+          <AccordionItem value="bean-details" className="border-none">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Coffee className="h-4 w-4" />
+                <span className="font-medium">Bean Details</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 px-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Origin</span>
+                    <span className="text-gray-600">{bean.origin}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Roast</span>
+                    <span className="text-gray-600">{bean.roastLevel}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Price</span>
+                    <span className="text-gray-600">${bean.price}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-700 font-medium">Weight</span>
+                    <span className="text-gray-600">{bean.weight}g</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
+                <div className="flex flex-wrap gap-2">
+                  {bean.notes.map((note) => (
+                    <span
+                      key={note}
+                      className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                    >
+                      {note}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {bean.generalNotes && (
+                <div className="mt-4">
+                  <h4 className="text-gray-700 font-medium mb-2">Notes</h4>
+                  <p className="text-gray-600 whitespace-pre-wrap">{bean.generalNotes}</p>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="brew-details" className="border-none">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Timer className="h-4 w-4" />
+                <span className="font-medium">Brew Details</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 px-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Grind Size</span>
+                    <span className="font-medium">{bean.grindSize}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Dose</span>
+                    <span className="font-medium">{bean.gramsIn}g</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Yield</span>
+                    <span className="font-medium">{bean.mlOut}ml</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Time</span>
+                    <span className="font-medium">{bean.brewTime}s</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Temperature</span>
+                    <span className="font-medium">{bean.temperature}°C</span>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="cost-analysis" className="border-none">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                <span className="font-medium">Cost Analysis</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 px-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Cost per Shot</span>
+                    <span className="font-medium">${costs.costPerShot}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Cost per Gram</span>
+                    <span className="font-medium">${costs.costPerGram}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Shots per Bag</span>
+                    <span className="font-medium">{costs.shotsPerBag}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Cost per oz</span>
+                    <span className="font-medium">${costs.costPerOz}</span>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </CardContent>
     </Card>
   );
