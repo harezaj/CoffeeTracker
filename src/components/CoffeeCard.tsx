@@ -38,13 +38,13 @@ export function CoffeeCard({ bean, onDelete, onUpdate }: CoffeeCardProps) {
             </CardTitle>
             <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             {onUpdate && <UpdateCoffeeForm bean={bean} onUpdate={onUpdate} />}
             {onDelete && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-400 hover:text-red-600 -mt-1 -mr-2"
+                className="text-gray-400 hover:text-red-600"
                 onClick={() => onDelete(bean.id)}
               >
                 <Trash2 className="h-4 w-4" />
