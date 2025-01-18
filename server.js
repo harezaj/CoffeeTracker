@@ -1,4 +1,7 @@
-require('esbuild').buildSync({
+import * as esbuild from 'esbuild';
+import { createRequire } from 'module';
+
+esbuild.buildSync({
   entryPoints: ['src/server/index.ts'],
   bundle: true,
   platform: 'node',
@@ -6,4 +9,5 @@ require('esbuild').buildSync({
   outfile: 'dist/server.js',
 });
 
+const require = createRequire(import.meta.url);
 require('./dist/server.js');
