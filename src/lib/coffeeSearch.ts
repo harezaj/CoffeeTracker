@@ -1,20 +1,30 @@
 export const searchCoffeeDetails = async (roaster: string, beanName: string, apiKey: string) => {
   const prompt = `As a coffee expert, provide detailed information about the "${beanName}" coffee bean from "${roaster}" roaster.
   Format your response as a JSON object with these properties:
+  - origin (string, the country or region of origin)
   - roastLevel (string: "Light", "Medium-Light", "Medium", "Medium-Dark", or "Dark")
   - notes (array of strings representing flavor notes)
   - recommendedDose (number in grams)
   - recommendedYield (number in ml)
   - recommendedBrewTime (number in seconds)
+  - price (number in USD)
+  - weight (number in grams, typical package size)
+  - temperature (number in Celsius)
+  - grindSize (number between 1-30)
   
   Only include properties if you are confident about the information.
   Example format:
   {
+    "origin": "Ethiopia",
     "roastLevel": "Medium",
     "notes": ["Chocolate", "Caramel", "Nuts"],
     "recommendedDose": 18,
     "recommendedYield": 36,
-    "recommendedBrewTime": 28
+    "recommendedBrewTime": 28,
+    "price": 19.99,
+    "weight": 340,
+    "temperature": 93,
+    "grindSize": 15
   }`;
 
   try {

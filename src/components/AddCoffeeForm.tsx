@@ -58,6 +58,11 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       const details = await searchCoffeeDetails(roaster, name, apiKey);
       
       // Update form with fetched details
+      if (details.origin) {
+        const originInput = document.querySelector('input[name="origin"]') as HTMLInputElement;
+        if (originInput) originInput.value = details.origin;
+      }
+      
       if (details.roastLevel) {
         const roastLevelSelect = document.querySelector('select[name="roastLevel"]') as HTMLSelectElement;
         if (roastLevelSelect) roastLevelSelect.value = details.roastLevel;
@@ -80,6 +85,26 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       if (details.recommendedBrewTime) {
         const brewTimeInput = document.querySelector('input[name="brewTime"]') as HTMLInputElement;
         if (brewTimeInput) brewTimeInput.value = details.recommendedBrewTime.toString();
+      }
+
+      if (details.price) {
+        const priceInput = document.querySelector('input[name="price"]') as HTMLInputElement;
+        if (priceInput) priceInput.value = details.price.toString();
+      }
+
+      if (details.weight) {
+        const weightInput = document.querySelector('input[name="weight"]') as HTMLInputElement;
+        if (weightInput) weightInput.value = details.weight.toString();
+      }
+
+      if (details.temperature) {
+        const temperatureInput = document.querySelector('input[name="temperature"]') as HTMLInputElement;
+        if (temperatureInput) temperatureInput.value = details.temperature.toString();
+      }
+
+      if (details.grindSize) {
+        const grindSizeInput = document.querySelector('input[name="grindSize"]') as HTMLInputElement;
+        if (grindSizeInput) grindSizeInput.value = details.grindSize.toString();
       }
 
       toast({
