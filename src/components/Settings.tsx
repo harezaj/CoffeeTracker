@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { TestTube2, Upload } from "lucide-react";
+import { TestTube2, Upload, Mail } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -42,6 +42,11 @@ export function Settings() {
       syrupPerLatte: 30,
     };
   });
+  
+  const [zapierWebhook, setZapierWebhook] = useState(() => 
+    localStorage.getItem('zapier-webhook-url') || ''
+  );
+  const [isTestingWebhook, setIsTestingWebhook] = useState(false);
 
   const convertToMl = (value: number, fromUnit: string) => {
     return fromUnit === 'oz' ? value * 29.5735 : value;
@@ -188,6 +193,59 @@ export function Settings() {
     }
   };
 
+  const handleWebhookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newWebhook = e.target.value;
+    setZapierWebhook(newWebhook);
+    localStorage.setItem('zapier-webhook-url', newWebhook);
+    toast({
+      title: "Webhook URL Updated",
+      description: "Your Zapier webhook URL has been saved.",
+    });
+  };
+
+  const testWebhook = async () => {
+    if (!zapierWebhook) {
+      toast({
+        title: "Error",
+        description: "Please enter a Zapier webhook URL first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsTestingWebhook(true);
+    try {
+      const beans = localStorage.getItem('coffeeBeans');
+      
+      const response = await fetch(zapierWebhook, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors",
+        body: JSON.stringify({
+          timestamp: new Date().toISOString(),
+          triggered_from: window.location.origin,
+          coffee_data: beans,
+        }),
+      });
+
+      toast({
+        title: "Request Sent",
+        description: "Test data was sent to Zapier. Please check your Zap's history to confirm it was triggered.",
+      });
+    } catch (error) {
+      console.error("Error triggering webhook:", error);
+      toast({
+        title: "Error",
+        description: "Failed to trigger the Zapier webhook. Please check the URL and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingWebhook(false);
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -227,6 +285,38 @@ export function Settings() {
             <p className="mt-2 text-sm text-gray-500">
               This API key will be used for auto-populating coffee details throughout the application.
             </p>
+          </div>
+
+          <div className="space-y-4">
+            <Label>Daily Backup Settings</Label>
+            <div className="space-y-2">
+              <Label htmlFor="zapier-webhook">
+                Zapier Webhook URL
+              </Label>
+              <div className="mt-2 flex gap-2">
+                <Input
+                  id="zapier-webhook"
+                  type="url"
+                  value={zapierWebhook}
+                  onChange={handleWebhookChange}
+                  placeholder="Enter your Zapier webhook URL"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={testWebhook}
+                  disabled={isTestingWebhook}
+                  className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                >
+                  <Mail className="h-4 w-4" />
+                  {isTestingWebhook ? "Testing..." : "Test"}
+                </Button>
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                Create a Zap in Zapier that triggers on webhook and sends an email with the data. The webhook will be called daily to backup your coffee journal.
+              </p>
+            </div>
           </div>
 
           <div className="space-y-4">
