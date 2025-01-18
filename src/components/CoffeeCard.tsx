@@ -2,7 +2,7 @@ import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UpdateCoffeeForm } from "./UpdateCoffeeForm";
-import { Trash2, Star } from "lucide-react";
+import { Trash2, Star, DollarSign } from "lucide-react";
 
 export interface CoffeeBean {
   id: string;
@@ -11,7 +11,7 @@ export interface CoffeeBean {
   origin: string;
   roastLevel: string;
   notes: string[];
-  generalNotes?: string;  // Added this field
+  generalNotes?: string;
   rank: number;
   gramsIn: number;
   mlOut: number;
@@ -30,7 +30,22 @@ interface CoffeeCardProps {
   isRecommendation?: boolean;
 }
 
+const calculateCosts = (bean: CoffeeBean) => {
+  const costPerGram = bean.price / bean.weight;
+  const costPerShot = costPerGram * bean.gramsIn;
+  const shotsPerBag = Math.floor(bean.weight / bean.gramsIn);
+  
+  return {
+    costPerGram: costPerGram.toFixed(2),
+    costPerShot: costPerShot.toFixed(2),
+    shotsPerBag,
+    costPerOz: ((bean.price / (bean.weight / 28.35))).toFixed(2)
+  };
+};
+
 export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false }: CoffeeCardProps) {
+  const costs = calculateCosts(bean);
+
   if (isRecommendation) {
     return (
       <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
@@ -154,6 +169,35 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               }`}>
                 {bean.orderAgain ? "Yes" : "No"}
               </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 pt-4">
+          <h4 className="text-gray-700 font-medium mb-2 flex items-center gap-2">
+            <DollarSign className="h-4 w-4" />
+            Cost Analysis
+          </h4>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Cost per Shot</span>
+                <span className="font-medium">${costs.costPerShot}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Cost per Gram</span>
+                <span className="font-medium">${costs.costPerGram}</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Shots per Bag</span>
+                <span className="font-medium">{costs.shotsPerBag}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Cost per oz</span>
+                <span className="font-medium">${costs.costPerOz}</span>
+              </div>
             </div>
           </div>
         </div>
