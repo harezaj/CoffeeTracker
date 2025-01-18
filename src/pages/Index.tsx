@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Coffee, Sparkles, Download, Upload } from "lucide-react";
+import { Coffee, Sparkles, Download } from "lucide-react";
 import { Settings } from "@/components/Settings";
 
 export default function Index() {
@@ -47,47 +47,6 @@ export default function Index() {
       title: "Success",
       description: "Coffee bean has been updated.",
     });
-  };
-
-  const handleImport = async () => {
-    try {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      
-      input.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const jsonData = JSON.parse(e.target?.result as string);
-            setBeans(jsonData);
-            localStorage.setItem('coffeeBeans', JSON.stringify(jsonData));
-            toast({
-              title: "Success",
-              description: "Coffee beans have been imported successfully.",
-            });
-          } catch (error) {
-            toast({
-              title: "Error",
-              description: "Failed to parse JSON file.",
-              variant: "destructive",
-            });
-          }
-        };
-        reader.readAsText(file);
-      };
-
-      input.click();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to import coffee beans.",
-        variant: "destructive",
-      });
-    }
   };
 
   const handleExport = () => {
@@ -133,35 +92,15 @@ export default function Index() {
           </div>
         </Link>
         <div className="flex gap-2">
-          {beans.length === 0 && (
+          {beans.length > 0 && (
             <Button
               variant="outline"
               className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-              onClick={handleImport}
+              onClick={handleExport}
             >
-              <Upload className="h-4 w-4" />
-              Import Data
+              <Download className="h-4 w-4" />
+              Export Journal
             </Button>
-          )}
-          {beans.length > 0 && (
-            <>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-                onClick={handleImport}
-              >
-                <Upload className="h-4 w-4" />
-                Import
-              </Button>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-                onClick={handleExport}
-              >
-                <Download className="h-4 w-4" />
-                Export Journal
-              </Button>
-            </>
           )}
           <Link to="/recommendations">
             <Button 

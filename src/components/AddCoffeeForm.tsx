@@ -206,8 +206,8 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                 </Button>
               </div>
               {dataSources.length > 0 && (
-                <Popover>
-                  <PopoverTrigger asChild>
+                <Dialog>
+                  <DialogTrigger asChild>
                     <Button
                       variant="outline"
                       size="sm"
@@ -216,22 +216,21 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                       <Info className="h-3 w-3" />
                       View Data Sources
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Data Sources</DialogTitle>
+                    </DialogHeader>
                     <div className="space-y-2">
-                      <h4 className="font-medium">Data Sources:</h4>
-                      <ul className="list-disc pl-4 space-y-1">
+                      <ul className="list-disc pl-4 space-y-2">
                         {dataSources.map((source, index) => (
-                          <li key={index} className="text-sm">
+                          <li key={index} className="text-sm break-all">
                             {source.startsWith('http') ? (
                               <a 
-                                href={source} 
-                                target="_blank" 
+                                href={source}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-coffee hover:text-coffee-dark underline"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                }}
                               >
                                 {source}
                               </a>
@@ -242,8 +241,8 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                         ))}
                       </ul>
                     </div>
-                  </PopoverContent>
-                </Popover>
+                  </DialogContent>
+                </Dialog>
               )}
             </div>
           </div>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { TestTube2 } from "lucide-react";
+import { TestTube2, Upload } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -25,6 +25,46 @@ export function Settings() {
       title: "API Key Updated",
       description: "Your Perplexity API key has been saved.",
     });
+  };
+
+  const handleImport = async () => {
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const jsonData = JSON.parse(e.target?.result as string);
+            localStorage.setItem('coffeeBeans', JSON.stringify(jsonData));
+            toast({
+              title: "Success",
+              description: "Coffee beans have been imported successfully. Please refresh the page to see the changes.",
+            });
+          } catch (error) {
+            toast({
+              title: "Error",
+              description: "Failed to parse JSON file.",
+              variant: "destructive",
+            });
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      input.click();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to import coffee beans.",
+        variant: "destructive",
+      });
+    }
   };
 
   const testApiConnection = async () => {
@@ -92,33 +132,49 @@ export function Settings() {
         <SheetHeader>
           <SheetTitle>Settings</SheetTitle>
         </SheetHeader>
-        <div className="mt-6">
-          <Label htmlFor="perplexity-api-key">
-            Perplexity API Key
-          </Label>
-          <div className="mt-2 flex gap-2">
-            <Input
-              id="perplexity-api-key"
-              type="password"
-              value={apiKey}
-              onChange={handleApiKeyChange}
-              placeholder="Enter your Perplexity API key"
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="default"
-              onClick={testApiConnection}
-              disabled={isTestingApi}
-              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-            >
-              <TestTube2 className="h-4 w-4" />
-              {isTestingApi ? "Testing..." : "Test"}
-            </Button>
+        <div className="mt-6 space-y-6">
+          <div>
+            <Label htmlFor="perplexity-api-key">
+              Perplexity API Key
+            </Label>
+            <div className="mt-2 flex gap-2">
+              <Input
+                id="perplexity-api-key"
+                type="password"
+                value={apiKey}
+                onChange={handleApiKeyChange}
+                placeholder="Enter your Perplexity API key"
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="default"
+                onClick={testApiConnection}
+                disabled={isTestingApi}
+                className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+              >
+                <TestTube2 className="h-4 w-4" />
+                {isTestingApi ? "Testing..." : "Test"}
+              </Button>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">
+              This API key will be used for auto-populating coffee details throughout the application.
+            </p>
           </div>
-          <p className="mt-2 text-sm text-gray-500">
-            This API key will be used for auto-populating coffee details throughout the application.
-          </p>
+
+          <div>
+            <Label>Data Management</Label>
+            <div className="mt-2">
+              <Button
+                variant="outline"
+                className="w-full flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                onClick={handleImport}
+              >
+                <Upload className="h-4 w-4" />
+                Import Data
+              </Button>
+            </div>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
