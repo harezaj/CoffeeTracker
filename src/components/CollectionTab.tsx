@@ -79,7 +79,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-semibold text-gray-900">
+        <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
           Your Collection
         </h2>
         <div className="flex gap-4">
@@ -88,11 +88,11 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
             placeholder="Search beans..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[200px]"
+            className="w-[200px] dark:bg-[#222222] dark:border-gray-800"
           />
           <div className="flex gap-2">
             <Select value={selectedRoaster} onValueChange={setSelectedRoaster}>
-              <SelectTrigger className="w-[180px] bg-white">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-[#222222] dark:border-gray-800">
                 <SelectValue placeholder="Filter by roaster" />
               </SelectTrigger>
               <SelectContent>
@@ -105,7 +105,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
             </Select>
 
             <Select value={selectedRank} onValueChange={setSelectedRank}>
-              <SelectTrigger className="w-[180px] bg-white">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-[#222222] dark:border-gray-800">
                 <SelectValue placeholder="Filter by ranking" />
               </SelectTrigger>
               <SelectContent>
