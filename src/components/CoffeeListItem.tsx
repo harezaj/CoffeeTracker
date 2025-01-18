@@ -20,6 +20,11 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
               {bean.name}
             </h3>
             <p className="text-sm text-coffee">by {bean.roaster}</p>
+            {bean.tasting_notes && (
+              <p className="text-sm text-coffee-light mt-1 italic">
+                {bean.tasting_notes}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -38,7 +43,7 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
           ))}
         </div>
         <div className="text-sm text-coffee">
-          {bean.roastLevel}
+          {bean.roast_level}
         </div>
         <ChevronRight className="w-4 h-4 text-coffee group-hover:text-coffee-dark" />
       </div>
