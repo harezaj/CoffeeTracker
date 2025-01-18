@@ -6,13 +6,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Settings as SettingsIcon, Download } from "lucide-react";
+import { Settings as SettingsIcon, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { calculateCosts } from "@/lib/costCalculations";
+import { importCoffeeData } from "@/lib/importData";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -20,6 +21,7 @@ import {
 
 export function Settings() {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [apiKey, setApiKey] = useState("");
   const [isTestingApi, setIsTestingApi] = useState(false);
   const [volumeUnits, setVolumeUnits] = useState({
@@ -93,6 +95,35 @@ export function Settings() {
       toast({
         title: "Error",
         description: "Failed to export coffee journal.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      await importCoffeeData(data);
+      
+      toast({
+        title: "Success",
+        description: "Your coffee journal has been imported successfully.",
+      });
+      
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to import coffee journal. Please check the file format.",
         variant: "destructive",
       });
     }
@@ -358,14 +389,34 @@ export function Settings() {
 
             <div className="space-y-2">
               <h3 className="text-sm font-medium">Data Management</h3>
-              <Button
-                variant="outline"
-                onClick={handleExport}
-                className="flex items-center gap-2 w-full justify-start bg-white border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-              >
-                <Download className="h-4 w-4" />
-                Export Journal
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleExport}
+                  className="flex items-center gap-2 w-full justify-start bg-white border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                >
+                  <Download className="h-4 w-4" />
+                  Export Journal
+                </Button>
+                <div className="relative">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImport}
+                    accept=".json"
+                    className="hidden"
+                    id="import-file"
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 w-full justify-start bg-white border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Import Journal
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
