@@ -11,6 +11,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 
 interface CostSettings {
   milkPrice: number;
@@ -25,6 +29,8 @@ export function Settings() {
   const { toast } = useToast();
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
   const [isTestingApi, setIsTestingApi] = useState(false);
+  const [milkUnit, setMilkUnit] = useState('ml');
+  const [syrupUnit, setSyrupUnit] = useState('ml');
   const [costSettings, setCostSettings] = useState<CostSettings>(() => {
     const saved = localStorage.getItem('costSettings');
     return saved ? JSON.parse(saved) : {
@@ -37,8 +43,25 @@ export function Settings() {
     };
   });
 
+  const convertToMl = (value: number, fromUnit: string) => {
+    return fromUnit === 'oz' ? value * 29.5735 : value;
+  };
+
+  const convertFromMl = (value: number, toUnit: string) => {
+    return toUnit === 'oz' ? value / 29.5735 : value;
+  };
+
   const handleCostSettingChange = (key: keyof CostSettings, value: string) => {
-    const numValue = parseFloat(value) || 0;
+    let numValue = parseFloat(value) || 0;
+    
+    // Convert to ml for storage if the input was in oz
+    if ((key === 'milkSize' || key === 'milkPerLatte') && milkUnit === 'oz') {
+      numValue = convertToMl(numValue, 'oz');
+    }
+    if ((key === 'syrupSize' || key === 'syrupPerLatte') && syrupUnit === 'oz') {
+      numValue = convertToMl(numValue, 'oz');
+    }
+
     const newSettings = { ...costSettings, [key]: numValue };
     setCostSettings(newSettings);
     localStorage.setItem('costSettings', JSON.stringify(newSettings));
@@ -46,6 +69,19 @@ export function Settings() {
       title: "Settings Updated",
       description: "Cost analysis settings have been saved.",
     });
+  };
+
+  const handleUnitChange = (type: 'milk' | 'syrup', newUnit: string) => {
+    if (type === 'milk') {
+      setMilkUnit(newUnit);
+    } else {
+      setSyrupUnit(newUnit);
+    }
+  };
+
+  const getDisplayValue = (value: number, type: 'milk' | 'syrup') => {
+    const unit = type === 'milk' ? milkUnit : syrupUnit;
+    return convertFromMl(value, unit).toFixed(2);
   };
 
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,22 +245,36 @@ export function Settings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="milk-size">Milk Container Size (ml)</Label>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="milk-size">Milk Container Size</Label>
+                <ToggleGroup
+                  type="single"
+                  value={milkUnit}
+                  onValueChange={(value) => value && handleUnitChange('milk', value)}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               <Input
                 id="milk-size"
                 type="number"
-                value={costSettings.milkSize}
+                value={getDisplayValue(costSettings.milkSize, 'milk')}
                 onChange={(e) => handleCostSettingChange('milkSize', e.target.value)}
                 min="0"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="milk-per-latte">Milk per Latte (ml)</Label>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="milk-per-latte">Milk per Latte</Label>
+                <span className="text-sm text-gray-500">{milkUnit}</span>
+              </div>
               <Input
                 id="milk-per-latte"
                 type="number"
-                value={costSettings.milkPerLatte}
+                value={getDisplayValue(costSettings.milkPerLatte, 'milk')}
                 onChange={(e) => handleCostSettingChange('milkPerLatte', e.target.value)}
                 min="0"
               />
@@ -243,22 +293,36 @@ export function Settings() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="syrup-size">Syrup Bottle Size (ml)</Label>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="syrup-size">Syrup Bottle Size</Label>
+                <ToggleGroup
+                  type="single"
+                  value={syrupUnit}
+                  onValueChange={(value) => value && handleUnitChange('syrup', value)}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               <Input
                 id="syrup-size"
                 type="number"
-                value={costSettings.syrupSize}
+                value={getDisplayValue(costSettings.syrupSize, 'syrup')}
                 onChange={(e) => handleCostSettingChange('syrupSize', e.target.value)}
                 min="0"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="syrup-per-latte">Syrup per Latte (ml)</Label>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="syrup-per-latte">Syrup per Latte</Label>
+                <span className="text-sm text-gray-500">{syrupUnit}</span>
+              </div>
               <Input
                 id="syrup-per-latte"
                 type="number"
-                value={costSettings.syrupPerLatte}
+                value={getDisplayValue(costSettings.syrupPerLatte, 'syrup')}
                 onChange={(e) => handleCostSettingChange('syrupPerLatte', e.target.value)}
                 min="0"
               />
