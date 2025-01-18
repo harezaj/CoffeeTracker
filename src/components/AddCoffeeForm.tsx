@@ -390,7 +390,14 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="grindSize">Grind Size</Label>
-                <Input id="grindSize" name="grindSize" type="number" defaultValue={10} required />
+                <Input 
+                  id="grindSize" 
+                  name="grindSize" 
+                  type="number" 
+                  step="0.1" 
+                  defaultValue={10} 
+                  required 
+                />
               </div>
             </div>
           </div>

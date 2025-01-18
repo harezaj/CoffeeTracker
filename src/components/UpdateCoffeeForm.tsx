@@ -152,7 +152,7 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="grindSize">Grind Size</Label>
-                <Input id="grindSize" name="grindSize" type="number" defaultValue={bean.grindSize} required />
+                <Input id="grindSize" name="grindSize" type="number" step="0.1" defaultValue={bean.grindSize} required />
               </div>
             </div>
           </div>

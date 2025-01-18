@@ -19,10 +19,10 @@ class CoffeeBean(Base):
     yield_ml = Column(Float)
     brew_time = Column(Float)
     temperature = Column(Float)
-    grind_size = Column(String)
+    grind_size = Column(Float)  # Changed from String to Float
     order_again = Column(String)
     tasting_notes = Column(String)
-    notes = Column(String)  # Added general notes field
+    notes = Column(String)
 
 # Engine and session setup
 engine = create_engine('sqlite:///./coffee_beans.db')
