@@ -73,19 +73,19 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
 
   if (isRecommendation) {
     return (
-      <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-card backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
-        <CardHeader className="bg-gradient-to-br from-white dark:from-gray-900 to-gray-50 dark:to-gray-950 border-b border-gray-100 dark:border-gray-800 pb-2">
+      <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-gray-900 backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
+        <CardHeader className="bg-gradient-to-br from-white dark:from-gray-800 to-gray-50 dark:to-gray-900 border-b border-gray-100 dark:border-gray-800 pb-2">
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
+              <CardTitle className="text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
                 {bean.name}
               </CardTitle>
-              <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">by {bean.roaster}</p>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-400 hover:text-blue-600"
+              className="text-gray-400 hover:text-blue-600 dark:text-gray-500 dark:hover:text-blue-400"
               asChild
             >
               <a
@@ -100,17 +100,17 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="pt-3 space-y-3">
+        <CardContent className="pt-3 space-y-3 dark:bg-gray-900">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-gray-900">${bean.price}</span>
-            <span className="text-gray-600">{(bean.weight / 28.35).toFixed(1)} oz</span>
+            <span className="text-lg font-semibold text-gray-900 dark:text-white">${bean.price}</span>
+            <span className="text-gray-600 dark:text-gray-300">{(bean.weight / 28.35).toFixed(1)} oz</span>
           </div>
           
           <div className="flex flex-wrap gap-2">
             {bean.notes.map((note) => (
               <span
                 key={note}
-                className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
                 {note}
               </span>
@@ -122,15 +122,17 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
   }
 
   return (
-    <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-card backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
-      <CardHeader className="bg-gradient-to-br from-white dark:from-gray-900 to-gray-50 dark:to-gray-950 border-b border-gray-100 dark:border-gray-800 pb-4">
+    <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-gray-900 backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
+      <CardHeader className="bg-gradient-to-br from-white dark:from-gray-800 to-gray-50 dark:to-gray-900 border-b border-gray-100 dark:border-gray-800 pb-4">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
+            <CardTitle className="text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
               {bean.name}
             </CardTitle>
-            <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
-            <p className="text-gray-500 text-sm mt-1">Purchased {bean.purchaseCount || 1} time{(bean.purchaseCount || 1) !== 1 ? 's' : ''}</p>
+            <p className="text-gray-600 dark:text-gray-300 text-sm font-medium">by {bean.roaster}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+              Purchased {bean.purchaseCount || 1} time{(bean.purchaseCount || 1) !== 1 ? 's' : ''}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -155,12 +157,12 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-3">
+      <CardContent className="pt-3 dark:bg-gray-900">
         <div className="flex flex-wrap gap-2 mb-3">
           {bean.notes.map((note) => (
             <span
               key={note}
-              className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               {note}
             </span>
@@ -191,10 +193,10 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
 
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="bean-details" className="border-none">
-            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex items-center gap-2">
                 <Coffee className="h-4 w-4" />
-                <span className="font-medium">Bean Details</span>
+                <span className="font-medium dark:text-white">Bean Details</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
@@ -244,10 +246,10 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </AccordionItem>
 
           <AccordionItem value="brew-details" className="border-none">
-            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex items-center gap-2">
                 <Timer className="h-4 w-4" />
-                <span className="font-medium">Brew Details</span>
+                <span className="font-medium dark:text-white">Brew Details</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
@@ -293,10 +295,10 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </AccordionItem>
 
           <AccordionItem value="cost-analysis" className="border-none">
-            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
+            <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4" />
-                <span className="font-medium">Cost Analysis</span>
+                <span className="font-medium dark:text-white">Cost Analysis</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
