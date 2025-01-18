@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Coffee } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -78,25 +78,35 @@ const Recommendations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="container py-12 space-y-12">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-              Coffee Recommendations
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Get AI-powered suggestions based on your preferences or journal history
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-cream-light to-white">
+      <div className="container py-8 space-y-8">
+        <header className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Coffee className="h-10 w-10 text-coffee" />
+              <div>
+                <h1 className="text-4xl font-bold text-coffee-dark">
+                  Coffee Recommendations
+                </h1>
+                <p className="text-coffee text-lg">
+                  Get personalized coffee suggestions based on your preferences or journal history
+                </p>
+              </div>
+            </div>
+            <Link to="/">
+              <Button 
+                variant="outline"
+                className="bg-white/80 hover:bg-white transition-colors border-coffee/20 text-coffee-dark hover:text-coffee"
+              >
+                Back to Journal
+              </Button>
+            </Link>
           </div>
-          <Link to="/">
-            <Button variant="outline">Back to Journal</Button>
-          </Link>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="col-span-full md:col-span-1 space-y-6 bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-gray-200 shadow-lg">
-            <h2 className="text-2xl font-semibold text-gray-900">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-6 bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
+            <h2 className="text-2xl font-semibold text-coffee-dark">
               Recommendation Settings
             </h2>
 
@@ -107,25 +117,25 @@ const Recommendations = () => {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="preferences" id="preferences" />
-                <Label htmlFor="preferences">Based on Preferences</Label>
+                <Label htmlFor="preferences" className="text-coffee-dark">Based on Preferences</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="journal" id="journal" />
-                <Label htmlFor="journal">Based on Journal History</Label>
+                <Label htmlFor="journal" className="text-coffee-dark">Based on Journal History</Label>
               </div>
             </RadioGroup>
 
             {recommendationType === "preferences" && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Preferred Roast Level</Label>
+                  <Label className="text-coffee-dark">Preferred Roast Level</Label>
                   <Select
                     value={preferences.roastLevel}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, roastLevel: value })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white border-coffee/20">
                       <SelectValue placeholder="Select Roast Level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -137,25 +147,26 @@ const Recommendations = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Flavor Notes</Label>
+                  <Label className="text-coffee-dark">Flavor Notes</Label>
                   <Input
                     placeholder="e.g., fruity, chocolate, nutty"
                     value={preferences.notes}
                     onChange={(e) =>
                       setPreferences({ ...preferences, notes: e.target.value })
                     }
+                    className="bg-white border-coffee/20"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Price Range</Label>
+                  <Label className="text-coffee-dark">Price Range</Label>
                   <Select
                     value={preferences.priceRange}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, priceRange: value })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white border-coffee/20">
                       <SelectValue placeholder="Select Price Range" />
                     </SelectTrigger>
                     <SelectContent>
@@ -169,27 +180,28 @@ const Recommendations = () => {
             )}
 
             {recommendationType === "journal" && (
-              <p className="text-gray-600">
+              <p className="text-coffee">
                 We'll analyze your highest-rated coffee entries to find similar options you might enjoy.
               </p>
             )}
 
-            <div className="pt-4 border-t border-gray-200">
+            <div className="pt-4 border-t border-coffee/20">
               <div className="space-y-2">
-                <Label>Perplexity API Key</Label>
+                <Label className="text-coffee-dark">Perplexity API Key</Label>
                 <Input
                   type="password"
                   placeholder="Enter your API key"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
+                  className="bg-white border-coffee/20"
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-coffee">
                   Get your API key from{" "}
                   <a
                     href="https://www.perplexity.ai/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
+                    className="text-coffee-dark hover:underline"
                   >
                     Perplexity AI
                   </a>
@@ -198,7 +210,7 @@ const Recommendations = () => {
             </div>
 
             <Button
-              className="w-full"
+              className="w-full bg-coffee hover:bg-coffee-dark text-white"
               onClick={handleGetRecommendations}
               disabled={isLoading || !apiKey}
             >
@@ -207,7 +219,7 @@ const Recommendations = () => {
             </Button>
           </div>
 
-          <div className="col-span-full md:col-span-2 space-y-6">
+          <div className="md:col-span-2 space-y-6">
             {recommendations?.length ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {recommendations.map((bean) => (
@@ -215,8 +227,8 @@ const Recommendations = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg">
-                <p className="text-gray-600 text-xl">
+              <div className="text-center py-16 bg-white/80 rounded-xl backdrop-blur-sm border border-coffee/20 shadow-lg">
+                <p className="text-coffee-dark text-xl">
                   {recommendationType === "preferences"
                     ? "Fill in your preferences and click 'Get Recommendations' to discover new coffees!"
                     : "Click 'Get Recommendations' to find coffees similar to your highest-rated entries!"}
