@@ -111,10 +111,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
         if (temperatureInput) temperatureInput.value = details.temperature.toString();
       }
 
-      if (details.grindSize) {
-        const grindSizeInput = document.querySelector('input[name="grindSize"]') as HTMLInputElement;
-        if (grindSizeInput) grindSizeInput.value = details.grindSize.toString();
-      }
+      // Grind size is fixed at 10, so we don't auto-populate it
 
       if (details.sources) {
         const cleanedSources = details.sources.map(source => {
@@ -393,7 +390,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="grindSize">Grind Size</Label>
-                <Input id="grindSize" name="grindSize" type="number" required />
+                <Input id="grindSize" name="grindSize" type="number" defaultValue={10} required />
               </div>
             </div>
           </div>
