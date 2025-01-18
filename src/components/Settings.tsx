@@ -60,7 +60,6 @@ export function Settings() {
       const costSettings = localStorage.getItem('costSettings');
       const beans = savedBeans ? JSON.parse(savedBeans) : [];
       
-      // Add cost settings to each bean for export
       const beansWithCosts = beans.map(bean => {
         const costs = calculateCosts(bean);
         return {
@@ -115,7 +114,6 @@ export function Settings() {
         description: "Your coffee journal has been imported successfully.",
       });
       
-      // Reset the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -197,7 +195,6 @@ export function Settings() {
     setVolumeUnits(newUnits);
     localStorage.setItem('volumeUnits', JSON.stringify(newUnits));
 
-    // Convert the specific field's value
     const newSettings = { ...costSettings };
     if (value === 'oz') {
       newSettings[field] = convertToOz(costSettings[field]);
@@ -229,10 +226,10 @@ export function Settings() {
           <SettingsIcon className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-white dark:bg-[#171717] dark:border-gray-800">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="dark:text-white">Settings</DialogTitle>
+          <DialogDescription className="dark:text-gray-400">
             Configure your Coffee Bean Journey settings.
           </DialogDescription>
         </DialogHeader>
@@ -240,9 +237,9 @@ export function Settings() {
         <div className="space-y-6 pt-4">
           <div className="flex flex-col gap-4">
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">API Configuration</h3>
+              <h3 className="text-sm font-medium dark:text-white">API Configuration</h3>
               <div className="space-y-2">
-                <Label htmlFor="apiKey">Perplexity API Key</Label>
+                <Label htmlFor="apiKey" className="dark:text-gray-300">Perplexity API Key</Label>
                 <div className="flex gap-2">
                   <Input
                     id="apiKey"
@@ -250,24 +247,24 @@ export function Settings() {
                     value={apiKey}
                     onChange={(e) => handleApiKeyChange(e.target.value)}
                     placeholder="Enter your API key"
-                    className="bg-white border-coffee/20"
+                    className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                   />
                   <Button
                     variant="outline"
                     onClick={testApiKey}
                     disabled={!apiKey || isTestingApi}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap dark:bg-[#222222] dark:border-gray-700 dark:text-white dark:hover:bg-[#2a2a2a]"
                   >
                     {isTestingApi ? "Testing..." : "Test Key"}
                   </Button>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground dark:text-gray-400">
                   Required for AI recommendations. Get your API key from{" "}
                   <a
                     href="https://www.perplexity.ai/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-coffee hover:underline"
+                    className="text-coffee dark:text-blue-400 hover:underline"
                   >
                     Perplexity AI
                   </a>
@@ -276,111 +273,111 @@ export function Settings() {
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">Cost Analysis Settings</h3>
+              <h3 className="text-sm font-medium dark:text-white">Cost Analysis Settings</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="milkPrice">Milk Price ($)</Label>
+                  <Label htmlFor="milkPrice" className="dark:text-gray-300">Milk Price ($)</Label>
                   <Input
                     id="milkPrice"
                     type="number"
                     step="0.01"
                     value={costSettings.milkPrice}
                     onChange={(e) => handleCostSettingChange('milkPrice', e.target.value)}
-                    className="bg-white border-coffee/20"
+                    className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkSize">Milk Size</Label>
+                  <Label htmlFor="milkSize" className="dark:text-gray-300">Milk Size</Label>
                   <div className="flex gap-2">
                     <Input
                       id="milkSize"
                       type="number"
                       value={costSettings.milkSize}
                       onChange={(e) => handleCostSettingChange('milkSize', e.target.value)}
-                      className="bg-white border-coffee/20"
+                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                     />
                     <ToggleGroup
                       type="single"
                       value={volumeUnits.milkSize}
                       onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('milkSize', value)}
-                      className="border rounded-md"
+                      className="border rounded-md dark:border-gray-700"
                     >
-                      <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
+                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
                     </ToggleGroup>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkPerLatte">Milk per Latte</Label>
+                  <Label htmlFor="milkPerLatte" className="dark:text-gray-300">Milk per Latte</Label>
                   <div className="flex gap-2">
                     <Input
                       id="milkPerLatte"
                       type="number"
                       value={costSettings.milkPerLatte}
                       onChange={(e) => handleCostSettingChange('milkPerLatte', e.target.value)}
-                      className="bg-white border-coffee/20"
+                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                     />
                     <ToggleGroup
                       type="single"
                       value={volumeUnits.milkPerLatte}
                       onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('milkPerLatte', value)}
-                      className="border rounded-md"
+                      className="border rounded-md dark:border-gray-700"
                     >
-                      <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
+                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
                     </ToggleGroup>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupPrice">Syrup Price ($)</Label>
+                  <Label htmlFor="syrupPrice" className="dark:text-gray-300">Syrup Price ($)</Label>
                   <Input
                     id="syrupPrice"
                     type="number"
                     step="0.01"
                     value={costSettings.syrupPrice}
                     onChange={(e) => handleCostSettingChange('syrupPrice', e.target.value)}
-                    className="bg-white border-coffee/20"
+                    className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupSize">Syrup Size</Label>
+                  <Label htmlFor="syrupSize" className="dark:text-gray-300">Syrup Size</Label>
                   <div className="flex gap-2">
                     <Input
                       id="syrupSize"
                       type="number"
                       value={costSettings.syrupSize}
                       onChange={(e) => handleCostSettingChange('syrupSize', e.target.value)}
-                      className="bg-white border-coffee/20"
+                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                     />
                     <ToggleGroup
                       type="single"
                       value={volumeUnits.syrupSize}
                       onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('syrupSize', value)}
-                      className="border rounded-md"
+                      className="border rounded-md dark:border-gray-700"
                     >
-                      <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
+                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
                     </ToggleGroup>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupPerLatte">Syrup per Latte</Label>
+                  <Label htmlFor="syrupPerLatte" className="dark:text-gray-300">Syrup per Latte</Label>
                   <div className="flex gap-2">
                     <Input
                       id="syrupPerLatte"
                       type="number"
                       value={costSettings.syrupPerLatte}
                       onChange={(e) => handleCostSettingChange('syrupPerLatte', e.target.value)}
-                      className="bg-white border-coffee/20"
+                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                     />
                     <ToggleGroup
                       type="single"
                       value={volumeUnits.syrupPerLatte}
                       onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('syrupPerLatte', value)}
-                      className="border rounded-md"
+                      className="border rounded-md dark:border-gray-700"
                     >
-                      <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
+                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
                     </ToggleGroup>
                   </div>
                 </div>
@@ -388,12 +385,12 @@ export function Settings() {
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">Data Management</h3>
+              <h3 className="text-sm font-medium dark:text-white">Data Management</h3>
               <div className="flex flex-col gap-2">
                 <Button
                   variant="outline"
                   onClick={handleExport}
-                  className="flex items-center gap-2 w-full justify-start bg-white border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                  className="flex items-center gap-2 w-full justify-start bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 text-coffee-dark dark:text-white hover:bg-cream-dark/10 dark:hover:bg-[#2a2a2a]"
                 >
                   <Download className="h-4 w-4" />
                   Export Journal
@@ -410,7 +407,7 @@ export function Settings() {
                   <Button
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center gap-2 w-full justify-start bg-white border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                    className="flex items-center gap-2 w-full justify-start bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 text-coffee-dark dark:text-white hover:bg-cream-dark/10 dark:hover:bg-[#2a2a2a]"
                   >
                     <Upload className="h-4 w-4" />
                     Import Journal

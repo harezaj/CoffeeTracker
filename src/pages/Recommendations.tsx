@@ -99,14 +99,14 @@ const Recommendations = () => {
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-4 group">
             <div className="relative">
-              <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
-              <div className="absolute top-0 left-1/2 w-1 h-1 bg-coffee rounded-full opacity-0 group-hover:animate-[droplet_1s_ease-in-out_infinite]" />
+              <Coffee className="h-12 w-12 text-coffee scale-x-[-1] dark:text-white" />
+              <div className="absolute top-0 left-1/2 w-1 h-1 bg-coffee dark:bg-white rounded-full opacity-0 group-hover:animate-[droplet_1s_ease-in-out_infinite]" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-4xl font-black text-coffee-dark tracking-tight group-hover:text-coffee transition-colors">
+              <h1 className="text-4xl font-black text-coffee-dark dark:text-white tracking-tight group-hover:text-coffee dark:group-hover:text-gray-300 transition-colors">
                 Coffee Bean
               </h1>
-              <span className="text-xl font-light text-coffee-dark tracking-wider group-hover:text-coffee transition-colors">
+              <span className="text-xl font-light text-coffee-dark dark:text-gray-300 tracking-wider group-hover:text-coffee dark:group-hover:text-gray-400 transition-colors">
                 Journey
               </span>
             </div>
@@ -136,8 +136,8 @@ const Recommendations = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-6 bg-cream-light/50 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
-            <h2 className="text-2xl font-semibold text-coffee-dark">
+          <div className="space-y-6 bg-cream-light/50 dark:bg-[#171717] backdrop-blur-sm p-6 rounded-xl border border-coffee/20 dark:border-gray-800 shadow-lg">
+            <h2 className="text-2xl font-semibold text-coffee-dark dark:text-white">
               Recommendation Settings
             </h2>
 
@@ -147,59 +147,59 @@ const Recommendations = () => {
               className="space-y-4"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="preferences" id="preferences" />
-                <Label htmlFor="preferences" className="text-coffee-dark">Based on Preferences</Label>
+                <RadioGroupItem value="preferences" id="preferences" className="dark:border-gray-700" />
+                <Label htmlFor="preferences" className="text-coffee-dark dark:text-gray-300">Based on Preferences</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="journal" id="journal" />
-                <Label htmlFor="journal" className="text-coffee-dark">Based on Journal History</Label>
+                <RadioGroupItem value="journal" id="journal" className="dark:border-gray-700" />
+                <Label htmlFor="journal" className="text-coffee-dark dark:text-gray-300">Based on Journal History</Label>
               </div>
             </RadioGroup>
 
             {recommendationType === "preferences" && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-coffee-dark">Preferred Roast Level</Label>
+                  <Label className="text-coffee-dark dark:text-gray-300">Preferred Roast Level</Label>
                   <Select
                     value={preferences.roastLevel}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, roastLevel: value })
                     }
                   >
-                    <SelectTrigger className="bg-background border-coffee/20">
+                    <SelectTrigger className="bg-background dark:bg-[#222222] border-coffee/20 dark:border-gray-700">
                       <SelectValue placeholder="Select Roast Level" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
+                    <SelectContent className="dark:bg-[#171717] dark:border-gray-700">
+                      <SelectItem value="light" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Light</SelectItem>
+                      <SelectItem value="medium" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Medium</SelectItem>
+                      <SelectItem value="dark" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Dark</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-coffee-dark">Brew Method</Label>
+                  <Label className="text-coffee-dark dark:text-gray-300">Brew Method</Label>
                   <Select
                     value={preferences.brewMethod}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, brewMethod: value })
                     }
                   >
-                    <SelectTrigger className="bg-background border-coffee/20">
+                    <SelectTrigger className="bg-background dark:bg-[#222222] border-coffee/20 dark:border-gray-700">
                       <SelectValue placeholder="Select Brew Method" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="espresso">Espresso</SelectItem>
-                      <SelectItem value="drip">Drip Coffee</SelectItem>
-                      <SelectItem value="pourover">Pour Over</SelectItem>
-                      <SelectItem value="french-press">French Press</SelectItem>
-                      <SelectItem value="aeropress">AeroPress</SelectItem>
+                    <SelectContent className="dark:bg-[#171717] dark:border-gray-700">
+                      <SelectItem value="espresso" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Espresso</SelectItem>
+                      <SelectItem value="drip" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Drip Coffee</SelectItem>
+                      <SelectItem value="pourover" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Pour Over</SelectItem>
+                      <SelectItem value="french-press" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">French Press</SelectItem>
+                      <SelectItem value="aeropress" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">AeroPress</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-coffee-dark">Minimum Rating</Label>
+                  <Label className="text-coffee-dark dark:text-gray-300">Minimum Rating</Label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((rating) => (
                       <Button
@@ -222,32 +222,32 @@ const Recommendations = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-coffee-dark">Flavor Notes</Label>
+                  <Label className="text-coffee-dark dark:text-gray-300">Flavor Notes</Label>
                   <Input
                     placeholder="e.g., fruity, chocolate, nutty"
                     value={preferences.notes}
                     onChange={(e) =>
                       setPreferences({ ...preferences, notes: e.target.value })
                     }
-                    className="bg-background border-coffee/20"
+                    className="bg-background dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-coffee-dark">Price Range</Label>
+                  <Label className="text-coffee-dark dark:text-gray-300">Price Range</Label>
                   <Select
                     value={preferences.priceRange}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, priceRange: value })
                     }
                   >
-                    <SelectTrigger className="bg-background border-coffee/20">
+                    <SelectTrigger className="bg-background dark:bg-[#222222] border-coffee/20 dark:border-gray-700">
                       <SelectValue placeholder="Select Price Range" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="budget">Under $15</SelectItem>
-                      <SelectItem value="mid">$15 - $25</SelectItem>
-                      <SelectItem value="premium">Over $25</SelectItem>
+                    <SelectContent className="dark:bg-[#171717] dark:border-gray-700">
+                      <SelectItem value="budget" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Under $15</SelectItem>
+                      <SelectItem value="mid" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">$15 - $25</SelectItem>
+                      <SelectItem value="premium" className="dark:text-gray-300 dark:focus:bg-[#2a2a2a]">Over $25</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -255,13 +255,13 @@ const Recommendations = () => {
             )}
 
             {recommendationType === "journal" && (
-              <p className="text-coffee">
+              <p className="text-coffee dark:text-gray-400">
                 We'll analyze your highest-rated coffee entries to find similar options you might enjoy.
               </p>
             )}
 
             <Button
-              className="w-full bg-coffee hover:bg-coffee-dark text-white"
+              className="w-full bg-coffee hover:bg-coffee-dark text-white dark:bg-[#222222] dark:hover:bg-[#2a2a2a] dark:border-gray-700"
               onClick={handleGetRecommendations}
               disabled={isLoading}
             >
@@ -278,8 +278,8 @@ const Recommendations = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-cream-light/50 backdrop-blur-sm rounded-xl border border-coffee/20 shadow-lg">
-                <p className="text-coffee-dark text-xl">
+              <div className="text-center py-16 bg-cream-light/50 dark:bg-[#171717] backdrop-blur-sm rounded-xl border border-coffee/20 dark:border-gray-800 shadow-lg">
+                <p className="text-coffee-dark dark:text-gray-300 text-xl">
                   {recommendationType === "preferences"
                     ? "Fill in your preferences and click 'Get Recommendations' to discover new coffees!"
                     : "Click 'Get Recommendations' to find coffees similar to your highest-rated entries!"}
