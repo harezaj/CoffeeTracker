@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +22,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
+  const [generalNotes, setGeneralNotes] = useState("");
   const [rank, setRank] = useState(5);
   const [orderAgain, setOrderAgain] = useState(true);
 
@@ -34,6 +36,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       origin: formData.get("origin") as string,
       roastLevel: formData.get("roastLevel") as string,
       notes,
+      generalNotes,
       rank,
       gramsIn: Number(formData.get("gramsIn")),
       mlOut: Number(formData.get("mlOut")),
@@ -48,6 +51,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     onAdd(newBean);
     setOpen(false);
     setNotes([]);
+    setGeneralNotes("");
     setRank(5);
     setOrderAgain(true);
   };
@@ -167,6 +171,16 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                 onCheckedChange={setOrderAgain}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>General Notes</Label>
+            <Textarea
+              value={generalNotes}
+              onChange={(e) => setGeneralNotes(e.target.value)}
+              placeholder="Add any general notes about this coffee bean..."
+              className="min-h-[100px]"
+            />
           </div>
 
           <div className="space-y-2">

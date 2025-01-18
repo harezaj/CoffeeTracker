@@ -11,6 +11,7 @@ export interface CoffeeBean {
   origin: string;
   roastLevel: string;
   notes: string[];
+  generalNotes?: string;  // Added this field
   rank: number;
   gramsIn: number;
   mlOut: number;
@@ -185,6 +186,11 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="border-t border-gray-100 pt-4">
+          <h4 className="text-gray-700 font-medium mb-2">Notes</h4>
+          <p className="text-gray-600 whitespace-pre-wrap">{bean.generalNotes}</p>
         </div>
 
         <div className="border-t border-gray-100 pt-4">

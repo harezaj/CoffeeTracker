@@ -22,6 +22,7 @@ class CoffeeBean(Base):
     grind_size = Column(String)
     order_again = Column(String)
     tasting_notes = Column(String)
+    notes = Column(String)  # Added general notes field
 
 # Engine and session setup
 engine = create_engine('sqlite:///./coffee_beans.db')
