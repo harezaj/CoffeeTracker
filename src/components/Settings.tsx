@@ -200,7 +200,6 @@ export function Settings() {
           <SheetTitle>Settings</SheetTitle>
         </SheetHeader>
         <div className="mt-6 space-y-6">
-          <div>
             <Label htmlFor="perplexity-api-key">
               Perplexity API Key
             </Label>

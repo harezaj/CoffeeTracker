@@ -185,6 +185,20 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </span>
         </div>
 
+        <div className="mb-4">
+          <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
+          <div className="flex flex-wrap gap-2">
+            {bean.notes.map((note) => (
+              <span
+                key={note}
+                className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              >
+                {note}
+              </span>
+            ))}
+          </div>
+        </div>
+
         <Accordion type="single" collapsible className="space-y-4">
           <AccordionItem value="bean-details" className="border-none">
             <AccordionTrigger className="hover:no-underline py-2 px-4 bg-gray-50 rounded-lg">
@@ -214,19 +228,6 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                     <span className="text-gray-700 font-medium">Weight</span>
                     <span className="text-gray-600">{bean.weight}g</span>
                   </div>
-                </div>
-              </div>
-              <div className="mt-4">
-                <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
-                <div className="flex flex-wrap gap-2">
-                  {bean.notes.map((note) => (
-                    <span
-                      key={note}
-                      className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-                    >
-                      {note}
-                    </span>
-                  ))}
                 </div>
               </div>
               {bean.generalNotes && (
@@ -295,6 +296,18 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-gray-600">Volume Unit</span>
+                <ToggleGroup
+                  type="single"
+                  value={volumeUnit}
+                  onValueChange={(value) => value && setVolumeUnit(value as 'ml' | 'oz')}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
