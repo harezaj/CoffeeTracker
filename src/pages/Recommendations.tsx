@@ -67,8 +67,8 @@ const Recommendations = () => {
         throw error;
       }
     },
-    enabled: false, // Query won't run automatically
-    retry: false, // Don't retry on failure
+    enabled: false,
+    retry: false,
   });
 
   const handleGetRecommendations = () => {
