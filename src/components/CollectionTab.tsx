@@ -121,7 +121,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 dark:bg-[#171717] dark:border-gray-800 dark:hover:bg-[#222222]">
                 Sort by <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -145,7 +145,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
               variant={viewMode === 'tiles' ? 'default' : 'ghost'}
               size="icon"
               onClick={() => setViewMode('tiles')}
-              className="rounded-none"
+              className="rounded-none dark:bg-[#171717] dark:hover:bg-[#222222]"
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
@@ -153,7 +153,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
               variant={viewMode === 'list' ? 'default' : 'ghost'}
               size="icon"
               onClick={() => setViewMode('list')}
-              className="rounded-none"
+              className="rounded-none dark:bg-[#171717] dark:hover:bg-[#222222]"
             >
               <List className="h-4 w-4" />
             </Button>

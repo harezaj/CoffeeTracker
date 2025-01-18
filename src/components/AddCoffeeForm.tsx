@@ -235,7 +235,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-coffee-dark hover:bg-coffee/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+        <Button className="bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl dark:bg-[#171717] dark:hover:bg-[#222222] dark:text-white">
           <Plus className="mr-2 h-4 w-4" /> Add Coffee Bean
         </Button>
       </DialogTrigger>
