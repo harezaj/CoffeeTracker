@@ -37,6 +37,13 @@ export interface CoffeeBean {
   purchaseCount: number;
 }
 
+export interface CoffeeCardProps {
+  bean: CoffeeBean;
+  onDelete?: (id: string) => void;
+  onUpdate?: (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => void;
+  isRecommendation?: boolean;
+}
+
 const convertToOz = (ml: number) => (ml / 29.5735).toFixed(1);
 const convertToKg = (oz: number) => (oz * 0.0283495).toFixed(2);
 
