@@ -14,10 +14,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { CoffeeBean } from "./CoffeeCard";
 import { searchCoffeeDetails } from "@/lib/coffeeSearch";
 
@@ -254,6 +255,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </div>
               {dataSources.length > 0 && (
                 <Button
+                  type="button"
                   variant="outline"
                   size="sm"
                   className="mt-2 text-xs flex items-center gap-1"
@@ -266,12 +268,11 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             </div>
           </div>
 
-          {/* Data Sources Dialog */}
-          <Dialog open={showDataSources} onOpenChange={setShowDataSources}>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Data Sources</DialogTitle>
-              </DialogHeader>
+          <AlertDialog open={showDataSources} onOpenChange={setShowDataSources}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Data Sources</AlertDialogTitle>
+              </AlertDialogHeader>
               <div className="space-y-2">
                 <ul className="list-disc pl-4 space-y-2">
                   {dataSources.map((source, index) => (
@@ -292,8 +293,8 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                   ))}
                 </ul>
               </div>
-            </DialogContent>
-          </Dialog>
+            </AlertDialogContent>
+          </AlertDialog>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
