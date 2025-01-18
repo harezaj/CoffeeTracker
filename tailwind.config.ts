@@ -25,14 +25,14 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         coffee: {
-          light: "#F1F1F1",
-          DEFAULT: "#666666",
-          dark: "#222222",
+          light: "#E6D5C3",
+          DEFAULT: "#967259",
+          dark: "#634832",
         },
         cream: {
-          light: "#FFFFFF",
-          DEFAULT: "#F5F5F5",
-          dark: "#E5E5E5",
+          light: "#FFF8F0",
+          DEFAULT: "#F5E6D3",
+          dark: "#E6D5C3",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
