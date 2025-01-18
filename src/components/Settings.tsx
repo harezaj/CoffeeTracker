@@ -21,6 +21,7 @@ import {
 export function Settings() {
   const { toast } = useToast();
   const [apiKey, setApiKey] = useState("");
+  const [isTestingApi, setIsTestingApi] = useState(false);
   const [volumeUnits, setVolumeUnits] = useState({
     milkSize: 'ml',
     milkPerLatte: 'ml',
@@ -106,6 +107,57 @@ export function Settings() {
     });
   };
 
+  const testApiKey = async () => {
+    setIsTestingApi(true);
+    try {
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-sonar-small-128k-online',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful assistant.'
+            },
+            {
+              role: 'user',
+              content: 'Return the word "success" if you can read this message.'
+            }
+          ],
+          max_tokens: 10
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+      
+      if (data.choices && data.choices[0]?.message?.content?.toLowerCase().includes('success')) {
+        toast({
+          title: "Success",
+          description: "API key is valid and working correctly.",
+        });
+      } else {
+        throw new Error('Unexpected API response');
+      }
+    } catch (error) {
+      console.error('API test error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to verify API key. Please check if it's valid.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTestingApi(false);
+    }
+  };
+
   const convertToOz = (ml: string) => (Number(ml) / 29.5735).toFixed(1);
   const convertToMl = (oz: string) => (Number(oz) * 29.5735).toFixed(0);
 
@@ -160,14 +212,24 @@ export function Settings() {
               <h3 className="text-sm font-medium">API Configuration</h3>
               <div className="space-y-2">
                 <Label htmlFor="apiKey">Perplexity API Key</Label>
-                <Input
-                  id="apiKey"
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => handleApiKeyChange(e.target.value)}
-                  placeholder="Enter your API key"
-                  className="bg-white border-coffee/20"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="apiKey"
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => handleApiKeyChange(e.target.value)}
+                    placeholder="Enter your API key"
+                    className="bg-white border-coffee/20"
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={testApiKey}
+                    disabled={!apiKey || isTestingApi}
+                    className="whitespace-nowrap"
+                  >
+                    {isTestingApi ? "Testing..." : "Test Key"}
+                  </Button>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   Required for AI recommendations. Get your API key from{" "}
                   <a
