@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCoffeeBeans } from "@/lib/api";
+import { fetchBeans } from "@/lib/api";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { CollectionTab } from "@/components/CollectionTab";
 
 export default function PurchaseHistory() {
-  const { data: beans = [], isLoading, error } = useQuery({
+  const { data: beans = [], isLoading, error } = useQuery<CoffeeBean[]>({
     queryKey: ["coffee-beans"],
-    queryFn: fetchCoffeeBeans,
+    queryFn: fetchBeans,
   });
 
   if (isLoading) {
