@@ -5,7 +5,7 @@ import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchBeans, createBean, deleteBean } from "@/lib/api";
+import { fetchBeans, createBean, deleteBean, updateBean } from "@/lib/api";
 
 const Index = () => {
   const { toast } = useToast();
@@ -37,6 +37,26 @@ const Index = () => {
     },
   });
 
+  const updateBeanMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Omit<CoffeeBean, "id">> }) => 
+      updateBean(id, updates),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: `${data.name} has been updated.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update coffee bean",
+        variant: "destructive",
+      });
+      console.error('Error updating bean:', error);
+    },
+  });
+
   const deleteBeanMutation = useMutation({
     mutationFn: deleteBean,
     onSuccess: (_, id) => {
@@ -58,6 +78,10 @@ const Index = () => {
 
   const handleAddBean = (newBean: Omit<CoffeeBean, "id">) => {
     createBeanMutation.mutate(newBean);
+  };
+
+  const handleUpdateBean = (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
+    updateBeanMutation.mutate({ id, updates });
   };
 
   const handleDeleteBean = (id: string) => {
@@ -135,6 +159,7 @@ const Index = () => {
                     key={bean.id} 
                     bean={bean} 
                     onDelete={handleDeleteBean}
+                    onUpdate={handleUpdateBean}
                   />
                 ))}
               </div>

@@ -30,6 +30,26 @@ export const createBean = async (bean: Omit<CoffeeBean, "id">): Promise<CoffeeBe
   }
 };
 
+// Update an existing bean in localStorage
+export const updateBean = async (id: string, updates: Partial<Omit<CoffeeBean, "id">>): Promise<CoffeeBean> => {
+  try {
+    const beans = await fetchBeans();
+    const index = beans.findIndex(bean => bean.id === id);
+    if (index === -1) throw new Error('Bean not found');
+    
+    const updatedBean = { ...beans[index], ...updates };
+    const updatedBeans = [...beans];
+    updatedBeans[index] = updatedBean;
+    
+    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
+    console.log('Bean updated, new data:', updatedBean);
+    return updatedBean;
+  } catch (error) {
+    console.error('Error updating bean:', error);
+    throw error;
+  }
+};
+
 // Delete a bean from localStorage
 export const deleteBean = async (id: string): Promise<void> => {
   try {

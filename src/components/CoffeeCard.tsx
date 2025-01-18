@@ -1,6 +1,7 @@
 import { Trash2, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { UpdateCoffeeForm } from "./UpdateCoffeeForm";
 
 export interface CoffeeBean {
   id: string;
@@ -23,9 +24,10 @@ export interface CoffeeBean {
 interface CoffeeCardProps {
   bean: CoffeeBean;
   onDelete?: (id: string) => void;
+  onUpdate?: (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => void;
 }
 
-export function CoffeeCard({ bean, onDelete }: CoffeeCardProps) {
+export function CoffeeCard({ bean, onDelete, onUpdate }: CoffeeCardProps) {
   return (
     <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
       <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
@@ -36,16 +38,19 @@ export function CoffeeCard({ bean, onDelete }: CoffeeCardProps) {
             </CardTitle>
             <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
           </div>
-          {onDelete && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-400 hover:text-red-600 -mt-1 -mr-2"
-              onClick={() => onDelete(bean.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {onUpdate && <UpdateCoffeeForm bean={bean} onUpdate={onUpdate} />}
+            {onDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-400 hover:text-red-600 -mt-1 -mr-2"
+                onClick={() => onDelete(bean.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="pt-6 space-y-4">
