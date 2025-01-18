@@ -37,15 +37,35 @@ interface CoffeeCardProps {
 }
 
 const calculateCosts = (bean: CoffeeBean) => {
+  const costSettings = localStorage.getItem('costSettings');
+  const {
+    milkPrice = 4.99,
+    milkSize = 1000,
+    milkPerLatte = 200,
+    syrupPrice = 12.99,
+    syrupSize = 750,
+    syrupPerLatte = 30,
+  } = costSettings ? JSON.parse(costSettings) : {};
+
   const costPerGram = bean.price / bean.weight;
   const costPerShot = costPerGram * bean.gramsIn;
   const shotsPerBag = Math.floor(bean.weight / bean.gramsIn);
+  const costPerOz = ((bean.price / (bean.weight / 28.35)));
+
+  const milkCostPerMl = milkPrice / milkSize;
+  const syrupCostPerMl = syrupPrice / syrupSize;
+  
+  const costPerLatte = 
+    costPerShot + 
+    (milkCostPerMl * milkPerLatte) + 
+    (syrupCostPerMl * syrupPerLatte);
   
   return {
     costPerGram: costPerGram.toFixed(2),
     costPerShot: costPerShot.toFixed(2),
     shotsPerBag,
-    costPerOz: ((bean.price / (bean.weight / 28.35))).toFixed(2)
+    costPerOz: costPerOz.toFixed(2),
+    costPerLatte: costPerLatte.toFixed(2)
   };
 };
 
@@ -258,18 +278,18 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                     <span className="font-medium">${costs.costPerShot}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Cost per Gram</span>
-                    <span className="font-medium">${costs.costPerGram}</span>
+                    <span className="text-gray-600">Shots per Bag</span>
+                    <span className="font-medium">{costs.shotsPerBag}</span>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Shots per Bag</span>
-                    <span className="font-medium">{costs.shotsPerBag}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
                     <span className="text-gray-600">Cost per oz</span>
                     <span className="font-medium">${costs.costPerOz}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Cost per Latte</span>
+                    <span className="font-medium">${costs.costPerLatte}</span>
                   </div>
                 </div>
               </div>

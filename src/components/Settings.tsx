@@ -12,10 +12,41 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+interface CostSettings {
+  milkPrice: number;
+  milkSize: number;
+  milkPerLatte: number;
+  syrupPrice: number;
+  syrupSize: number;
+  syrupPerLatte: number;
+}
+
 export function Settings() {
   const { toast } = useToast();
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
   const [isTestingApi, setIsTestingApi] = useState(false);
+  const [costSettings, setCostSettings] = useState<CostSettings>(() => {
+    const saved = localStorage.getItem('costSettings');
+    return saved ? JSON.parse(saved) : {
+      milkPrice: 4.99,
+      milkSize: 1000,
+      milkPerLatte: 200,
+      syrupPrice: 12.99,
+      syrupSize: 750,
+      syrupPerLatte: 30,
+    };
+  });
+
+  const handleCostSettingChange = (key: keyof CostSettings, value: string) => {
+    const numValue = parseFloat(value) || 0;
+    const newSettings = { ...costSettings, [key]: numValue };
+    setCostSettings(newSettings);
+    localStorage.setItem('costSettings', JSON.stringify(newSettings));
+    toast({
+      title: "Settings Updated",
+      description: "Cost analysis settings have been saved.",
+    });
+  };
 
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newKey = e.target.value;
@@ -160,6 +191,78 @@ export function Settings() {
             <p className="mt-2 text-sm text-gray-500">
               This API key will be used for auto-populating coffee details throughout the application.
             </p>
+          </div>
+
+          <div className="space-y-4">
+            <Label>Cost Analysis Settings</Label>
+            
+            <div className="space-y-2">
+              <Label htmlFor="milk-price">Milk Price ($)</Label>
+              <Input
+                id="milk-price"
+                type="number"
+                value={costSettings.milkPrice}
+                onChange={(e) => handleCostSettingChange('milkPrice', e.target.value)}
+                step="0.01"
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="milk-size">Milk Container Size (ml)</Label>
+              <Input
+                id="milk-size"
+                type="number"
+                value={costSettings.milkSize}
+                onChange={(e) => handleCostSettingChange('milkSize', e.target.value)}
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="milk-per-latte">Milk per Latte (ml)</Label>
+              <Input
+                id="milk-per-latte"
+                type="number"
+                value={costSettings.milkPerLatte}
+                onChange={(e) => handleCostSettingChange('milkPerLatte', e.target.value)}
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="syrup-price">Syrup Price ($)</Label>
+              <Input
+                id="syrup-price"
+                type="number"
+                value={costSettings.syrupPrice}
+                onChange={(e) => handleCostSettingChange('syrupPrice', e.target.value)}
+                step="0.01"
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="syrup-size">Syrup Bottle Size (ml)</Label>
+              <Input
+                id="syrup-size"
+                type="number"
+                value={costSettings.syrupSize}
+                onChange={(e) => handleCostSettingChange('syrupSize', e.target.value)}
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="syrup-per-latte">Syrup per Latte (ml)</Label>
+              <Input
+                id="syrup-per-latte"
+                type="number"
+                value={costSettings.syrupPerLatte}
+                onChange={(e) => handleCostSettingChange('syrupPerLatte', e.target.value)}
+                min="0"
+              />
+            </div>
           </div>
 
           <div>

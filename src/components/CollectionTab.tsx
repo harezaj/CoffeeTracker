@@ -2,7 +2,7 @@ import { CoffeeCard, type CoffeeBean } from "./CoffeeCard";
 import { CoffeeListItem } from "./CoffeeListItem";
 import { AddCoffeeForm } from "./AddCoffeeForm";
 import { useState } from "react";
-import { LayoutGrid, List, ChevronDown, Filter } from "lucide-react";
+import { LayoutGrid, List, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
 import {
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Input } from "@/components/ui/input";
 
 type SortField = 'name' | 'roaster' | 'rank';
 
@@ -37,6 +38,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [selectedRoaster, setSelectedRoaster] = useState<string>('all');
   const [selectedRank, setSelectedRank] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSort = (field: SortField) => {
     if (field === sortField) {
@@ -53,7 +55,12 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
     return beans.filter(bean => {
       const roasterMatch = selectedRoaster === 'all' || bean.roaster === selectedRoaster;
       const rankMatch = selectedRank === 'all' || bean.rank === parseInt(selectedRank);
-      return roasterMatch && rankMatch;
+      const searchMatch = 
+        searchQuery === '' || 
+        bean.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bean.roaster.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bean.notes.some(note => note.toLowerCase().includes(searchQuery.toLowerCase()));
+      return roasterMatch && rankMatch && searchMatch;
     });
   };
 
@@ -76,6 +83,13 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
           Your Collection
         </h2>
         <div className="flex gap-4">
+          <Input
+            type="text"
+            placeholder="Search beans..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-[200px]"
+          />
           <div className="flex gap-2">
             <Select value={selectedRoaster} onValueChange={setSelectedRoaster}>
               <SelectTrigger className="w-[180px] bg-white">
