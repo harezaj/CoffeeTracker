@@ -36,32 +36,32 @@
   }
 
   .dark {
-    --background: 260 22% 14%;  /* Dark purple similar to job-ish: #1A1F2C */
-    --foreground: 0 0% 100%;    /* Pure white text */
+    --background: 0 0% 0%;        /* Pure black background */
+    --foreground: 0 0% 100%;      /* Pure white text */
 
-    --card: 260 10% 18%;        /* Slightly lighter than background */
+    --card: 0 0% 7%;              /* Very dark gray for cards (#121212) */
     --card-foreground: 0 0% 100%;
 
-    --popover: 260 22% 14%;
+    --popover: 0 0% 0%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 26 54% 45%;      /* Keep coffee color for primary */
+    --primary: 26 54% 45%;        /* Keep coffee color for primary */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 15% 25%;   /* Darker purple for secondary elements */
+    --secondary: 0 0% 13%;        /* Slightly lighter dark gray (#222222) */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 260 15% 25%;
+    --muted: 0 0% 13%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 260 15% 25%;
+    --accent: 0 0% 13%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 15% 25%;
-    --input: 260 15% 25%;
+    --border: 0 0% 13%;
+    --input: 0 0% 13%;
     --ring: 26 54% 45%;
   }
 }

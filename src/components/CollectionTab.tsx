@@ -88,11 +88,11 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
             placeholder="Search beans..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[200px] dark:bg-[#222222] dark:border-gray-800"
+            className="w-[200px] dark:bg-[#171717] dark:border-gray-800"
           />
           <div className="flex gap-2">
             <Select value={selectedRoaster} onValueChange={setSelectedRoaster}>
-              <SelectTrigger className="w-[180px] bg-white dark:bg-[#222222] dark:border-gray-800">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-[#171717] dark:border-gray-800">
                 <SelectValue placeholder="Filter by roaster" />
               </SelectTrigger>
               <SelectContent>
@@ -105,7 +105,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
             </Select>
 
             <Select value={selectedRank} onValueChange={setSelectedRank}>
-              <SelectTrigger className="w-[180px] bg-white dark:bg-[#222222] dark:border-gray-800">
+              <SelectTrigger className="w-[180px] bg-white dark:bg-[#171717] dark:border-gray-800">
                 <SelectValue placeholder="Filter by ranking" />
               </SelectTrigger>
               <SelectContent>
@@ -163,14 +163,14 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
       </div>
 
       {beans.length === 0 ? (
-        <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg animate-fade-in">
-          <p className="text-gray-600 text-xl">
+        <div className="text-center py-16 bg-white/50 dark:bg-[#121212]/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
+          <p className="text-gray-600 dark:text-gray-300 text-xl">
             No coffee beans added yet. Start by adding your first coffee bean!
           </p>
         </div>
       ) : filteredAndSortedBeans.length === 0 ? (
-        <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg animate-fade-in">
-          <p className="text-gray-600 text-xl">
+        <div className="text-center py-16 bg-white/50 dark:bg-[#121212]/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
+          <p className="text-gray-600 dark:text-gray-300 text-xl">
             No coffee beans match your current filters.
           </p>
         </div>
@@ -186,7 +186,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-200">
+        <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 divide-y divide-gray-200 dark:divide-gray-800">
           {filteredAndSortedBeans.map((bean) => (
             <CoffeeListItem
               key={bean.id}
