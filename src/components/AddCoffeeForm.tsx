@@ -114,7 +114,20 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       }
 
       if (details.sources) {
-        setDataSources(details.sources);
+        // Clean up the sources to ensure they have proper URLs
+        const cleanedSources = details.sources.map(source => {
+          // Extract URL if it exists in the text
+          const urlMatch = source.match(/(https?:\/\/[^\s]+)/);
+          if (urlMatch) {
+            const url = urlMatch[0];
+            // Get the text without the URL, or use the domain name if no other text
+            const domain = new URL(url).hostname.replace('www.', '');
+            const text = source.replace(url, '').trim() || domain;
+            return `${url} ${text}`;
+          }
+          return source;
+        });
+        setDataSources(cleanedSources);
       }
 
       toast({
@@ -229,27 +242,26 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               <div className="space-y-2">
                 <ul className="list-disc pl-4 space-y-2">
                   {dataSources.map((source, index) => {
-                    // Check if the source is a URL
-                    const isUrl = source.match(/^(https?:\/\/[^\s]+)/);
-                    const url = isUrl ? isUrl[0] : null;
-                    const text = isUrl ? source.replace(url!, '').trim() || url : source;
-
+                    const urlMatch = source.match(/(https?:\/\/[^\s]+)/);
+                    if (urlMatch) {
+                      const url = urlMatch[0];
+                      const text = source.replace(url, '').trim();
+                      return (
+                        <li key={index} className="text-sm">
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-coffee hover:text-coffee-dark underline"
+                          >
+                            {text || url}
+                          </a>
+                        </li>
+                      );
+                    }
                     return (
                       <li key={index} className="text-sm">
-                        {url ? (
-                          <div className="break-all">
-                            <a
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-coffee hover:text-coffee-dark underline"
-                            >
-                              {text}
-                            </a>
-                          </div>
-                        ) : (
-                          <span>{text}</span>
-                        )}
+                        {source}
                       </li>
                     );
                   })}
