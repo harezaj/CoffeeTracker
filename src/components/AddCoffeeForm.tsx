@@ -134,8 +134,6 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     }
   };
 
-  // ... keep existing code (rest of the component's JSX)
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -164,13 +162,13 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Bean Name</Label>
-              <Input id="name" name="name" required />
+              <Label htmlFor="roaster">Roaster</Label>
+              <Input id="roaster" name="roaster" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roaster">Roaster</Label>
+              <Label htmlFor="name">Bean Name</Label>
               <div className="flex gap-2">
-                <Input id="roaster" name="roaster" required />
+                <Input id="name" name="name" required />
                 <Button
                   type="button"
                   onClick={() => handleAutoPopulate(new FormData(document.querySelector('form')!))}
