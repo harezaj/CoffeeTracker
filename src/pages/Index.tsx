@@ -101,7 +101,7 @@ export default function Index() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 min-h-screen bg-cream-light/50 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-8">
         <Link to="/" className="group flex items-center gap-4">
           <div className="relative">
@@ -120,7 +120,7 @@ export default function Index() {
           {beans.length === 0 && (
             <Button
               variant="outline"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
               onClick={handleImport}
             >
               <Upload className="h-4 w-4" />
@@ -130,7 +130,7 @@ export default function Index() {
           {beans.length > 0 && (
             <Button
               variant="outline"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
               onClick={handleExport}
             >
               <Download className="h-4 w-4" />
@@ -138,7 +138,10 @@ export default function Index() {
             </Button>
           )}
           <Link to="/recommendations">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+            >
               <Sparkles className="h-4 w-4" />
               Get AI Recommendations
             </Button>
@@ -147,9 +150,19 @@ export default function Index() {
       </div>
       
       <Tabs defaultValue="collection" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="collection">Collection</TabsTrigger>
-          <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
+        <TabsList className="bg-cream border-coffee/20">
+          <TabsTrigger 
+            value="collection"
+            className="data-[state=active]:bg-coffee data-[state=active]:text-cream"
+          >
+            Collection
+          </TabsTrigger>
+          <TabsTrigger 
+            value="wishlist"
+            className="data-[state=active]:bg-coffee data-[state=active]:text-cream"
+          >
+            Wishlist
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="collection">
