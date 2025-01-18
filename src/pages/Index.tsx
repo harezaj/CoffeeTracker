@@ -6,10 +6,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Coffee, Sparkles, Download, Upload, TestTube2 } from "lucide-react";
-import { importCoffeeBeans } from "@/lib/importData";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Coffee, Sparkles, Download, Upload } from "lucide-react";
+import { Settings } from "@/components/Settings";
 
 export default function Index() {
   const { toast } = useToast();
@@ -17,9 +15,6 @@ export default function Index() {
     const saved = localStorage.getItem('coffeeBeans');
     return saved ? JSON.parse(saved) : [];
   });
-
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
-  const [isTestingApi, setIsTestingApi] = useState(false);
 
   const handleAddBean = (bean: Omit<CoffeeBean, "id">) => {
     const newBean = { ...bean, id: Math.random().toString(36).substr(2, 9) };
@@ -121,70 +116,6 @@ export default function Index() {
     }
   };
 
-  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newKey = e.target.value;
-    setApiKey(newKey);
-    localStorage.setItem('perplexity-api-key', newKey);
-    toast({
-      title: "API Key Updated",
-      description: "Your Perplexity API key has been saved.",
-    });
-  };
-
-  const testApiConnection = async () => {
-    if (!apiKey) {
-      toast({
-        title: "Error",
-        description: "Please enter an API key first",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsTestingApi(true);
-    try {
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful assistant.'
-            },
-            {
-              role: 'user',
-              content: 'Test connection'
-            }
-          ],
-          max_tokens: 10
-        }),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Success",
-          description: "API connection test successful!",
-        });
-      } else {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'API test failed');
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to test API connection",
-        variant: "destructive",
-      });
-    } finally {
-      setIsTestingApi(false);
-    }
-  };
-
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen bg-cream-light/50 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-8">
@@ -241,6 +172,7 @@ export default function Index() {
               Get AI Recommendations
             </Button>
           </Link>
+          <Settings />
         </div>
       </div>
       
@@ -273,37 +205,6 @@ export default function Index() {
           <WishlistTab />
         </TabsContent>
       </Tabs>
-
-      <div className="mt-12 border-t pt-8">
-        <div className="max-w-md mx-auto">
-          <Label htmlFor="perplexity-api-key" className="text-coffee-dark">
-            Perplexity API Key
-          </Label>
-          <div className="mt-2 flex gap-2">
-            <Input
-              id="perplexity-api-key"
-              type="password"
-              value={apiKey}
-              onChange={handleApiKeyChange}
-              placeholder="Enter your Perplexity API key"
-              className="flex-1"
-            />
-            <Button
-              variant="outline"
-              size="default"
-              onClick={testApiConnection}
-              disabled={isTestingApi}
-              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-            >
-              <TestTube2 className="h-4 w-4" />
-              {isTestingApi ? "Testing..." : "Test"}
-            </Button>
-          </div>
-          <p className="mt-2 text-sm text-gray-500">
-            This API key will be used for auto-populating coffee details throughout the application.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

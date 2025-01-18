@@ -229,6 +229,9 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="text-coffee hover:text-coffee-dark underline"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                }}
                               >
                                 {source}
                               </a>
