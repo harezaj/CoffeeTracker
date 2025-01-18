@@ -91,14 +91,14 @@ const Recommendations = () => {
             <Link to="/" className="group flex items-center gap-4">
               <div className="relative">
                 <Coffee 
-                  className="h-16 w-16 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
+                  className="h-12 w-12 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
                 />
               </div>
               <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
-                <h1 className="text-5xl font-black text-coffee-dark tracking-tight hover:text-coffee transition-colors duration-300">
+                <h1 className="text-4xl font-black text-coffee-dark tracking-tight hover:text-coffee transition-colors duration-300">
                   Coffee Bean
                 </h1>
-                <span className="text-2xl font-light text-coffee-dark tracking-wider">Journey</span>
+                <span className="text-xl font-light text-coffee-dark tracking-wider">Journey</span>
               </div>
             </Link>
             <Link to="/">
@@ -251,4 +251,3 @@ const Recommendations = () => {
 };
 
 export default Recommendations;
-
