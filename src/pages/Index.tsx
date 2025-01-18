@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Coffee, Sparkles, Download, Upload } from "lucide-react";
 import { importCoffeeBeans } from "@/lib/importData";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Index() {
   const { toast } = useToast();
@@ -15,6 +17,8 @@ export default function Index() {
     const saved = localStorage.getItem('coffeeBeans');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
 
   const handleAddBean = (bean: Omit<CoffeeBean, "id">) => {
     const newBean = { ...bean, id: Math.random().toString(36).substr(2, 9) };
@@ -116,6 +120,16 @@ export default function Index() {
     }
   };
 
+  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newKey = e.target.value;
+    setApiKey(newKey);
+    localStorage.setItem('perplexity-api-key', newKey);
+    toast({
+      title: "API Key Updated",
+      description: "Your Perplexity API key has been saved.",
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen bg-cream-light/50 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-8">
@@ -204,6 +218,27 @@ export default function Index() {
           <WishlistTab />
         </TabsContent>
       </Tabs>
+
+      <div className="mt-12 border-t pt-8">
+        <div className="max-w-md mx-auto">
+          <Label htmlFor="perplexity-api-key" className="text-coffee-dark">
+            Perplexity API Key
+          </Label>
+          <div className="mt-2">
+            <Input
+              id="perplexity-api-key"
+              type="password"
+              value={apiKey}
+              onChange={handleApiKeyChange}
+              placeholder="Enter your Perplexity API key"
+              className="w-full"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              This API key will be used for auto-populating coffee details throughout the application.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
