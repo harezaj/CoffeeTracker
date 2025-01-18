@@ -3,11 +3,17 @@ import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
 import { Settings } from "@/components/Settings";
 import { Link } from "react-router-dom";
-import { History } from "lucide-react";
+import { Coffee, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
 import type { CoffeeBean } from "@/components/CoffeeCard";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Index() {
   const queryClient = useQueryClient();
@@ -54,14 +60,37 @@ export default function Index() {
   return (
     <div className="container mx-auto py-8 space-y-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold">Coffee Bean Tracker</h1>
+        <div className="flex items-center gap-4">
+          <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
+          <div className="flex flex-col">
+            <h1 className="text-4xl font-black text-coffee-dark tracking-tight">
+              Coffee Bean
+            </h1>
+            <span className="text-xl font-light text-coffee-dark tracking-wider">
+              Journey
+            </span>
+          </div>
+        </div>
         <div className="flex gap-4">
-          <Link to="/purchase-history">
-            <Button variant="outline" className="gap-2">
-              <History className="w-4 h-4" />
-              Purchase History
-            </Button>
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link to="/purchase-history" className="cursor-pointer">
+                  Purchase History
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/recommendations" className="cursor-pointer">
+                  AI Recommendations
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Settings />
         </div>
       </div>
