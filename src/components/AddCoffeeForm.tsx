@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, X, Wand2 } from "lucide-react";
+import { Plus, X, Wand2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CoffeeBean } from "./CoffeeCard";
 import { searchCoffeeDetails } from "@/lib/coffeeSearch";
 
@@ -30,6 +35,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [orderAgain, setOrderAgain] = useState(true);
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
+  const [dataSources, setDataSources] = useState<string[]>([]);
 
   const handleAutoPopulate = async (formData: FormData) => {
     const roaster = formData.get("roaster") as string;
@@ -105,6 +111,10 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       if (details.grindSize) {
         const grindSizeInput = document.querySelector('input[name="grindSize"]') as HTMLInputElement;
         if (grindSizeInput) grindSizeInput.value = details.grindSize.toString();
+      }
+
+      if (details.sources) {
+        setDataSources(details.sources);
       }
 
       toast({
@@ -210,6 +220,30 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                   )}
                 </Button>
               </div>
+              {dataSources.length > 0 && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 text-xs flex items-center gap-1"
+                    >
+                      <Info className="h-3 w-3" />
+                      View Data Sources
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="font-medium">Data Sources:</h4>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {dataSources.map((source, index) => (
+                          <li key={index} className="text-sm">{source}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </div>
 

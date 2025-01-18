@@ -11,6 +11,7 @@ export const searchCoffeeDetails = async (roaster: string, beanName: string, api
   - weight (number in grams, typical package size)
   - temperature (number in Celsius)
   - grindSize (number between 1-30)
+  - sources (array of strings with URLs or descriptions of where this information was found)
   
   Only include properties if you are confident about the information.
   Example format:
@@ -24,7 +25,8 @@ export const searchCoffeeDetails = async (roaster: string, beanName: string, api
     "price": 19.99,
     "weight": 340,
     "temperature": 93,
-    "grindSize": 15
+    "grindSize": 15,
+    "sources": ["Official roaster website", "Coffee review platform"]
   }`;
 
   try {
