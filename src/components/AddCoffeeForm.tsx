@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -13,18 +14,88 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CoffeeBean } from "./CoffeeCard";
+import { searchCoffeeDetails } from "@/lib/coffeeSearch";
 
 interface AddCoffeeFormProps {
   onAdd: (bean: Omit<CoffeeBean, "id">) => void;
 }
 
 export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const [generalNotes, setGeneralNotes] = useState("");
   const [rank, setRank] = useState(5);
   const [orderAgain, setOrderAgain] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
+
+  const handleAutoPopulate = async (formData: FormData) => {
+    const roaster = formData.get("roaster") as string;
+    const name = formData.get("name") as string;
+
+    if (!roaster || !name) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both roaster and bean name to auto-populate.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!apiKey) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter your Perplexity API key to use auto-population.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const details = await searchCoffeeDetails(roaster, name, apiKey);
+      
+      // Update form with fetched details
+      if (details.roastLevel) {
+        const roastLevelSelect = document.querySelector('select[name="roastLevel"]') as HTMLSelectElement;
+        if (roastLevelSelect) roastLevelSelect.value = details.roastLevel;
+      }
+      
+      if (details.notes) {
+        setNotes(details.notes);
+      }
+      
+      if (details.recommendedDose) {
+        const gramsInInput = document.querySelector('input[name="gramsIn"]') as HTMLInputElement;
+        if (gramsInInput) gramsInInput.value = details.recommendedDose.toString();
+      }
+      
+      if (details.recommendedYield) {
+        const mlOutInput = document.querySelector('input[name="mlOut"]') as HTMLInputElement;
+        if (mlOutInput) mlOutInput.value = details.recommendedYield.toString();
+      }
+      
+      if (details.recommendedBrewTime) {
+        const brewTimeInput = document.querySelector('input[name="brewTime"]') as HTMLInputElement;
+        if (brewTimeInput) brewTimeInput.value = details.recommendedBrewTime.toString();
+      }
+
+      toast({
+        title: "Success",
+        description: "Coffee details auto-populated successfully!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch coffee details. Please try again or fill in manually.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,6 +134,8 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     }
   };
 
+  // ... keep existing code (rest of the component's JSX)
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -75,6 +148,20 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
           <DialogTitle className="text-coffee-dark text-2xl">Add New Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="perplexity-api-key">Perplexity API Key (for auto-population)</Label>
+            <Input
+              id="perplexity-api-key"
+              type="password"
+              value={apiKey}
+              onChange={(e) => {
+                setApiKey(e.target.value);
+                localStorage.setItem('perplexity-api-key', e.target.value);
+              }}
+              placeholder="Enter your API key to enable auto-population"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Bean Name</Label>
@@ -82,7 +169,24 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="roaster">Roaster</Label>
-              <Input id="roaster" name="roaster" required />
+              <div className="flex gap-2">
+                <Input id="roaster" name="roaster" required />
+                <Button
+                  type="button"
+                  onClick={() => handleAutoPopulate(new FormData(document.querySelector('form')!))}
+                  disabled={loading}
+                  className="bg-coffee-dark hover:bg-coffee/90"
+                >
+                  {loading ? (
+                    "Loading..."
+                  ) : (
+                    <>
+                      <Wand2 className="mr-2 h-4 w-4" />
+                      Auto
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
 
