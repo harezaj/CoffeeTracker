@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Coffee } from "lucide-react";
+import { Loader2, Coffee, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getAIRecommendations } from "@/lib/aiRecommendations";
 import { fetchBeans } from "@/lib/api";
+import { Settings } from "@/components/Settings";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Recommendations = () => {
   const [recommendationType, setRecommendationType] = useState<"preferences" | "journal">("preferences");
@@ -86,31 +93,41 @@ const Recommendations = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-8 space-y-8">
-        <header className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="group flex items-center gap-4">
-              <div className="relative">
-                <Coffee 
-                  className="h-12 w-12 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
-                />
-              </div>
-              <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
-                <h1 className="text-4xl font-black text-coffee-dark tracking-tight hover:text-coffee transition-colors duration-300">
-                  Coffee Bean
-                </h1>
-                <span className="text-xl font-light text-coffee-dark tracking-wider">Journey</span>
-              </div>
-            </Link>
-            <Link to="/">
-              <Button 
-                variant="outline"
-                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream/10 transition-colors"
-              >
-                Back to Journal
-              </Button>
-            </Link>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
+            <div className="flex flex-col">
+              <h1 className="text-4xl font-black text-coffee-dark tracking-tight">
+                Coffee Bean
+              </h1>
+              <span className="text-xl font-light text-coffee-dark tracking-wider">
+                Journey
+              </span>
+            </div>
           </div>
-        </header>
+          <div className="flex gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/purchase-history" className="cursor-pointer">
+                    Purchase History
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/" className="cursor-pointer">
+                    My Collection
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Settings />
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-6 bg-cream-light/50 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">

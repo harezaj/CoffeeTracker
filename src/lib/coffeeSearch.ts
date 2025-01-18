@@ -1,33 +1,22 @@
-export const searchCoffeeDetails = async (roaster: string, beanName: string, apiKey: string) => {
-  const prompt = `As a coffee expert, provide detailed information about the "${beanName}" coffee bean from "${roaster}" roaster.
-  Format your response as a JSON object with these properties:
-  - origin (string, the country or region of origin)
-  - roastLevel (string: "Light", "Medium-Light", "Medium", "Medium-Dark", or "Dark")
-  - notes (array of strings representing flavor notes)
-  - recommendedDose (number in grams)
-  - recommendedYield (number in ml)
-  - recommendedBrewTime (number in seconds)
-  - price (number in USD)
-  - weight (number in grams, typical package size)
-  - temperature (number in Celsius)
-  - grindSize (number between 1-30)
-  - sources (array of strings with URLs or descriptions of where this information was found)
-  
-  Only include properties if you are confident about the information.
-  Example format:
-  {
-    "origin": "Ethiopia",
-    "roastLevel": "Medium",
-    "notes": ["Chocolate", "Caramel", "Nuts"],
-    "recommendedDose": 18,
-    "recommendedYield": 36,
-    "recommendedBrewTime": 28,
-    "price": 19.99,
-    "weight": 340,
-    "temperature": 93,
-    "grindSize": 15,
-    "sources": ["Official roaster website", "Coffee review platform"]
-  }`;
+export const searchCoffeeDetails = async (roaster: string, name: string, apiKey: string) => {
+  const prompt = `Find details about this coffee bean:
+    Roaster: ${roaster}
+    Bean Name: ${name}
+    
+    Return a JSON object with these properties (use null if not found):
+    {
+      "origin": string,
+      "roastLevel": "Light" | "Medium-Light" | "Medium" | "Medium-Dark" | "Dark",
+      "notes": string[],
+      "recommendedDose": number (in grams),
+      "recommendedYield": number (in ml),
+      "recommendedBrewTime": number (in seconds),
+      "price": number (in USD),
+      "weight": number (in grams),
+      "temperature": number (in Celsius),
+      "grindSize": number (1-30 scale),
+      "sources": string[]
+    }`;
 
   try {
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -37,18 +26,18 @@ export const searchCoffeeDetails = async (roaster: string, beanName: string, api
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
+        model: 'llama-3.1-sonar-large-128k-online',
         messages: [
           {
             role: 'system',
-            content: 'You are a coffee expert with extensive knowledge of specialty coffee roasters and their offerings.'
+            content: 'You are a coffee expert. Provide accurate, detailed information about coffee beans. Return data in the exact JSON format requested.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.2,
+        temperature: 0.3,
         max_tokens: 1000,
       }),
     });
@@ -66,9 +55,11 @@ export const searchCoffeeDetails = async (roaster: string, beanName: string, api
       throw new Error('No valid JSON found in response');
     }
 
-    return JSON.parse(jsonMatch[0]);
+    const details = JSON.parse(jsonMatch[0]);
+    console.log('Parsed coffee details:', details);
+    return details;
   } catch (error) {
     console.error('Error searching coffee details:', error);
     throw error;
   }
-};
+}
