@@ -2,7 +2,8 @@ import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UpdateCoffeeForm } from "./UpdateCoffeeForm";
-import { Trash2, Star, DollarSign, Coffee, Timer } from "lucide-react";
+import { Trash2, Star, DollarSign, Coffee, Timer, Plus } from "lucide-react";
+import { PurchaseModal } from "./PurchaseModal";
 import {
   Accordion,
   AccordionContent,
@@ -32,6 +33,7 @@ export interface CoffeeBean {
   weight: number;
   orderAgain: boolean;
   grindSize: number;
+  purchaseCount: number;
 }
 
 interface CoffeeCardProps {
@@ -42,6 +44,7 @@ interface CoffeeCardProps {
 }
 
 const convertToOz = (ml: number) => (ml / 29.5735).toFixed(1);
+const convertToKg = (oz: number) => (oz * 0.0283495).toFixed(2);
 
 const calculateCosts = (bean: CoffeeBean) => {
   const costSettings = localStorage.getItem('costSettings');
@@ -79,9 +82,25 @@ const calculateCosts = (bean: CoffeeBean) => {
 export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false }: CoffeeCardProps) {
   const costs = calculateCosts(bean);
   const [volumeUnit, setVolumeUnit] = useState<'ml' | 'oz'>('ml');
+  const [weightUnit, setWeightUnit] = useState<'oz' | 'kg'>('oz');
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   const displayVolume = (ml: number) => {
     return volumeUnit === 'ml' ? ml : convertToOz(ml);
+  };
+
+  const displayWeight = (oz: number) => {
+    return weightUnit === 'oz' ? oz.toFixed(1) : convertToKg(oz);
+  };
+
+  const handlePurchase = (price: number, weight: number, quantity: number) => {
+    if (onUpdate) {
+      onUpdate(bean.id, {
+        price,
+        weight,
+        purchaseCount: (bean.purchaseCount || 0) + quantity,
+      });
+    }
   };
 
   if (isRecommendation) {
@@ -143,8 +162,17 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               {bean.name}
             </CardTitle>
             <p className="text-gray-600 text-sm font-medium">by {bean.roaster}</p>
+            <p className="text-gray-500 text-sm mt-1">Purchased {bean.purchaseCount || 1} time{(bean.purchaseCount || 1) !== 1 ? 's' : ''}</p>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-green-600"
+              onClick={() => setShowPurchaseModal(true)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
             {onUpdate && <UpdateCoffeeForm bean={bean} onUpdate={onUpdate} />}
             {onDelete && (
               <Button
@@ -159,8 +187,8 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6">
-        <div className="flex flex-wrap gap-2 mb-4">
+      <CardContent className="pt-3">
+        <div className="flex flex-wrap gap-2 mb-3">
           {bean.notes.map((note) => (
             <span
               key={note}
@@ -218,9 +246,22 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                     <span className="text-gray-700 font-medium">Price</span>
                     <span className="text-gray-600">${bean.price}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-700 font-medium">Weight</span>
-                    <span className="text-gray-600">{bean.weight}g</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-600">
+                        {displayWeight(bean.weight)} {weightUnit}
+                      </span>
+                      <ToggleGroup
+                        type="single"
+                        value={weightUnit}
+                        onValueChange={(value) => value && setWeightUnit(value as 'oz' | 'kg')}
+                        className="border rounded-md"
+                      >
+                        <ToggleGroupItem value="oz" className="px-2 py-1 text-xs">oz</ToggleGroupItem>
+                        <ToggleGroupItem value="kg" className="px-2 py-1 text-xs">kg</ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -328,6 +369,14 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           </AccordionItem>
         </Accordion>
       </CardContent>
+
+      <PurchaseModal
+        open={showPurchaseModal}
+        onOpenChange={setShowPurchaseModal}
+        defaultPrice={bean.price}
+        defaultWeight={bean.weight}
+        onSubmit={handlePurchase}
+      />
     </Card>
   );
 }

@@ -19,7 +19,7 @@ export const fetchBeans = async (): Promise<CoffeeBean[]> => {
 export const createBean = async (bean: Omit<CoffeeBean, "id">): Promise<CoffeeBean> => {
   try {
     const beans = await fetchBeans();
-    const newBean = { ...bean, id: generateId() };
+    const newBean = { ...bean, id: generateId(), purchaseCount: 1 };
     const updatedBeans = [...beans, newBean];
     console.log('Saving beans to localStorage:', updatedBeans);
     localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
