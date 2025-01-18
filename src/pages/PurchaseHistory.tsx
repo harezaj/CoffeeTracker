@@ -32,17 +32,20 @@ export default function PurchaseHistory() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
+        <Link to="/" className="flex items-center gap-4 group">
+          <div className="relative">
+            <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
+            <div className="absolute top-0 left-1/2 w-1 h-1 bg-coffee rounded-full opacity-0 group-hover:animate-[droplet_1s_ease-in-out_infinite]" />
+          </div>
           <div className="flex flex-col">
-            <h1 className="text-4xl font-black text-coffee-dark tracking-tight">
+            <h1 className="text-4xl font-black text-coffee-dark tracking-tight group-hover:text-coffee transition-colors">
               Coffee Bean
             </h1>
-            <span className="text-xl font-light text-coffee-dark tracking-wider">
+            <span className="text-xl font-light text-coffee-dark tracking-wider group-hover:text-coffee transition-colors">
               Journey
             </span>
           </div>
-        </div>
+        </Link>
         <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -53,7 +56,7 @@ export default function PurchaseHistory() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
                 <Link to="/" className="cursor-pointer">
-                  My Collection
+                  Collection
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>

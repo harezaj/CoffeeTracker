@@ -83,11 +83,6 @@ export default function Index() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to="/" className="cursor-pointer">
-                  Collection
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <Link to="/purchase-history" className="cursor-pointer">
                   Purchase History
                 </Link>
