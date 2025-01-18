@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
+import { Coffee } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
@@ -143,81 +144,104 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
-        <div className="text-gray-600 text-xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-cream-light to-white flex items-center justify-center">
+        <div className="text-coffee-dark text-xl animate-pulse">Loading your coffee journal...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-cream-light to-white flex items-center justify-center">
         <div className="text-red-600 text-xl">Error loading coffee beans</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div className="container py-12 space-y-12">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-4">
-              <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                Coffee Bean Journal
-              </h1>
-              <HoverCard>
-                <HoverCardTrigger>
-                  <span className="text-sm text-gray-500 cursor-help">v{version}</span>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-80">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold">Version History</h4>
-                    <div className="text-sm space-y-1">
-                      <p>1.0.0 - Initial coffee journal implementation</p>
-                      <p>1.1.0 - Added list/tile view toggle</p>
-                      <p>1.2.0 - Enhanced recommendations</p>
-                      <p>1.2.1 - Added API key storage</p>
-                    </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
+    <div className="min-h-screen bg-gradient-to-br from-cream-light to-white">
+      <div className="container py-8 space-y-8">
+        <header className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Coffee className="h-10 w-10 text-coffee" />
+              <div>
+                <h1 className="text-4xl font-bold text-coffee-dark">
+                  Coffee Bean Journal
+                </h1>
+                <div className="flex items-center gap-2">
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <span className="text-sm text-coffee hover:text-coffee-dark transition-colors cursor-help">
+                        v{version}
+                      </span>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 bg-white/80 backdrop-blur-sm">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-coffee-dark">Version History</h4>
+                        <div className="text-sm space-y-1 text-coffee">
+                          <p>1.0.0 - Initial coffee journal implementation</p>
+                          <p>1.1.0 - Added list/tile view toggle</p>
+                          <p>1.2.0 - Enhanced recommendations</p>
+                          <p>1.2.1 - Added API key storage</p>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  <span className="text-sm text-coffee">•</span>
+                  <span className="text-sm text-coffee">Track your coffee journey</span>
+                </div>
+              </div>
             </div>
-            <p className="text-gray-600 text-lg">
-              Track your coffee journey and discover new favorites
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <Link to="/recommendations">
-              <Button variant="outline">Get AI Recommendations</Button>
-            </Link>
-            {beans.length === 0 && (
-              <>
+            <div className="flex gap-3">
+              <Link to="/recommendations">
                 <Button 
-                  variant="outline" 
-                  onClick={handlePopulateJournal}
-                  disabled={isPopulating}
+                  variant="outline"
+                  className="bg-white/80 hover:bg-white transition-colors border-coffee/20 text-coffee-dark hover:text-coffee"
                 >
-                  {isPopulating ? "Adding Samples..." : "Add Sample Beans"}
+                  Get AI Recommendations
                 </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={handleImportData}
-                  disabled={isPopulating}
-                >
-                  Import Your Beans
-                </Button>
-              </>
-            )}
+              </Link>
+              {beans.length === 0 && (
+                <>
+                  <Button 
+                    variant="outline"
+                    className="bg-white/80 hover:bg-white transition-colors border-coffee/20 text-coffee-dark hover:text-coffee"
+                    onClick={handlePopulateJournal}
+                    disabled={isPopulating}
+                  >
+                    {isPopulating ? "Adding Samples..." : "Add Sample Beans"}
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="bg-white/80 hover:bg-white transition-colors border-coffee/20 text-coffee-dark hover:text-coffee"
+                    onClick={handleImportData}
+                    disabled={isPopulating}
+                  >
+                    Import Your Beans
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </header>
 
         <Tabs defaultValue="collection" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="collection">Collection</TabsTrigger>
-            <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
+          <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 bg-white/80 backdrop-blur-sm">
+            <TabsTrigger 
+              value="collection"
+              className="data-[state=active]:bg-coffee data-[state=active]:text-white"
+            >
+              Collection
+            </TabsTrigger>
+            <TabsTrigger 
+              value="wishlist"
+              className="data-[state=active]:bg-coffee data-[state=active]:text-white"
+            >
+              Wishlist
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="collection">
+          <TabsContent value="collection" className="mt-6">
             <CollectionTab
               beans={beans}
               onDelete={handleDeleteBean}
@@ -225,7 +249,7 @@ const Index = () => {
               onAdd={handleAddBean}
             />
           </TabsContent>
-          <TabsContent value="wishlist">
+          <TabsContent value="wishlist" className="mt-6">
             <WishlistTab />
           </TabsContent>
         </Tabs>
