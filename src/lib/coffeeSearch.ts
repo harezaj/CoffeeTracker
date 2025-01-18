@@ -16,7 +16,9 @@ export const searchCoffeeDetails = async (roaster: string, name: string, apiKey:
       "temperature": number (in Celsius),
       "grindSize": number (1-30 scale),
       "sources": string[]
-    }`;
+    }
+    
+    Important: Ensure the response is valid JSON. Do not include any explanatory text outside the JSON object.`;
 
   try {
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
@@ -30,7 +32,7 @@ export const searchCoffeeDetails = async (roaster: string, name: string, apiKey:
         messages: [
           {
             role: 'system',
-            content: 'You are a coffee expert. Provide accurate, detailed information about coffee beans. Return data in the exact JSON format requested.'
+            content: 'You are a coffee expert. Provide accurate, detailed information about coffee beans. Return data in the exact JSON format requested, with no additional text or formatting.'
           },
           {
             role: 'user',
@@ -49,15 +51,34 @@ export const searchCoffeeDetails = async (roaster: string, name: string, apiKey:
     const data = await response.json();
     const content = data.choices[0].message.content;
     
-    // Extract JSON from the response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('No valid JSON found in response');
-    }
+    // Clean up the content to ensure we only have JSON
+    const cleanedContent = content.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+    
+    try {
+      const details = JSON.parse(cleanedContent);
+      console.log('Parsed coffee details:', details);
+      
+      // Validate the response structure
+      const validatedDetails = {
+        origin: details.origin || null,
+        roastLevel: details.roastLevel || null,
+        notes: Array.isArray(details.notes) ? details.notes : [],
+        recommendedDose: typeof details.recommendedDose === 'number' ? details.recommendedDose : null,
+        recommendedYield: typeof details.recommendedYield === 'number' ? details.recommendedYield : null,
+        recommendedBrewTime: typeof details.recommendedBrewTime === 'number' ? details.recommendedBrewTime : null,
+        price: typeof details.price === 'number' ? details.price : null,
+        weight: typeof details.weight === 'number' ? details.weight : null,
+        temperature: typeof details.temperature === 'number' ? details.temperature : null,
+        grindSize: typeof details.grindSize === 'number' ? details.grindSize : null,
+        sources: Array.isArray(details.sources) ? details.sources : []
+      };
 
-    const details = JSON.parse(jsonMatch[0]);
-    console.log('Parsed coffee details:', details);
-    return details;
+      return validatedDetails;
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);
+      console.log('Content that failed to parse:', cleanedContent);
+      throw new Error('Invalid JSON response from API');
+    }
   } catch (error) {
     console.error('Error searching coffee details:', error);
     throw error;
