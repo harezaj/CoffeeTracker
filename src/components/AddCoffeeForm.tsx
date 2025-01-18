@@ -35,6 +35,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [orderAgain, setOrderAgain] = useState(true);
   const [loading, setLoading] = useState(false);
   const [dataSources, setDataSources] = useState<string[]>([]);
+  const [showDataSources, setShowDataSources] = useState(false);
 
   const handleAutoPopulate = async (formData: FormData) => {
     const roaster = formData.get("roaster") as string;
@@ -206,46 +207,56 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                 </Button>
               </div>
               {dataSources.length > 0 && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2 text-xs flex items-center gap-1"
-                    >
-                      <Info className="h-3 w-3" />
-                      View Data Sources
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Data Sources</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2">
-                      <ul className="list-disc pl-4 space-y-2">
-                        {dataSources.map((source, index) => (
-                          <li key={index} className="text-sm break-all">
-                            {source.startsWith('http') ? (
-                              <a 
-                                href={source}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-coffee hover:text-coffee-dark underline"
-                              >
-                                {source}
-                              </a>
-                            ) : (
-                              source
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 text-xs flex items-center gap-1"
+                  onClick={() => setShowDataSources(true)}
+                >
+                  <Info className="h-3 w-3" />
+                  View Data Sources
+                </Button>
               )}
             </div>
           </div>
+
+          {/* Data Sources Dialog */}
+          <Dialog open={showDataSources} onOpenChange={setShowDataSources}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Data Sources</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-2">
+                <ul className="list-disc pl-4 space-y-2">
+                  {dataSources.map((source, index) => {
+                    // Check if the source is a URL
+                    const isUrl = source.match(/^(https?:\/\/[^\s]+)/);
+                    const url = isUrl ? isUrl[0] : null;
+                    const text = isUrl ? source.replace(url!, '').trim() || url : source;
+
+                    return (
+                      <li key={index} className="text-sm">
+                        {url ? (
+                          <div className="break-all">
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-coffee hover:text-coffee-dark underline"
+                            >
+                              {text}
+                            </a>
+                          </div>
+                        ) : (
+                          <span>{text}</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
