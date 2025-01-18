@@ -37,20 +37,25 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="container py-12 space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <h1 className="text-5xl font-bold text-gray-900">
-            Coffee Bean Journal
-          </h1>
+          <div className="space-y-2">
+            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+              Coffee Bean Journal
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Track your coffee journey and discover new favorites
+            </p>
+          </div>
           <AddCoffeeForm onAdd={addBean} />
         </div>
 
         {beans.length === 0 ? (
-          <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200">
+          <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg animate-fade-in">
             <p className="text-gray-600 text-xl">
               No coffee beans added yet. Start by adding your first coffee bean!
             </p>
           </div>
         ) : (
-          <div className="space-y-12">
+          <div className="space-y-12 animate-fade-in">
             <section>
               <h2 className="text-3xl font-semibold text-gray-900 mb-6">
                 Your Collection
