@@ -100,8 +100,9 @@ const Recommendations = () => {
             <Link to="/" className="group flex items-center gap-4">
               <div className="relative">
                 <Coffee 
-                  className="h-16 w-16 text-coffee scale-x-[-1] transition-transform duration-300 origin-bottom group-hover:rotate-[30deg]" 
+                  className="h-16 w-16 text-coffee-dark scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
                 />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-4 bg-coffee-dark/20 animate-[droplet_1s_ease-in-out_infinite]" />
               </div>
               <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
                 <h1 className="text-4xl font-bold text-coffee-dark">
@@ -115,7 +116,7 @@ const Recommendations = () => {
             <Link to="/">
               <Button 
                 variant="outline"
-                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-background transition-colors"
+                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream/10 transition-colors"
               >
                 Back to Journal
               </Button>
@@ -124,7 +125,7 @@ const Recommendations = () => {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="space-y-6 bg-background p-6 rounded-xl border border-coffee/20 shadow-lg">
+          <div className="space-y-6 bg-cream-light/50 backdrop-blur-sm p-6 rounded-xl border border-coffee/20 shadow-lg">
             <h2 className="text-2xl font-semibold text-coffee-dark">
               Recommendation Settings
             </h2>
@@ -246,7 +247,7 @@ const Recommendations = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-background rounded-xl border border-coffee/20 shadow-lg">
+              <div className="text-center py-16 bg-cream-light/50 backdrop-blur-sm rounded-xl border border-coffee/20 shadow-lg">
                 <p className="text-coffee-dark text-xl">
                   {recommendationType === "preferences"
                     ? "Fill in your preferences and click 'Get Recommendations' to discover new coffees!"
