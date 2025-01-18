@@ -7,12 +7,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+type DBCoffeeBean = Omit<CoffeeBean, 'notes' | 'orderAgain'> & {
+  notes: string;
+  orderAgain: number;
+};
+
 // Get all coffee beans
 app.get('/api/coffee-beans', (req, res) => {
-  const beans = db.prepare('SELECT * FROM coffee_beans').all() as Omit<CoffeeBean, 'notes' | 'orderAgain'>[];
+  const beans = db.prepare('SELECT * FROM coffee_beans').all() as DBCoffeeBean[];
   res.json(beans.map(bean => ({
     ...bean,
-    notes: JSON.parse(bean.notes as unknown as string),
+    notes: JSON.parse(bean.notes),
     orderAgain: Boolean(bean.orderAgain)
   })));
 });
