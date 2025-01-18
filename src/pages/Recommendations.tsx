@@ -100,7 +100,7 @@ const Recommendations = () => {
             <Link to="/" className="group flex items-center gap-4">
               <div className="relative">
                 <Coffee 
-                  className="h-16 w-16 text-coffee scale-x-[-1] transition-all duration-300 origin-bottom group-hover:rotate-[30deg]" 
+                  className="h-16 w-16 text-coffee scale-x-[-1] transition-transform duration-300 origin-bottom group-hover:rotate-[30deg]" 
                 />
               </div>
               <div className="flex flex-col transition-transform duration-300 group-hover:translate-x-2">
@@ -115,7 +115,7 @@ const Recommendations = () => {
             <Link to="/">
               <Button 
                 variant="outline"
-                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-cream/10 transition-colors"
+                className="border-coffee/20 text-coffee-dark hover:text-coffee hover:bg-background transition-colors"
               >
                 Back to Journal
               </Button>
