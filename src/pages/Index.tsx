@@ -121,7 +121,7 @@ export default function Index() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 min-h-screen bg-cream-light/50 backdrop-blur-sm">
+    <div className="container mx-auto py-8 px-4 min-h-screen bg-white">
       <AlertDialog open={showExportReminder} onOpenChange={setShowExportReminder}>
         <AlertDialogContent>
           <AlertDialogHeader>
