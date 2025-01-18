@@ -66,13 +66,13 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gray-900 hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl">
+        <Button className="bg-coffee-dark hover:bg-coffee/90 transition-all duration-300 shadow-lg hover:shadow-xl">
           <Plus className="mr-2 h-4 w-4" /> Add Coffee Bean
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] bg-white">
         <DialogHeader>
-          <DialogTitle className="text-gray-900 text-2xl">Add New Coffee Bean</DialogTitle>
+          <DialogTitle className="text-coffee-dark text-2xl">Add New Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -96,7 +96,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               <select
                 id="roastLevel"
                 name="roastLevel"
-                className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-dark"
                 required
               >
                 <option value="Light">Light</option>
@@ -127,7 +127,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                   key={value}
                   type="button"
                   variant={rank >= value ? "default" : "outline"}
-                  className={rank >= value ? "bg-gray-900" : ""}
+                  className={rank >= value ? "bg-coffee-dark hover:bg-coffee/90" : ""}
                   onClick={() => setRank(value)}
                 >
                   {value}
@@ -137,7 +137,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
           </div>
 
           <div className="border-t border-gray-100 pt-4">
-            <h4 className="text-gray-900 font-medium mb-4">Brew Details</h4>
+            <h4 className="text-coffee-dark font-medium mb-4">Brew Details</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="gramsIn">Dose (g)</Label>
@@ -194,7 +194,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               <Button
                 type="button"
                 onClick={addNote}
-                className="bg-gray-900 hover:bg-gray-800"
+                className="bg-coffee-dark hover:bg-coffee/90"
               >
                 Add
               </Button>
@@ -203,13 +203,13 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               {notes.map((n) => (
                 <span
                   key={n}
-                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium group flex items-center gap-2"
+                  className="px-3 py-1 rounded-full bg-gray-100 text-coffee-dark text-sm font-medium group flex items-center gap-2"
                 >
                   {n}
                   <button
                     type="button"
                     onClick={() => setNotes(notes.filter((note) => note !== n))}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-coffee hover:text-coffee-dark transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -218,7 +218,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             </div>
           </div>
 
-          <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 transition-all duration-300">
+          <Button type="submit" className="w-full bg-coffee-dark hover:bg-coffee/90 transition-all duration-300">
             Add Coffee Bean
           </Button>
         </form>
