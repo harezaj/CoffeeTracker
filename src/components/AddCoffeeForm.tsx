@@ -19,6 +19,7 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CoffeeBean } from "./CoffeeCard";
 import { searchCoffeeDetails } from "@/lib/coffeeSearch";
@@ -264,60 +265,61 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                 </Button>
               </div>
               {dataSources.length > 0 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mt-2 text-xs flex items-center gap-1"
-                  onClick={() => setShowDataSources(true)}
-                >
-                  <Info className="h-3 w-3" />
-                  View Data Sources
-                </Button>
+                <AlertDialog open={showDataSources} onOpenChange={setShowDataSources}>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 text-xs flex items-center gap-1"
+                    >
+                      <Info className="h-3 w-3" />
+                      View Data Sources
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-white">
+                    <div className="absolute right-4 top-4">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowDataSources(false)}
+                        className="h-6 w-6 p-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Data Sources</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        The following sources were used to populate the coffee details:
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="mt-4">
+                      <ul className="list-disc pl-4 space-y-2">
+                        {dataSources.map((source, index) => (
+                          <li key={index} className="text-sm">
+                            {source.url ? (
+                              <a
+                                href={source.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-coffee hover:text-coffee-dark underline"
+                              >
+                                {source.displayText}
+                              </a>
+                            ) : (
+                              <span>{source.displayText}</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           </div>
-
-          <AlertDialog 
-            open={showDataSources} 
-            onOpenChange={setShowDataSources}
-          >
-            <AlertDialogContent className="relative bg-white">
-              <button
-                onClick={() => setShowDataSources(false)}
-                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-              >
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </button>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Data Sources</AlertDialogTitle>
-                <AlertDialogDescription>
-                  The following sources were used to populate the coffee details:
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <div className="space-y-2">
-                <ul className="list-disc pl-4 space-y-2">
-                  {dataSources.map((source, index) => (
-                    <li key={index} className="text-sm">
-                      {source.url ? (
-                        <a
-                          href={source.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-coffee hover:text-coffee-dark underline"
-                        >
-                          {source.displayText}
-                        </a>
-                      ) : (
-                        <span>{source.displayText}</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </AlertDialogContent>
-          </AlertDialog>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
