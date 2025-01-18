@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -24,10 +28,15 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
   const [notes, setNotes] = useState<string[]>(bean.notes);
   const [rank, setRank] = useState(bean.rank);
   const [orderAgain, setOrderAgain] = useState(bean.orderAgain);
+  const [weightUnit, setWeightUnit] = useState<'g' | 'oz'>('g');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    // Convert weight to grams if needed
+    const inputWeight = Number(formData.get("weight"));
+    const weightInGrams = weightUnit === 'oz' ? inputWeight * 28.3495 : inputWeight;
     
     const updates = {
       name: formData.get("name") as string,
@@ -41,7 +50,7 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
       brewTime: Number(formData.get("brewTime")),
       temperature: Number(formData.get("temperature")),
       price: Number(formData.get("price")),
-      weight: Number(formData.get("weight")),
+      weight: weightInGrams,
       orderAgain,
       grindSize: Number(formData.get("grindSize")),
     };
@@ -109,8 +118,27 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
               <Input id="price" name="price" type="number" step="0.01" defaultValue={bean.price} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (g)</Label>
-              <Input id="weight" name="weight" type="number" defaultValue={bean.weight} required />
+              <Label htmlFor="weight">Weight</Label>
+              <div className="flex gap-2">
+                <Input 
+                  id="weight" 
+                  name="weight" 
+                  type="number"
+                  step="0.1"
+                  defaultValue={weightUnit === 'oz' ? bean.weight / 28.3495 : bean.weight}
+                  required 
+                  className="flex-1"
+                />
+                <ToggleGroup
+                  type="single"
+                  value={weightUnit}
+                  onValueChange={(value) => value && setWeightUnit(value as 'g' | 'oz')}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="g" className="px-2 py-1">g</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
             </div>
           </div>
 
