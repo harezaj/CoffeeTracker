@@ -23,7 +23,7 @@ const Index = () => {
     if (beans.length === 0) return [];
     
     const highestRated = beans.reduce((max, bean) => 
-      bean.rating > max.rating ? bean : max
+      bean.rank > max.rank ? bean : max
     );
 
     return beans.filter(bean => 
@@ -34,25 +34,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-light to-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="container py-12 space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-coffee-dark to-coffee bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold text-gray-900">
             Coffee Bean Journal
           </h1>
           <AddCoffeeForm onAdd={addBean} />
         </div>
 
         {beans.length === 0 ? (
-          <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-cream">
-            <p className="text-coffee text-xl">
+          <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200">
+            <p className="text-gray-600 text-xl">
               No coffee beans added yet. Start by adding your first coffee bean!
             </p>
           </div>
         ) : (
           <div className="space-y-12">
             <section>
-              <h2 className="text-3xl font-semibold text-coffee-dark mb-6 inline-block">
+              <h2 className="text-3xl font-semibold text-gray-900 mb-6">
                 Your Collection
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -64,7 +64,7 @@ const Index = () => {
 
             {getRecommendations().length > 0 && (
               <section>
-                <h2 className="text-3xl font-semibold text-coffee-dark mb-6 inline-block">
+                <h2 className="text-3xl font-semibold text-gray-900 mb-6">
                   Recommended Based on Your Taste
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
