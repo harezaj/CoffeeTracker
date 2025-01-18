@@ -64,6 +64,20 @@ const Index = () => {
     deleteBeanMutation.mutate(id);
   };
 
+  const getRecommendations = () => {
+    if (beans.length === 0) return [];
+    
+    const highestRated = beans.reduce((max, bean) => 
+      bean.rank > max.rank ? bean : max
+    );
+
+    return beans.filter(bean => 
+      bean.id !== highestRated.id && 
+      (bean.roastLevel === highestRated.roastLevel || 
+       bean.origin === highestRated.origin)
+    ).slice(0, 3);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
