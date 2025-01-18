@@ -2,7 +2,7 @@ import { CoffeeCard, type CoffeeBean } from "./CoffeeCard";
 import { CoffeeListItem } from "./CoffeeListItem";
 import { AddCoffeeForm } from "./AddCoffeeForm";
 import { useState } from "react";
-import { LayoutGrid, List, ChevronDown } from "lucide-react";
+import { LayoutGrid, List, ChevronDown, Filter } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
 import {
@@ -13,6 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 type SortField = 'name' | 'roaster' | 'rank';
 
@@ -28,6 +35,8 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
   const [selectedBean, setSelectedBean] = useState<CoffeeBean | null>(null);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [selectedRoaster, setSelectedRoaster] = useState<string>('all');
+  const [selectedRank, setSelectedRank] = useState<string>('all');
 
   const handleSort = (field: SortField) => {
     if (field === sortField) {
@@ -36,6 +45,16 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
       setSortField(field);
       setSortDirection('asc');
     }
+  };
+
+  const uniqueRoasters = ['all', ...Array.from(new Set(beans.map(bean => bean.roaster)))];
+
+  const filterBeans = (beans: CoffeeBean[]) => {
+    return beans.filter(bean => {
+      const roasterMatch = selectedRoaster === 'all' || bean.roaster === selectedRoaster;
+      const rankMatch = selectedRank === 'all' || bean.rank === parseInt(selectedRank);
+      return roasterMatch && rankMatch;
+    });
   };
 
   const sortBeans = (beans: CoffeeBean[]) => {
@@ -48,7 +67,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
     });
   };
 
-  const sortedBeans = sortBeans(beans);
+  const filteredAndSortedBeans = sortBeans(filterBeans(beans));
 
   return (
     <div className="space-y-6">
@@ -57,6 +76,35 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
           Your Collection
         </h2>
         <div className="flex gap-4">
+          <div className="flex gap-2">
+            <Select value={selectedRoaster} onValueChange={setSelectedRoaster}>
+              <SelectTrigger className="w-[180px] bg-white">
+                <SelectValue placeholder="Filter by roaster" />
+              </SelectTrigger>
+              <SelectContent>
+                {uniqueRoasters.map((roaster) => (
+                  <SelectItem key={roaster} value={roaster}>
+                    {roaster === 'all' ? 'All Roasters' : roaster}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedRank} onValueChange={setSelectedRank}>
+              <SelectTrigger className="w-[180px] bg-white">
+                <SelectValue placeholder="Filter by ranking" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Rankings</SelectItem>
+                {[1, 2, 3, 4, 5].map((rank) => (
+                  <SelectItem key={rank} value={rank.toString()}>
+                    {rank} Star{rank !== 1 ? 's' : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
@@ -77,6 +125,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
           <div className="flex items-center border rounded-lg overflow-hidden">
             <Button
               variant={viewMode === 'tiles' ? 'default' : 'ghost'}
@@ -105,9 +154,15 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
             No coffee beans added yet. Start by adding your first coffee bean!
           </p>
         </div>
+      ) : filteredAndSortedBeans.length === 0 ? (
+        <div className="text-center py-16 bg-white/50 rounded-xl backdrop-blur-sm border border-gray-200 shadow-lg animate-fade-in">
+          <p className="text-gray-600 text-xl">
+            No coffee beans match your current filters.
+          </p>
+        </div>
       ) : viewMode === 'tiles' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sortedBeans.map((bean) => (
+          {filteredAndSortedBeans.map((bean) => (
             <CoffeeCard 
               key={bean.id} 
               bean={bean} 
@@ -118,7 +173,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd }: CollectionTa
         </div>
       ) : (
         <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-200">
-          {sortedBeans.map((bean) => (
+          {filteredAndSortedBeans.map((bean) => (
             <CoffeeListItem
               key={bean.id}
               bean={bean}
