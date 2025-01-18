@@ -34,12 +34,12 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [rank, setRank] = useState(5);
   const [orderAgain, setOrderAgain] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity-api-key') || '');
   const [dataSources, setDataSources] = useState<string[]>([]);
 
   const handleAutoPopulate = async (formData: FormData) => {
     const roaster = formData.get("roaster") as string;
     const name = formData.get("name") as string;
+    const apiKey = localStorage.getItem('perplexity-api-key');
 
     if (!roaster || !name) {
       toast({
@@ -53,7 +53,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     if (!apiKey) {
       toast({
         title: "API Key Required",
-        description: "Please enter your Perplexity API key to use auto-population.",
+        description: "Please enter your Perplexity API key in the settings section at the bottom of the main page.",
         variant: "destructive",
       });
       return;
@@ -63,7 +63,6 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     try {
       const details = await searchCoffeeDetails(roaster, name, apiKey);
       
-      // Update form with fetched details
       if (details.origin) {
         const originInput = document.querySelector('input[name="origin"]') as HTMLInputElement;
         if (originInput) originInput.value = details.origin;
@@ -181,20 +180,6 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
           <DialogTitle className="text-coffee-dark text-2xl">Add New Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="perplexity-api-key">Perplexity API Key (for auto-population)</Label>
-            <Input
-              id="perplexity-api-key"
-              type="password"
-              value={apiKey}
-              onChange={(e) => {
-                setApiKey(e.target.value);
-                localStorage.setItem('perplexity-api-key', e.target.value);
-              }}
-              placeholder="Enter your API key to enable auto-population"
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="roaster">Roaster</Label>

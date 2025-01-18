@@ -12,8 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getAIRecommendations } from "@/lib/aiRecommendations";
 import { fetchBeans } from "@/lib/api";
 
-const PERPLEXITY_API_KEY_STORAGE = 'perplexity-api-key';
-
 const Recommendations = () => {
   const [recommendationType, setRecommendationType] = useState<"preferences" | "journal">("preferences");
   const [preferences, setPreferences] = useState({
@@ -21,16 +19,7 @@ const Recommendations = () => {
     notes: "",
     priceRange: "",
   });
-  const [apiKey, setApiKey] = useState(() => {
-    return localStorage.getItem(PERPLEXITY_API_KEY_STORAGE) || "";
-  });
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem(PERPLEXITY_API_KEY_STORAGE, apiKey);
-    }
-  }, [apiKey]);
 
   const { data: journalBeans } = useQuery({
     queryKey: ["beans"],
@@ -40,8 +29,10 @@ const Recommendations = () => {
   const { data: recommendations, isLoading, refetch } = useQuery({
     queryKey: ["recommendations", recommendationType, preferences],
     queryFn: async () => {
+      const apiKey = localStorage.getItem('perplexity-api-key');
+      
       if (!apiKey) {
-        throw new Error("Please enter your Perplexity API key");
+        throw new Error("Please enter your Perplexity API key in the settings section at the bottom of the main page");
       }
 
       const controller = new AbortController();
@@ -208,8 +199,8 @@ const Recommendations = () => {
                 <Input
                   type="password"
                   placeholder="Enter your API key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
+                  value={localStorage.getItem('perplexity-api-key') || ""}
+                  readOnly
                   className="bg-background border-coffee/20"
                 />
                 <p className="text-sm text-coffee">
@@ -229,7 +220,7 @@ const Recommendations = () => {
             <Button
               className="w-full bg-coffee hover:bg-coffee-dark text-white"
               onClick={handleGetRecommendations}
-              disabled={isLoading || !apiKey}
+              disabled={isLoading || !localStorage.getItem('perplexity-api-key')}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Get Recommendations
@@ -260,3 +251,4 @@ const Recommendations = () => {
 };
 
 export default Recommendations;
+
