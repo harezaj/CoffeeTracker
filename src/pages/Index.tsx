@@ -131,20 +131,6 @@ const Index = () => {
     deleteBeanMutation.mutate(id);
   };
 
-  const getRecommendations = () => {
-    if (beans.length === 0) return [];
-    
-    const highestRated = beans.reduce((max, bean) => 
-      bean.rank > max.rank ? bean : max
-    );
-
-    return beans.filter(bean => 
-      bean.id !== highestRated.id && 
-      (bean.roastLevel === highestRated.roastLevel || 
-       bean.origin === highestRated.origin)
-    ).slice(0, 3);
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
@@ -225,19 +211,6 @@ const Index = () => {
                 ))}
               </div>
             </section>
-
-            {getRecommendations().length > 0 && (
-              <section>
-                <h2 className="text-3xl font-semibold text-gray-900 mb-6">
-                  Recommended Based on Your Taste
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {getRecommendations().map((bean) => (
-                    <CoffeeCard key={bean.id} bean={bean} />
-                  ))}
-                </div>
-              </section>
-            )}
           </div>
         )}
       </div>
