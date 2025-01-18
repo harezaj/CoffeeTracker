@@ -73,8 +73,8 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
 
   if (isRecommendation) {
     return (
-      <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
-        <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-2">
+      <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-card backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
+        <CardHeader className="bg-gradient-to-br from-white dark:from-gray-900 to-gray-50 dark:to-gray-950 border-b border-gray-100 dark:border-gray-800 pb-2">
           <div className="flex justify-between items-start">
             <div>
               <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
@@ -122,8 +122,8 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
   }
 
   return (
-    <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
-      <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
+    <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 dark:bg-card backdrop-blur-sm border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700">
+      <CardHeader className="bg-gradient-to-br from-white dark:from-gray-900 to-gray-50 dark:to-gray-950 border-b border-gray-100 dark:border-gray-800 pb-4">
         <div className="flex justify-between items-start">
           <div>
             <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
