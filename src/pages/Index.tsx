@@ -18,11 +18,11 @@ const Index = () => {
 
   const createBeanMutation = useMutation({
     mutationFn: createBean,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
       toast({
         title: "Success",
-        description: "Coffee bean added successfully",
+        description: `${data.name} has been added to your collection.`,
       });
     },
     onError: (error) => {
