@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Coffee, Sparkles, Download } from "lucide-react";
+import { Coffee, Sparkles, Download, Upload } from "lucide-react";
 import { importCoffeeBeans } from "@/lib/importData";
 
 export default function Index() {
@@ -69,6 +69,37 @@ export default function Index() {
     }
   };
 
+  const handleExport = () => {
+    try {
+      // Create a Blob containing the JSON data
+      const jsonData = JSON.stringify(beans, null, 2);
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      
+      // Create a download link and trigger it
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `coffee-journal-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Your coffee journal has been exported successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to export coffee journal.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
@@ -92,8 +123,18 @@ export default function Index() {
               className="flex items-center gap-2"
               onClick={handleImport}
             >
-              <Download className="h-4 w-4" />
+              <Upload className="h-4 w-4" />
               Import Data
+            </Button>
+          )}
+          {beans.length > 0 && (
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={handleExport}
+            >
+              <Download className="h-4 w-4" />
+              Export Journal
             </Button>
           )}
           <Link to="/recommendations">
