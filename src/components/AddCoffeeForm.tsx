@@ -16,6 +16,7 @@ import {
 import {
   AlertDialog,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
@@ -281,7 +282,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
             open={showDataSources} 
             onOpenChange={setShowDataSources}
           >
-            <AlertDialogContent className="relative">
+            <AlertDialogContent className="relative bg-white">
               <button
                 onClick={() => setShowDataSources(false)}
                 className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
@@ -291,6 +292,9 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </button>
               <AlertDialogHeader>
                 <AlertDialogTitle>Data Sources</AlertDialogTitle>
+                <AlertDialogDescription>
+                  The following sources were used to populate the coffee details:
+                </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="space-y-2">
                 <ul className="list-disc pl-4 space-y-2">
