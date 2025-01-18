@@ -119,18 +119,15 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
             <span className="text-gray-600">{(bean.weight / 28.35).toFixed(1)} oz</span>
           </div>
           
-          <div>
-            <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
-            <div className="flex flex-wrap gap-2">
-              {bean.notes.map((note) => (
-                <span
-                  key={note}
-                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-                >
-                  {note}
-                </span>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {bean.notes.map((note) => (
+              <span
+                key={note}
+                className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              >
+                {note}
+              </span>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -163,6 +160,17 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
         </div>
       </CardHeader>
       <CardContent className="pt-6">
+        <div className="flex flex-wrap gap-2 mb-4">
+          {bean.notes.map((note) => (
+            <span
+              key={note}
+              className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+            >
+              {note}
+            </span>
+          ))}
+        </div>
+
         <div className="flex items-center gap-2 mb-4">
           <div className="flex">
             {[...Array(5)].map((_, i) => (
@@ -183,20 +191,6 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
           }`}>
             {bean.orderAgain ? "Will Order Again" : "Won't Order Again"}
           </span>
-        </div>
-
-        <div className="mb-4">
-          <h4 className="text-gray-700 font-medium mb-2">Tasting Notes</h4>
-          <div className="flex flex-wrap gap-2">
-            {bean.notes.map((note) => (
-              <span
-                key={note}
-                className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-              >
-                {note}
-              </span>
-            ))}
-          </div>
         </div>
 
         <Accordion type="single" collapsible className="space-y-4">
