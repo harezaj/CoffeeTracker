@@ -280,7 +280,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="temperature">Temperature (°C)</Label>
-                <Input id="temperature" name="temperature" type="number" required />
+                <Input id="temperature" name="temperature" type="number" defaultValue={95} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="grindSize">Grind Size</Label>
