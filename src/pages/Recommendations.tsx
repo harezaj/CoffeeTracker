@@ -39,7 +39,7 @@ const Recommendations = () => {
       const apiKey = localStorage.getItem('perplexity-api-key');
       
       if (!apiKey) {
-        throw new Error("Please enter your Perplexity API key in the settings section at the bottom of the main page");
+        throw new Error("Please enter your Perplexity API key in the settings section");
       }
 
       const controller = new AbortController();
@@ -210,34 +210,10 @@ const Recommendations = () => {
               </p>
             )}
 
-            <div className="pt-4 border-t border-coffee/20">
-              <div className="space-y-2">
-                <Label className="text-coffee-dark">Perplexity API Key</Label>
-                <Input
-                  type="password"
-                  placeholder="Enter your API key"
-                  value={localStorage.getItem('perplexity-api-key') || ""}
-                  readOnly
-                  className="bg-background border-coffee/20"
-                />
-                <p className="text-sm text-coffee">
-                  Get your API key from{" "}
-                  <a
-                    href="https://www.perplexity.ai/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-coffee-dark hover:underline"
-                  >
-                    Perplexity AI
-                  </a>
-                </p>
-              </div>
-            </div>
-
             <Button
               className="w-full bg-coffee hover:bg-coffee-dark text-white"
               onClick={handleGetRecommendations}
-              disabled={isLoading || !localStorage.getItem('perplexity-api-key')}
+              disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Get Recommendations
