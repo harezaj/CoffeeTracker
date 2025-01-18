@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
 import { AddCoffeeForm } from "@/components/AddCoffeeForm";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [beans, setBeans] = useState<CoffeeBean[]>([]);
@@ -45,7 +47,12 @@ const Index = () => {
               Track your coffee journey and discover new favorites
             </p>
           </div>
-          <AddCoffeeForm onAdd={addBean} />
+          <div className="flex gap-4">
+            <Link to="/recommendations">
+              <Button variant="outline">Get AI Recommendations</Button>
+            </Link>
+            <AddCoffeeForm onAdd={addBean} />
+          </div>
         </div>
 
         {beans.length === 0 ? (
