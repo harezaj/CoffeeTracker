@@ -12,10 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 
 export function Settings() {
   const { toast } = useToast();
   const [apiKey, setApiKey] = useState("");
+  const [volumeUnit, setVolumeUnit] = useState<'ml' | 'oz'>('ml');
   const [costSettings, setCostSettings] = useState({
     milkPrice: "4.99",
     milkSize: "1000",
@@ -32,6 +37,11 @@ export function Settings() {
     const savedCostSettings = localStorage.getItem('costSettings');
     if (savedCostSettings) {
       setCostSettings(JSON.parse(savedCostSettings));
+    }
+
+    const savedVolumeUnit = localStorage.getItem('volumeUnit');
+    if (savedVolumeUnit) {
+      setVolumeUnit(savedVolumeUnit as 'ml' | 'oz');
     }
   }, []);
 
@@ -71,6 +81,32 @@ export function Settings() {
       title: "Success",
       description: "API key saved successfully.",
     });
+  };
+
+  const convertToOz = (ml: string) => (Number(ml) / 29.5735).toFixed(1);
+  const convertToMl = (oz: string) => (Number(oz) * 29.5735).toFixed(0);
+
+  const handleVolumeUnitChange = (value: string) => {
+    if (value && (value === 'ml' || value === 'oz')) {
+      setVolumeUnit(value);
+      localStorage.setItem('volumeUnit', value);
+
+      // Convert all volume values when unit changes
+      const newSettings = { ...costSettings };
+      if (value === 'oz') {
+        newSettings.milkSize = convertToOz(costSettings.milkSize);
+        newSettings.milkPerLatte = convertToOz(costSettings.milkPerLatte);
+        newSettings.syrupSize = convertToOz(costSettings.syrupSize);
+        newSettings.syrupPerLatte = convertToOz(costSettings.syrupPerLatte);
+      } else {
+        newSettings.milkSize = convertToMl(costSettings.milkSize);
+        newSettings.milkPerLatte = convertToMl(costSettings.milkPerLatte);
+        newSettings.syrupSize = convertToMl(costSettings.syrupSize);
+        newSettings.syrupPerLatte = convertToMl(costSettings.syrupPerLatte);
+      }
+      setCostSettings(newSettings);
+      localStorage.setItem('costSettings', JSON.stringify(newSettings));
+    }
   };
 
   const handleCostSettingChange = (key: keyof typeof costSettings, value: string) => {
@@ -131,6 +167,19 @@ export function Settings() {
             </div>
 
             <div className="space-y-2">
+              <h3 className="text-sm font-medium">Volume Unit</h3>
+              <ToggleGroup
+                type="single"
+                value={volumeUnit}
+                onValueChange={handleVolumeUnitChange}
+                className="border rounded-md"
+              >
+                <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
+                <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+
+            <div className="space-y-2">
               <h3 className="text-sm font-medium">Cost Analysis Settings</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -145,7 +194,7 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkSize">Milk Size (ml)</Label>
+                  <Label htmlFor="milkSize">Milk Size ({volumeUnit})</Label>
                   <Input
                     id="milkSize"
                     type="number"
@@ -155,7 +204,7 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkPerLatte">Milk per Latte (ml)</Label>
+                  <Label htmlFor="milkPerLatte">Milk per Latte ({volumeUnit})</Label>
                   <Input
                     id="milkPerLatte"
                     type="number"
@@ -176,7 +225,7 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupSize">Syrup Size (ml)</Label>
+                  <Label htmlFor="syrupSize">Syrup Size ({volumeUnit})</Label>
                   <Input
                     id="syrupSize"
                     type="number"
@@ -186,7 +235,7 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupPerLatte">Syrup per Latte (ml)</Label>
+                  <Label htmlFor="syrupPerLatte">Syrup per Latte ({volumeUnit})</Label>
                   <Input
                     id="syrupPerLatte"
                     type="number"

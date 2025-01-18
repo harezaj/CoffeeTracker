@@ -87,7 +87,7 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
   if (isRecommendation) {
     return (
       <Card className="w-full overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-gray-200 hover:border-gray-300">
-        <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-4">
+        <CardHeader className="bg-gradient-to-br from-white to-gray-50 border-b border-gray-100 pb-2">
           <div className="flex justify-between items-start">
             <div>
               <CardTitle className="text-gray-900 group-hover:text-gray-700 transition-colors">
@@ -113,7 +113,7 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="pt-6 space-y-4">
+        <CardContent className="pt-3 space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-lg font-semibold text-gray-900">${bean.price}</span>
             <span className="text-gray-600">{(bean.weight / 28.35).toFixed(1)} oz</span>
