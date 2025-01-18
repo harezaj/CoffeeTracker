@@ -1,5 +1,4 @@
 import * as esbuild from 'esbuild';
-import { createRequire } from 'module';
 
 esbuild.buildSync({
   entryPoints: ['src/server/index.ts'],
@@ -7,9 +6,6 @@ esbuild.buildSync({
   platform: 'node',
   target: 'node14',
   outfile: 'dist/server.js',
-  external: ['express', 'cors', 'better-sqlite3', 'path'],
-  format: 'esm',
 });
 
-const require = createRequire(import.meta.url);
-require('./dist/server.js');
+import('./dist/server.js');

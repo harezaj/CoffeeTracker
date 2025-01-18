@@ -1,11 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const db = new Database(path.join(__dirname, 'coffee.db'));
+const db = new Database('coffee.db');
 
 // Initialize the database with the coffee_beans table
 db.exec(`
