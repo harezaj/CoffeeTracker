@@ -18,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { createBean, updateBean, deleteBean } from "@/lib/api";
 
 export default function Index() {
   const { toast } = useToast();
@@ -40,6 +41,57 @@ export default function Index() {
 
     checkLastReminder();
   }, []);
+
+  const handleAddBean = async (bean: Omit<CoffeeBean, "id">) => {
+    try {
+      const newBean = await createBean(bean);
+      setBeans(prev => [...prev, newBean]);
+      toast({
+        title: "Success",
+        description: "Coffee bean added successfully!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add coffee bean.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateBean = async (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
+    try {
+      const updatedBean = await updateBean(id, updates);
+      setBeans(prev => prev.map(bean => bean.id === id ? updatedBean : bean));
+      toast({
+        title: "Success",
+        description: "Coffee bean updated successfully!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update coffee bean.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteBean = async (id: string) => {
+    try {
+      await deleteBean(id);
+      setBeans(prev => prev.filter(bean => bean.id !== id));
+      toast({
+        title: "Success",
+        description: "Coffee bean deleted successfully!",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete coffee bean.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleExport = () => {
     try {
