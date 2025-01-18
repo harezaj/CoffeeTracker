@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { CoffeeCard, type CoffeeBean } from "@/components/CoffeeCard";
@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getAIRecommendations } from "@/lib/aiRecommendations";
 import { fetchBeans } from "@/lib/api";
 
+const PERPLEXITY_API_KEY_STORAGE = 'perplexity-api-key';
+
 const Recommendations = () => {
   const [recommendationType, setRecommendationType] = useState<"preferences" | "journal">("preferences");
   const [preferences, setPreferences] = useState({
@@ -19,10 +21,17 @@ const Recommendations = () => {
     notes: "",
     priceRange: "",
   });
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(() => {
+    return localStorage.getItem(PERPLEXITY_API_KEY_STORAGE) || "";
+  });
   const { toast } = useToast();
 
-  // Fetch existing beans for journal-based recommendations
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem(PERPLEXITY_API_KEY_STORAGE, apiKey);
+    }
+  }, [apiKey]);
+
   const { data: journalBeans } = useQuery({
     queryKey: ["beans"],
     queryFn: fetchBeans,
