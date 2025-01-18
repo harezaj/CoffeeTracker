@@ -6,16 +6,38 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, deleteBean, updateBean } from "@/lib/api";
+import { populateJournal } from "@/lib/sampleData";
 
 const Index = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [version, setVersion] = useState(1);
+  const [isPopulating, setIsPopulating] = useState(false);
 
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
     queryFn: fetchBeans,
   });
+
+  const handlePopulateJournal = async () => {
+    setIsPopulating(true);
+    try {
+      await populateJournal();
+      queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Sample coffee beans have been added to your journal.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add sample coffee beans",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPopulating(false);
+    }
+  };
 
   const createBeanMutation = useMutation({
     mutationFn: createBean,
@@ -137,6 +159,15 @@ const Index = () => {
             <Link to="/recommendations">
               <Button variant="outline">Get AI Recommendations</Button>
             </Link>
+            {beans.length === 0 && (
+              <Button 
+                variant="outline" 
+                onClick={handlePopulateJournal}
+                disabled={isPopulating}
+              >
+                {isPopulating ? "Adding Samples..." : "Add Sample Beans"}
+              </Button>
+            )}
             <AddCoffeeForm onAdd={handleAddBean} />
           </div>
         </div>
