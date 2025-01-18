@@ -222,7 +222,20 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
                       <h4 className="font-medium">Data Sources:</h4>
                       <ul className="list-disc pl-4 space-y-1">
                         {dataSources.map((source, index) => (
-                          <li key={index} className="text-sm">{source}</li>
+                          <li key={index} className="text-sm">
+                            {source.startsWith('http') ? (
+                              <a 
+                                href={source} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-coffee hover:text-coffee-dark underline"
+                              >
+                                {source}
+                              </a>
+                            ) : (
+                              source
+                            )}
+                          </li>
                         ))}
                       </ul>
                     </div>
