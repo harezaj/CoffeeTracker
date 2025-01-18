@@ -15,7 +15,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 const Index = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [version, setVersion] = useState(1);
+  const [version] = useState("1.2.1");
   const [isPopulating, setIsPopulating] = useState(false);
   const [viewMode, setViewMode] = useState<'tiles' | 'list'>('tiles');
   const [selectedBean, setSelectedBean] = useState<CoffeeBean | null>(null);
