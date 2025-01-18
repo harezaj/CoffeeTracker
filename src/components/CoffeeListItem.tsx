@@ -8,6 +8,13 @@ interface CoffeeListItemProps {
 }
 
 export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
+  // Function to convert text to title case
+  const toTitleCase = (str: string) => {
+    return str.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
   return (
     <div
       onClick={onClick}
@@ -17,12 +24,12 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
         <div className="flex items-center gap-3">
           <div>
             <h3 className="text-base font-semibold text-coffee-dark group-hover:text-coffee">
-              {bean.name}
+              {toTitleCase(bean.name)}
             </h3>
-            <p className="text-sm text-coffee">by {bean.roaster}</p>
+            <p className="text-sm text-coffee">By {toTitleCase(bean.roaster)}</p>
             {bean.notes && (
               <p className="text-sm text-coffee mt-1 italic">
-                {bean.notes.join(', ')}
+                {bean.notes.map(note => toTitleCase(note)).join(', ')}
               </p>
             )}
           </div>
@@ -43,7 +50,7 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
           ))}
         </div>
         <div className="text-sm text-coffee">
-          {bean.roastLevel}
+          {toTitleCase(bean.roastLevel)}
         </div>
         <ChevronRight className="w-4 h-4 text-coffee group-hover:text-coffee-dark" />
       </div>
