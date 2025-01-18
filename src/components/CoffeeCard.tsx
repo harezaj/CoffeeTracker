@@ -9,6 +9,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { useState } from "react";
 
 export interface CoffeeBean {
   id: string;
@@ -35,6 +40,8 @@ interface CoffeeCardProps {
   onUpdate?: (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => void;
   isRecommendation?: boolean;
 }
+
+const convertToOz = (ml: number) => (ml / 29.5735).toFixed(1);
 
 const calculateCosts = (bean: CoffeeBean) => {
   const costSettings = localStorage.getItem('costSettings');
@@ -71,6 +78,11 @@ const calculateCosts = (bean: CoffeeBean) => {
 
 export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false }: CoffeeCardProps) {
   const costs = calculateCosts(bean);
+  const [volumeUnit, setVolumeUnit] = useState<'ml' | 'oz'>('ml');
+
+  const displayVolume = (ml: number) => {
+    return volumeUnit === 'ml' ? ml : convertToOz(ml);
+  };
 
   if (isRecommendation) {
     return (
@@ -234,6 +246,18 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-4 px-4">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-gray-600">Volume Unit</span>
+                <ToggleGroup
+                  type="single"
+                  value={volumeUnit}
+                  onValueChange={(value) => value && setVolumeUnit(value as 'ml' | 'oz')}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="ml" className="px-2 py-1">ml</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -246,7 +270,7 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Yield</span>
-                    <span className="font-medium">{bean.mlOut}ml</span>
+                    <span className="font-medium">{displayVolume(bean.mlOut)}{volumeUnit}</span>
                   </div>
                 </div>
                 <div className="space-y-2">
