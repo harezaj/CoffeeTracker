@@ -51,15 +51,36 @@ export default function Index() {
 
   const handleImport = async () => {
     try {
-      await importCoffeeBeans();
-      const saved = localStorage.getItem('coffeeBeans');
-      if (saved) {
-        setBeans(JSON.parse(saved));
-        toast({
-          title: "Success",
-          description: "Coffee beans have been imported successfully.",
-        });
-      }
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const jsonData = JSON.parse(e.target?.result as string);
+            setBeans(jsonData);
+            localStorage.setItem('coffeeBeans', JSON.stringify(jsonData));
+            toast({
+              title: "Success",
+              description: "Coffee beans have been imported successfully.",
+            });
+          } catch (error) {
+            toast({
+              title: "Error",
+              description: "Failed to parse JSON file.",
+              variant: "destructive",
+            });
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      input.click();
     } catch (error) {
       toast({
         title: "Error",
@@ -71,19 +92,14 @@ export default function Index() {
 
   const handleExport = () => {
     try {
-      // Create a Blob containing the JSON data
       const jsonData = JSON.stringify(beans, null, 2);
       const blob = new Blob([jsonData], { type: 'application/json' });
-      
-      // Create a download link and trigger it
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = `coffee-journal-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(link);
       link.click();
-      
-      // Clean up
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
@@ -128,14 +144,24 @@ export default function Index() {
             </Button>
           )}
           {beans.length > 0 && (
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
-              onClick={handleExport}
-            >
-              <Download className="h-4 w-4" />
-              Export Journal
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                onClick={handleImport}
+              >
+                <Upload className="h-4 w-4" />
+                Import
+              </Button>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-cream border-coffee/20 text-coffee-dark hover:bg-cream-dark/10"
+                onClick={handleExport}
+              >
+                <Download className="h-4 w-4" />
+                Export Journal
+              </Button>
+            </>
           )}
           <Link to="/recommendations">
             <Button 
