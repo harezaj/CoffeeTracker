@@ -23,6 +23,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { CoffeeBean } from "./CoffeeCard";
 import { searchCoffeeDetails } from "@/lib/coffeeSearch";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 
 interface AddCoffeeFormProps {
   onAdd: (bean: Omit<CoffeeBean, "id">) => void;
@@ -39,6 +43,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
   const [loading, setLoading] = useState(false);
   const [dataSources, setDataSources] = useState<{ url?: string; displayText: string }[]>([]);
   const [showDataSources, setShowDataSources] = useState(false);
+  const [weightUnit, setWeightUnit] = useState<'g' | 'oz'>('g');
 
   const handleAutoPopulate = async (formData: FormData) => {
     const roaster = formData.get("roaster") as string;
@@ -110,8 +115,6 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
         const temperatureInput = document.querySelector('input[name="temperature"]') as HTMLInputElement;
         if (temperatureInput) temperatureInput.value = details.temperature.toString();
       }
-
-      // Grind size is fixed at 10, so we don't auto-populate it
 
       if (details.sources) {
         const cleanedSources = details.sources.map(source => {
@@ -191,6 +194,10 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
+    // Convert weight to grams if needed
+    const inputWeight = Number(formData.get("weight"));
+    const weightInGrams = weightUnit === 'oz' ? inputWeight * 28.3495 : inputWeight;
+    
     const newBean = {
       name: formData.get("name") as string,
       roaster: formData.get("roaster") as string,
@@ -204,10 +211,10 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       brewTime: Number(formData.get("brewTime")),
       temperature: Number(formData.get("temperature")),
       price: Number(formData.get("price")),
-      weight: Number(formData.get("weight")),
+      weight: weightInGrams,
       orderAgain,
       grindSize: Number(formData.get("grindSize")),
-      purchaseCount: 1, // Add default purchase count
+      purchaseCount: 1,
     };
 
     onAdd(newBean);
@@ -347,8 +354,26 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               <Input id="price" name="price" type="number" step="0.01" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (g)</Label>
-              <Input id="weight" name="weight" type="number" required />
+              <Label htmlFor="weight">Weight</Label>
+              <div className="flex gap-2">
+                <Input 
+                  id="weight" 
+                  name="weight" 
+                  type="number" 
+                  step="0.1"
+                  required 
+                  className="flex-1"
+                />
+                <ToggleGroup
+                  type="single"
+                  value={weightUnit}
+                  onValueChange={(value) => value && setWeightUnit(value as 'g' | 'oz')}
+                  className="border rounded-md"
+                >
+                  <ToggleGroupItem value="g" className="px-2 py-1">g</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
             </div>
           </div>
 
