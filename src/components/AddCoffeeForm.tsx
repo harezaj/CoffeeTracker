@@ -117,21 +117,25 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
       if (details.sources) {
         const cleanedSources = details.sources.map(source => {
           try {
-            const urlRegex = /(https?:\/\/[^\s]+)/;
-            const match = source.match(urlRegex);
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const matches = source.match(urlRegex);
             
-            if (match) {
-              const url = match[0];
+            if (matches && matches.length > 0) {
+              const url = matches[0].replace(/[.,;]$/, '');
               let displayText = source.replace(url, '').trim();
               
               if (!displayText) {
-                const domain = new URL(url).hostname.replace('www.', '');
-                displayText = domain;
+                try {
+                  const domain = new URL(url).hostname.replace('www.', '');
+                  displayText = domain;
+                } catch {
+                  displayText = url;
+                }
               }
               
               return {
                 url,
-                displayText
+                displayText: displayText || url
               };
             }
             
@@ -139,7 +143,11 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               'Onyx Coffee Lab': 'https://onyxcoffeelab.com',
               'Beanz': 'https://beanz.com',
               'Crema': 'https://crema.co',
-              'Fellow Products': 'https://fellowproducts.com'
+              'Fellow Products': 'https://fellowproducts.com',
+              'Trade Coffee': 'https://www.drinktrade.com',
+              'Blue Bottle': 'https://bluebottlecoffee.com',
+              'Intelligentsia': 'https://www.intelligentsia.com',
+              'Counter Culture': 'https://counterculturecoffee.com'
             };
             
             for (const [domain, url] of Object.entries(knownDomains)) {
@@ -155,6 +163,7 @@ export function AddCoffeeForm({ onAdd }: AddCoffeeFormProps) {
               displayText: source
             };
           } catch (e) {
+            console.error('Error processing source:', e);
             return {
               displayText: source
             };
