@@ -34,14 +34,14 @@ export default function PurchaseHistory() {
       <div className="flex justify-between items-center mb-8">
         <Link to="/" className="flex items-center gap-4 group">
           <div className="relative">
-            <Coffee className="h-12 w-12 text-coffee scale-x-[-1]" />
-            <div className="absolute top-0 left-1/2 w-1 h-1 bg-coffee rounded-full opacity-0 group-hover:animate-[droplet_1s_ease-in-out_infinite]" />
+            <Coffee className="h-12 w-12 text-coffee dark:text-white scale-x-[-1]" />
+            <div className="absolute top-0 left-1/2 w-1 h-1 bg-coffee dark:bg-white rounded-full opacity-0 group-hover:animate-[droplet_1s_ease-in-out_infinite]" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-4xl font-black text-coffee-dark tracking-tight group-hover:text-coffee transition-colors">
+            <h1 className="text-4xl font-black text-coffee-dark dark:text-white tracking-tight group-hover:text-coffee dark:group-hover:text-cream transition-colors">
               Coffee Bean
             </h1>
-            <span className="text-xl font-light text-coffee-dark tracking-wider group-hover:text-coffee transition-colors">
+            <span className="text-xl font-light text-coffee-dark dark:text-white tracking-wider group-hover:text-coffee dark:group-hover:text-cream transition-colors">
               Journey
             </span>
           </div>
