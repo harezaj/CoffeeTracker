@@ -164,7 +164,7 @@ const Recommendations = () => {
                 <div className="space-y-2">
                   <Label>Price Range</Label>
                   <Select
-                    value={preferences.pricePrice}
+                    value={preferences.priceRange}
                     onValueChange={(value) =>
                       setPreferences({ ...preferences, priceRange: value })
                     }
