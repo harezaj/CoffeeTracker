@@ -91,29 +91,6 @@ const Recommendations = () => {
               Recommendation Settings
             </h2>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Perplexity API Key</Label>
-                <Input
-                  type="password"
-                  placeholder="Enter your API key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-                <p className="text-sm text-gray-500">
-                  Get your API key from{" "}
-                  <a
-                    href="https://www.perplexity.ai/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    Perplexity AI
-                  </a>
-                </p>
-              </div>
-            </div>
-            
             <RadioGroup
               value={recommendationType}
               onValueChange={(value: "preferences" | "journal") => setRecommendationType(value)}
@@ -187,6 +164,29 @@ const Recommendations = () => {
                 We'll analyze your highest-rated coffee entries to find similar options you might enjoy.
               </p>
             )}
+
+            <div className="pt-4 border-t border-gray-200">
+              <div className="space-y-2">
+                <Label>Perplexity API Key</Label>
+                <Input
+                  type="password"
+                  placeholder="Enter your API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+                <p className="text-sm text-gray-500">
+                  Get your API key from{" "}
+                  <a
+                    href="https://www.perplexity.ai/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    Perplexity AI
+                  </a>
+                </p>
+              </div>
+            </div>
 
             <Button
               className="w-full"
