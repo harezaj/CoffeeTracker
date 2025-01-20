@@ -1,64 +1,80 @@
 import { CoffeeBean } from "@/components/CoffeeCard";
+import { supabase } from "./supabase";
 
-// Helper function to generate unique IDs
-const generateId = () => Math.random().toString(36).substr(2, 9);
-
-// Get beans from localStorage
 export const fetchBeans = async (): Promise<CoffeeBean[]> => {
-  try {
-    const beans = localStorage.getItem('coffeeBeans');
-    console.log('Fetched beans from localStorage:', beans);
-    return beans ? JSON.parse(beans) : [];
-  } catch (error) {
+  const { data, error } = await supabase
+    .from('coffee_beans')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
     console.error('Error fetching beans:', error);
-    return [];
+    throw error;
   }
+
+  return data.map(bean => ({
+    ...bean,
+    id: bean.id,
+    notes: bean.notes || [],
+  }));
 };
 
-// Save a new bean to localStorage
 export const createBean = async (bean: Omit<CoffeeBean, "id">): Promise<CoffeeBean> => {
-  try {
-    const beans = await fetchBeans();
-    const newBean = { ...bean, id: generateId(), purchaseCount: 1 };
-    const updatedBeans = [...beans, newBean];
-    console.log('Saving beans to localStorage:', updatedBeans);
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    return newBean;
-  } catch (error) {
+  const { data, error } = await supabase
+    .from('coffee_beans')
+    .insert([bean])
+    .select()
+    .single();
+
+  if (error) {
     console.error('Error creating bean:', error);
     throw error;
   }
+
+  return {
+    ...data,
+    notes: data.notes || [],
+  };
 };
 
-// Update an existing bean in localStorage
 export const updateBean = async (id: string, updates: Partial<Omit<CoffeeBean, "id">>): Promise<CoffeeBean> => {
-  try {
-    const beans = await fetchBeans();
-    const index = beans.findIndex(bean => bean.id === id);
-    if (index === -1) throw new Error('Bean not found');
-    
-    const updatedBean = { ...beans[index], ...updates };
-    const updatedBeans = [...beans];
-    updatedBeans[index] = updatedBean;
-    
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    console.log('Bean updated, new data:', updatedBean);
-    return updatedBean;
-  } catch (error) {
+  const { data, error } = await supabase
+    .from('coffee_beans')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
     console.error('Error updating bean:', error);
+    throw error;
+  }
+
+  return {
+    ...data,
+    notes: data.notes || [],
+  };
+};
+
+export const deleteBean = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from('coffee_beans')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting bean:', error);
     throw error;
   }
 };
 
-// Delete a bean from localStorage
-export const deleteBean = async (id: string): Promise<void> => {
-  try {
-    const beans = await fetchBeans();
-    const updatedBeans = beans.filter(bean => bean.id !== id);
-    localStorage.setItem('coffeeBeans', JSON.stringify(updatedBeans));
-    console.log('Bean deleted, remaining beans:', updatedBeans);
-  } catch (error) {
-    console.error('Error deleting bean:', error);
+export const importCoffeeBeans = async (beans: Omit<CoffeeBean, "id">[]): Promise<void> => {
+  const { error } = await supabase
+    .from('coffee_beans')
+    .insert(beans);
+
+  if (error) {
+    console.error('Error importing beans:', error);
     throw error;
   }
 };
