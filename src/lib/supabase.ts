@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import type { CoffeeBean } from '@/components/CoffeeCard';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://zeqzaatunpiijrcumhse.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcXphYXR1bnBpaWpyY3VtaHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MDk5MTYsImV4cCI6MjA1Mjk4NTkxNn0.XPYg9FhzJJ0REKLsVd5EJFuT87kqHGC3f1PaPt4TtmE';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
