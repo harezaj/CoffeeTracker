@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Recommendations from "./pages/Recommendations";
 import PurchaseHistory from "./pages/PurchaseHistory";
+import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/purchase-history" element={<PurchaseHistory />} />
+            <Route path="/analytics" element={<Analytics />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
