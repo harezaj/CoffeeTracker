@@ -29,7 +29,7 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
             <p className="text-sm text-coffee dark:text-gray-400">By {toTitleCase(bean.roaster)}</p>
             {bean.notes && (
               <p className="text-sm text-coffee dark:text-gray-500 mt-1 italic">
-                {bean.notes.map(note => toTitleCase(note)).join(', ')}
+                {bean.notes.map(note => note.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')).join(', ')}
               </p>
             )}
           </div>
