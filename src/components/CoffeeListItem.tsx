@@ -13,15 +13,22 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
     // List of words that should not be capitalized (unless they're the first word)
     const minorWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'to', 'at', 'by', 'of']);
     
+    // Handle hyphenated words
+    if (str.includes('-')) {
+      return str.split('-').map(word => toTitleCase(word)).join('-');
+    }
+    
     return str.split(' ').map((word, index) => {
-      // If it's the first word, always capitalize it
-      if (index === 0) {
+      // Convert word to lowercase first
+      const lowercaseWord = word.toLowerCase();
+      
+      // If it's the first word or not a minor word
+      if (index === 0 || !minorWords.has(lowercaseWord)) {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       }
-      // For other words, check if they're in the minorWords list
-      return minorWords.has(word.toLowerCase())
-        ? word.toLowerCase()
-        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      
+      // For minor words
+      return lowercaseWord;
     }).join(' ');
   };
 
@@ -37,7 +44,7 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
               {toTitleCase(bean.name)}
             </h3>
             <p className="text-sm text-coffee dark:text-gray-400">By {toTitleCase(bean.roaster)}</p>
-            {bean.notes && (
+            {bean.notes && bean.notes.length > 0 && (
               <p className="text-sm text-coffee dark:text-gray-500 mt-1 italic">
                 {bean.notes.map(note => toTitleCase(note)).join(', ')}
               </p>
