@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
 import { Settings } from "@/components/Settings";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Coffee, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
 import type { CoffeeBean } from "@/components/CoffeeCard";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
