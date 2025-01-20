@@ -8,11 +8,21 @@ interface CoffeeListItemProps {
 }
 
 export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
-  // Function to convert text to title case
+  // Function to convert text to proper title case, handling special cases
   const toTitleCase = (str: string) => {
-    return str.replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+    // List of words that should not be capitalized (unless they're the first word)
+    const minorWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'to', 'at', 'by', 'of']);
+    
+    return str.split(' ').map((word, index) => {
+      // If it's the first word, always capitalize it
+      if (index === 0) {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      // For other words, check if they're in the minorWords list
+      return minorWords.has(word.toLowerCase())
+        ? word.toLowerCase()
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
   };
 
   return (
