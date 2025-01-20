@@ -1,13 +1,12 @@
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { createBean } from "./api";
 
-const parsePrice = (price: string): number => {
+const parsePrice = (price: string | number): number => {
   return Number(price);
 };
 
-const parseWeight = (oz: string): number => {
-  // Convert oz to grams (1 oz ≈ 28.3495 g)
-  return Math.round(Number(oz) * 28.3495);
+const parseWeight = (weight: string | number): number => {
+  return Number(weight);
 };
 
 const parseDoseAndTime = (doseTime: string | null): { gramsIn: number; mlOut: number; brewTime: number } => {
@@ -26,16 +25,17 @@ const parseDoseAndTime = (doseTime: string | null): { gramsIn: number; mlOut: nu
 
 const parseRoastLevel = (roast: string | null): string => {
   if (!roast) return "Medium";
-  return roast as string;
+  return roast;
 };
 
-const parseGrindSize = (grind: string | null): number => {
+const parseGrindSize = (grind: string | number | null): number => {
   if (!grind) return 15;
   return Number(grind);
 };
 
-const parseNotes = (notes: string | null): string[] => {
+const parseNotes = (notes: string[] | string | null): string[] => {
   if (!notes) return [];
+  if (Array.isArray(notes)) return notes;
   return notes.split(',').map(note => note.trim());
 };
 
@@ -50,54 +50,37 @@ export const importCoffeeData = async (data: any[]) => {
   console.log("Starting to import coffee beans...");
   
   for (const item of data) {
-    if (!item.Name && !item.name) continue;
+    if (!item.name) continue;
 
-    // Handle both old format and new format
-    const isNewFormat = !!item.name;
-    
-    if (isNewFormat) {
-      try {
-        // For beans exported with cost analysis
-        if (item.costAnalysis?.costSettings) {
-          parseCostAnalysis(item.costAnalysis);
-        }
-        
-        // Remove the costAnalysis field before creating the bean
-        const { costAnalysis, ...beanData } = item;
-        await createBean(beanData);
-        console.log(`Imported: ${item.name}`);
-      } catch (error) {
-        console.error(`Failed to import ${item.name}:`, error);
+    try {
+      // For beans exported with cost analysis
+      if (item.costAnalysis?.costSettings) {
+        parseCostAnalysis(item.costAnalysis);
       }
-    } else {
-      // Handle old format import
-      const { gramsIn, mlOut, brewTime } = parseDoseAndTime(item["Dose and time"]);
       
       const beanData = {
-        name: item.Name,
-        roaster: item.Name.split(" ")[0],
-        origin: "Not specified",
-        roastLevel: parseRoastLevel(item.Roast),
-        notes: parseNotes(item.Notes),
-        generalNotes: item["Dose and time"] || "",
-        rank: 3,
-        gramsIn,
-        mlOut,
-        brewTime,
-        temperature: 93,
-        price: parsePrice(item.Price),
-        weight: parseWeight(item.Oz),
-        orderAgain: true,
-        grindSize: parseGrindSize(item["Grind Setting"]),
-        purchaseCount: 1,
+        name: item.name,
+        roaster: item.roaster,
+        origin: item.origin || "Not specified",
+        roastLevel: parseRoastLevel(item.roastLevel),
+        notes: parseNotes(item.notes),
+        generalNotes: item.generalNotes || "",
+        rank: Number(item.rank) || 3,
+        gramsIn: Number(item.gramsIn) || 18,
+        mlOut: Number(item.mlOut) || 36,
+        brewTime: Number(item.brewTime) || 25,
+        temperature: Number(item.temperature) || 93,
+        price: parsePrice(item.price),
+        weight: parseWeight(item.weight),
+        orderAgain: item.orderAgain !== false,
+        grindSize: parseGrindSize(item.grindSize),
+        purchaseCount: Number(item.purchaseCount) || 1,
       };
 
-      try {
-        await createBean(beanData);
-        console.log(`Imported: ${item.Name}`);
-      } catch (error) {
-        console.error(`Failed to import ${item.Name}:`, error);
-      }
+      await createBean(beanData);
+      console.log(`Imported: ${item.name}`);
+    } catch (error) {
+      console.error(`Failed to import ${item.name}:`, error);
     }
   }
 
