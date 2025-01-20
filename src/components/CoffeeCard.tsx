@@ -53,6 +53,13 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
   const [weightUnit, setWeightUnit] = useState<'oz' | 'kg'>('oz');
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
+  const toTitleCase = (str: string) => {
+    if (!str) return '';
+    return str.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const displayVolume = (ml: number) => {
     return volumeUnit === 'ml' ? ml : convertToOz(ml);
   };
@@ -112,7 +119,7 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
                 key={note}
                 className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#222222] text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-[#2A2A2A] transition-colors"
               >
-                {note}
+                {toTitleCase(note)}
               </span>
             ))}
           </div>
@@ -164,7 +171,7 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
               key={note}
               className="px-3 py-1 rounded-full bg-gray-100 dark:bg-[#222222] text-gray-700 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-[#2A2A2A] transition-colors"
             >
-              {note}
+              {toTitleCase(note)}
             </span>
           ))}
         </div>
