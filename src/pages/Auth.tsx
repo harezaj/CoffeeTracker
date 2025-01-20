@@ -19,7 +19,7 @@ export default function Auth() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-[#121212] p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-cream-light dark:bg-[#121212] p-4">
       <div className="flex items-center gap-4 mb-8 group">
         <div className="relative">
           <Coffee className="h-12 w-12 text-coffee dark:text-white scale-x-[-1] transform transition-transform group-hover:scale-x-[-1.1] group-hover:scale-y-[1.1]" />
@@ -42,11 +42,58 @@ export default function Auth() {
             variables: {
               default: {
                 colors: {
-                  brand: '#4A3428',
-                  brandAccent: '#6B4C3C',
+                  brand: '#967259',
+                  brandAccent: '#634832',
+                  inputBackground: 'white',
+                  inputText: '#333333',
+                  inputBorder: '#E6D5C3',
+                  inputBorderFocus: '#967259',
+                  inputBorderHover: '#634832',
+                  defaultButtonBackground: '#967259',
+                  defaultButtonBackgroundHover: '#634832',
+                  defaultButtonBorder: 'transparent',
+                  defaultButtonText: 'white',
+                  dividerBackground: '#E6D5C3',
+                },
+                space: {
+                  inputPadding: '0.75rem',
+                  buttonPadding: '0.75rem',
+                },
+                borderWidths: {
+                  buttonBorderWidth: '1px',
+                  inputBorderWidth: '1px',
+                },
+                radii: {
+                  borderRadiusButton: '0.5rem',
+                  buttonBorderRadius: '0.5rem',
+                  inputBorderRadius: '0.5rem',
+                },
+              },
+              dark: {
+                colors: {
+                  brandAccent: '#967259',
+                  defaultButtonBackground: '#967259',
+                  defaultButtonBackgroundHover: '#634832',
+                  inputBackground: '#1a1a1a',
+                  inputBorder: '#333333',
+                  inputBorderFocus: '#967259',
+                  inputBorderHover: '#634832',
+                  inputText: '#ffffff',
                 }
               }
-            }
+            },
+            style: {
+              button: {
+                fontWeight: '500',
+              },
+              anchor: {
+                color: '#967259',
+                textDecoration: 'none',
+              },
+              message: {
+                color: '#967259',
+              },
+            },
           }}
           providers={[]}
         />
