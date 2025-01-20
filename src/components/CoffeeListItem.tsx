@@ -8,35 +8,23 @@ interface CoffeeListItemProps {
 }
 
 export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
-  // Function to convert text to proper title case, handling special cases
   const toTitleCase = (str: string) => {
-    // List of words that should not be capitalized (unless they're the first word)
-    const minorWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'to', 'at', 'by', 'of']);
-    
-    // Function to capitalize first letter of each word
-    const capitalizeWord = (word: string) => {
-      if (!word) return '';
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    };
-
     // Handle empty strings
     if (!str) return '';
 
-    // Split by hyphens first, then handle each part
-    const parts = str.split('-').map(part => {
-      // For each hyphenated part, split by commas
-      return part.split(',').map(subPart => {
-        // Process each word in the subpart
-        const words = subPart.trim().split(' ');
-        return words.map((word, index) => {
-          const lowerWord = word.toLowerCase();
-          // Always capitalize first word or non-minor words
-          return (index === 0 || !minorWords.has(lowerWord)) ? capitalizeWord(word) : lowerWord;
-        }).join(' ');
-      }).join(', '); // Rejoin comma parts
-    }).join('-'); // Rejoin hyphenated parts
-
-    return parts;
+    // Split the string into words, handling commas and hyphens
+    return str.split(/[\s,-]+/)
+      .map(word => {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join(' ')
+      .split(',')
+      .map(part => part.trim())
+      .join(', ')
+      .split('-')
+      .map(part => part.trim())
+      .join('-');
   };
 
   return (
