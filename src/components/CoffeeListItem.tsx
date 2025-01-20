@@ -9,21 +9,39 @@ interface CoffeeListItemProps {
 
 export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
   const toTitleCase = (str: string) => {
-    // Handle empty strings
     if (!str) return '';
+    
+    // List of words to keep lowercase unless they're the first word
+    const minorWords = new Set([
+      'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 
+      'nor', 'of', 'on', 'or', 'so', 'the', 'to', 'up', 'yet'
+    ]);
 
-    // Split the string into words, handling commas and hyphens
-    return str.split(/[\s,-]+/)
-      .map(word => {
-        if (!word) return '';
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(' ')
-      .split(',')
-      .map(part => part.trim())
-      .join(', ')
+    // Split by delimiters and process each part
+    const processText = (text: string, isFirstWord: boolean) => {
+      return text
+        .toLowerCase()
+        .split(' ')
+        .map((word, index) => {
+          // Capitalize if it's the first word in the phrase or not a minor word
+          if (isFirstWord && index === 0 || !minorWords.has(word)) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          }
+          return word;
+        })
+        .join(' ');
+    };
+
+    // Handle hyphenated phrases first
+    return str
       .split('-')
-      .map(part => part.trim())
+      .map((part, index) => {
+        // For each hyphenated part, handle comma-separated phrases
+        return part
+          .split(',')
+          .map((phrase, phraseIndex) => processText(phrase.trim(), index === 0 && phraseIndex === 0))
+          .join(', ');
+      })
       .join('-');
   };
 
