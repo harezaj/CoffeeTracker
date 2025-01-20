@@ -36,8 +36,8 @@ export default function Index() {
           .from('profiles')
           .select('username, avatar_url')
           .eq('id', user.id)
-          .single();
-        setProfile(data);
+          .maybeSingle();  // Changed from .single() to .maybeSingle()
+        setProfile(data || { username: null, avatar_url: null });  // Provide default value if no profile found
       }
     };
     fetchProfile();
