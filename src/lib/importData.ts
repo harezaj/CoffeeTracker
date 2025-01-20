@@ -49,10 +49,18 @@ const parseCostAnalysis = (costAnalysis: any) => {
 export const importCoffeeData = async (data: any[]) => {
   console.log("Starting to import coffee beans...");
   
-  for (const item of data) {
-    if (!item.name) continue;
+  // Convert object with numeric keys to array if necessary
+  const beansArray = Array.isArray(data) ? data : Object.values(data);
+  
+  for (const item of beansArray) {
+    if (!item || !item.name) {
+      console.log("Skipping invalid item:", item);
+      continue;
+    }
 
     try {
+      console.log("Processing bean:", item.name);
+      
       // For beans exported with cost analysis
       if (item.costAnalysis?.costSettings) {
         parseCostAnalysis(item.costAnalysis);
@@ -77,10 +85,11 @@ export const importCoffeeData = async (data: any[]) => {
         purchaseCount: Number(item.purchaseCount) || 1,
       };
 
+      console.log("Prepared bean data:", beanData);
       await createBean(beanData);
-      console.log(`Imported: ${item.name}`);
+      console.log(`Successfully imported: ${item.name}`);
     } catch (error) {
-      console.error(`Failed to import ${item.name}:`, error);
+      console.error(`Failed to import ${item?.name || 'unknown'}:`, error);
     }
   }
 
