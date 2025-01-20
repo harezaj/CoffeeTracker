@@ -13,22 +13,27 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
     // List of words that should not be capitalized (unless they're the first word)
     const minorWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'to', 'at', 'by', 'of']);
     
-    // Handle hyphenated words
+    // Handle hyphenated phrases
     if (str.includes('-')) {
-      return str.split('-').map(word => toTitleCase(word)).join('-');
+      return str.split('-').map(part => toTitleCase(part)).join('-');
     }
     
+    // Handle comma-separated phrases
+    if (str.includes(',')) {
+      return str.split(',').map(part => toTitleCase(part.trim())).join(', ');
+    }
+
     return str.split(' ').map((word, index) => {
-      // Convert word to lowercase first
-      const lowercaseWord = word.toLowerCase();
+      // Remove any non-letter characters from the start of the word
+      const cleanWord = word.toLowerCase();
       
       // If it's the first word or not a minor word
-      if (index === 0 || !minorWords.has(lowercaseWord)) {
+      if (index === 0 || !minorWords.has(cleanWord)) {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
       }
       
       // For minor words
-      return lowercaseWord;
+      return cleanWord;
     }).join(' ');
   };
 
