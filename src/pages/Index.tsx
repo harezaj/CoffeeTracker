@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
 import type { CoffeeBean } from "@/components/CoffeeCard";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,16 +19,28 @@ import {
 
 export default function Index() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const { data: beans = [] } = useQuery({
+  const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
-    queryFn: fetchBeans
+    queryFn: fetchBeans,
   });
 
   const createMutation = useMutation({
     mutationFn: createBean,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee bean added successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to add coffee bean. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -36,6 +49,17 @@ export default function Index() {
       updateBean(id, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee bean updated successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update coffee bean. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -43,6 +67,17 @@ export default function Index() {
     mutationFn: deleteBean,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beans'] });
+      toast({
+        title: "Success",
+        description: "Coffee bean deleted successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete coffee bean. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -57,6 +92,17 @@ export default function Index() {
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
   };
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 p-4 rounded-lg">
+          <h2 className="text-red-800 dark:text-red-200 text-lg font-semibold">Error Loading Data</h2>
+          <p className="text-red-600 dark:text-red-300">Failed to load coffee beans. Please try refreshing the page.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 space-y-8">
@@ -111,6 +157,7 @@ export default function Index() {
             onDelete={handleDelete}
             onUpdate={handleUpdate}
             onAdd={handleAdd}
+            isLoading={isLoading}
           />
         </TabsContent>
         <TabsContent value="wishlist">
