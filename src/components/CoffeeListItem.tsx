@@ -15,40 +15,28 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
     
     // Function to capitalize first letter of each word
     const capitalizeWord = (word: string) => {
+      if (!word) return '';
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     };
 
     // Handle empty strings
     if (!str) return '';
 
-    // Handle hyphenated phrases
-    if (str.includes('-')) {
-      return str.split('-')
-        .map((part, index) => toTitleCase(part.trim()))
-        .join('-');
-    }
-    
-    // Handle comma-separated phrases
-    if (str.includes(',')) {
-      return str.split(',')
-        .map((part, index) => toTitleCase(part.trim()))
-        .join(', ');
-    }
+    // Split by hyphens first, then handle each part
+    const parts = str.split('-').map(part => {
+      // For each hyphenated part, split by commas
+      return part.split(',').map(subPart => {
+        // Process each word in the subpart
+        const words = subPart.trim().split(' ');
+        return words.map((word, index) => {
+          const lowerWord = word.toLowerCase();
+          // Always capitalize first word or non-minor words
+          return (index === 0 || !minorWords.has(lowerWord)) ? capitalizeWord(word) : lowerWord;
+        }).join(' ');
+      }).join(', '); // Rejoin comma parts
+    }).join('-'); // Rejoin hyphenated parts
 
-    // Split the string into words
-    const words = str.trim().split(' ');
-    
-    // Capitalize each word unless it's a minor word (but always capitalize the first word)
-    return words.map((word, index) => {
-      const lowerWord = word.toLowerCase();
-      
-      // Always capitalize the first word or if it's not a minor word
-      if (index === 0 || !minorWords.has(lowerWord)) {
-        return capitalizeWord(word);
-      }
-      
-      return lowerWord;
-    }).join(' ');
+    return parts;
   };
 
   return (
