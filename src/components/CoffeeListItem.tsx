@@ -13,27 +13,41 @@ export function CoffeeListItem({ bean, onClick }: CoffeeListItemProps) {
     // List of words that should not be capitalized (unless they're the first word)
     const minorWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'in', 'to', 'at', 'by', 'of']);
     
+    // Function to capitalize first letter of each word
+    const capitalizeWord = (word: string) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    };
+
+    // Handle empty strings
+    if (!str) return '';
+
     // Handle hyphenated phrases
     if (str.includes('-')) {
-      return str.split('-').map(part => toTitleCase(part)).join('-');
+      return str.split('-')
+        .map((part, index) => toTitleCase(part.trim()))
+        .join('-');
     }
     
     // Handle comma-separated phrases
     if (str.includes(',')) {
-      return str.split(',').map(part => toTitleCase(part.trim())).join(', ');
+      return str.split(',')
+        .map((part, index) => toTitleCase(part.trim()))
+        .join(', ');
     }
 
-    return str.split(' ').map((word, index) => {
-      // Remove any non-letter characters from the start of the word
-      const cleanWord = word.toLowerCase();
+    // Split the string into words
+    const words = str.trim().split(' ');
+    
+    // Capitalize each word unless it's a minor word (but always capitalize the first word)
+    return words.map((word, index) => {
+      const lowerWord = word.toLowerCase();
       
-      // If it's the first word or not a minor word
-      if (index === 0 || !minorWords.has(cleanWord)) {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      // Always capitalize the first word or if it's not a minor word
+      if (index === 0 || !minorWords.has(lowerWord)) {
+        return capitalizeWord(word);
       }
       
-      // For minor words
-      return cleanWord;
+      return lowerWord;
     }).join(' ');
   };
 
