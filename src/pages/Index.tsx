@@ -94,11 +94,6 @@ export default function Index() {
                   AI Recommendations
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/analytics" className="cursor-pointer">
-                  Analytics
-                </Link>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Settings />
