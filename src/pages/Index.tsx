@@ -20,6 +20,20 @@ import {
 export default function Index() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      navigate('/auth');
+    }
+  };
 
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ['beans'],
@@ -139,6 +153,9 @@ export default function Index() {
                 <Link to="/recommendations" className="cursor-pointer">
                   AI Recommendations
                 </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 dark:text-red-400">
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

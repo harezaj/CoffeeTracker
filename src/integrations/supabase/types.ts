@@ -9,7 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      coffee_beans: {
+        Row: {
+          brew_time: number | null
+          created_at: string | null
+          general_notes: string | null
+          grams_in: number | null
+          grind_size: number | null
+          id: string
+          ml_out: number | null
+          name: string
+          notes: string[] | null
+          order_again: boolean | null
+          origin: string | null
+          price: number | null
+          purchase_count: number | null
+          rank: number | null
+          roast_level: string | null
+          roaster: string
+          temperature: number | null
+          updated_at: string | null
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          brew_time?: number | null
+          created_at?: string | null
+          general_notes?: string | null
+          grams_in?: number | null
+          grind_size?: number | null
+          id?: string
+          ml_out?: number | null
+          name: string
+          notes?: string[] | null
+          order_again?: boolean | null
+          origin?: string | null
+          price?: number | null
+          purchase_count?: number | null
+          rank?: number | null
+          roast_level?: string | null
+          roaster: string
+          temperature?: number | null
+          updated_at?: string | null
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          brew_time?: number | null
+          created_at?: string | null
+          general_notes?: string | null
+          grams_in?: number | null
+          grind_size?: number | null
+          id?: string
+          ml_out?: number | null
+          name?: string
+          notes?: string[] | null
+          order_again?: boolean | null
+          origin?: string | null
+          price?: number | null
+          purchase_count?: number | null
+          rank?: number | null
+          roast_level?: string | null
+          roaster?: string
+          temperature?: number | null
+          updated_at?: string | null
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      wishlist_beans: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          roaster: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          roaster: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          roaster?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
