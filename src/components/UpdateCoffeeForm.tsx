@@ -1,13 +1,6 @@
 import { useState } from "react";
-import { Pencil, X } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CoffeeBean } from "./CoffeeCard";
+import { BasicDetails } from "./coffee-form/BasicDetails";
+import { PurchaseDetails } from "./coffee-form/PurchaseDetails";
+import { RankingSection } from "./coffee-form/RankingSection";
+import { BrewingDetails } from "./coffee-form/BrewingDetails";
+import { TastingNotes } from "./coffee-form/TastingNotes";
+import { OrderAgainToggle } from "./coffee-form/OrderAgainToggle";
 
 interface UpdateCoffeeFormProps {
   bean: CoffeeBean;
@@ -77,159 +76,51 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
           <DialogTitle className="text-gray-900 dark:text-white text-2xl">Update Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="dark:text-gray-200">Bean Name</Label>
-              <Input id="name" name="name" defaultValue={bean.name} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="roaster" className="dark:text-gray-200">Roaster</Label>
-              <Input id="roaster" name="roaster" defaultValue={bean.roaster} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="origin" className="dark:text-gray-200">Origin</Label>
-              <Input id="origin" name="origin" defaultValue={bean.origin} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="roastLevel" className="dark:text-gray-200">Roast Level</Label>
-              <select
-                id="roastLevel"
-                name="roastLevel"
-                defaultValue={bean.roastLevel}
-                className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white"
-                required
-              >
-                <option value="Light">Light</option>
-                <option value="Medium-Light">Medium-Light</option>
-                <option value="Medium">Medium</option>
-                <option value="Medium-Dark">Medium-Dark</option>
-                <option value="Dark">Dark</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price" className="dark:text-gray-200">Price ($)</Label>
-              <Input id="price" name="price" type="number" step="0.01" defaultValue={bean.price} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight" className="dark:text-gray-200">Weight</Label>
-              <div className="flex gap-2">
-                <Input 
-                  id="weight" 
-                  name="weight" 
-                  type="number"
-                  step="0.1"
-                  defaultValue={weightUnit === 'oz' ? bean.weight / 28.3495 : bean.weight}
-                  required 
-                  className="flex-1 dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white"
-                />
-                <ToggleGroup
-                  type="single"
-                  value={weightUnit}
-                  onValueChange={(value) => value && setWeightUnit(value as 'g' | 'oz')}
-                  className="border rounded-md dark:border-gray-700"
-                >
-                  <ToggleGroupItem value="g" className="px-2 py-1 dark:data-[state=on]:bg-gray-700">g</ToggleGroupItem>
-                  <ToggleGroupItem value="oz" className="px-2 py-1 dark:data-[state=on]:bg-gray-700">oz</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="dark:text-gray-200">Rank</Label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <Button
-                  key={value}
-                  type="button"
-                  variant={rank >= value ? "default" : "outline"}
-                  className={`${rank >= value ? "dark:bg-coffee dark:text-white" : "dark:border-gray-700 dark:text-gray-300"}`}
-                  onClick={() => setRank(value)}
-                >
-                  {value}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
-            <h4 className="text-gray-900 dark:text-white font-medium mb-4">Brew Details</h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="gramsIn" className="dark:text-gray-200">Dose (g)</Label>
-                <Input id="gramsIn" name="gramsIn" type="number" step="0.1" defaultValue={bean.gramsIn} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="mlOut" className="dark:text-gray-200">Yield (ml)</Label>
-                <Input id="mlOut" name="mlOut" type="number" step="0.1" defaultValue={bean.mlOut} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="brewTime" className="dark:text-gray-200">Brew Time (s)</Label>
-                <Input id="brewTime" name="brewTime" type="number" defaultValue={bean.brewTime} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="temperature" className="dark:text-gray-200">Temperature (°C)</Label>
-                <Input id="temperature" name="temperature" type="number" defaultValue={bean.temperature} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="grindSize" className="dark:text-gray-200">Grind Size</Label>
-                <Input id="grindSize" name="grindSize" type="number" step="0.1" defaultValue={bean.grindSize} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="orderAgain" className="dark:text-gray-200">Order Again</Label>
-              <Switch
-                id="orderAgain"
-                checked={orderAgain}
-                onCheckedChange={setOrderAgain}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="dark:text-gray-200">Tasting Notes</Label>
-            <div className="flex gap-2">
-              <Input
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Add tasting note"
-                className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-              />
-              <Button
-                type="button"
-                onClick={addNote}
-                className="bg-coffee hover:bg-coffee-dark dark:bg-coffee dark:hover:bg-coffee-dark dark:text-white"
-              >
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {notes.map((n) => (
-                <span
-                  key={n}
-                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium group flex items-center gap-2 dark:bg-gray-800 dark:text-gray-200"
-                >
-                  {n}
-                  <button
-                    type="button"
-                    onClick={() => setNotes(notes.filter((note) => note !== n))}
-                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
+          <BasicDetails 
+            defaultValues={{
+              name: bean.name,
+              roaster: bean.roaster,
+              origin: bean.origin,
+              roastLevel: bean.roastLevel,
+            }} 
+          />
+          
+          <PurchaseDetails 
+            defaultValues={{
+              price: bean.price,
+              weight: bean.weight,
+            }}
+            weightUnit={weightUnit}
+            onWeightUnitChange={setWeightUnit}
+          />
+          
+          <RankingSection 
+            currentRank={rank} 
+            onRankChange={setRank} 
+          />
+          
+          <BrewingDetails 
+            defaultValues={{
+              gramsIn: bean.gramsIn,
+              mlOut: bean.mlOut,
+              brewTime: bean.brewTime,
+              temperature: bean.temperature,
+              grindSize: bean.grindSize,
+            }} 
+          />
+          
+          <OrderAgainToggle 
+            checked={orderAgain}
+            onCheckedChange={setOrderAgain}
+          />
+          
+          <TastingNotes 
+            notes={notes}
+            currentNote={note}
+            onNoteChange={setNote}
+            onAddNote={addNote}
+            onRemoveNote={(noteToRemove) => setNotes(notes.filter(n => n !== noteToRemove))}
+          />
 
           <Button type="submit" className="w-full bg-coffee hover:bg-coffee-dark dark:bg-coffee dark:hover:bg-coffee-dark dark:text-white transition-all duration-300">
             Update Coffee Bean
