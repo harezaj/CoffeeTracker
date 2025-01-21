@@ -34,7 +34,6 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    // Convert weight to grams if needed
     const inputWeight = Number(formData.get("weight"));
     const weightInGrams = weightUnit === 'oz' ? inputWeight * 28.3495 : inputWeight;
     
@@ -69,38 +68,38 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
+        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] bg-white">
+      <DialogContent className="sm:max-w-[600px] bg-white dark:bg-[#121212] dark:border-gray-800">
         <DialogHeader>
-          <DialogTitle className="text-gray-900 text-2xl">Update Coffee Bean</DialogTitle>
+          <DialogTitle className="text-gray-900 dark:text-white text-2xl">Update Coffee Bean</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Bean Name</Label>
-              <Input id="name" name="name" defaultValue={bean.name} required />
+              <Label htmlFor="name" className="dark:text-gray-200">Bean Name</Label>
+              <Input id="name" name="name" defaultValue={bean.name} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roaster">Roaster</Label>
-              <Input id="roaster" name="roaster" defaultValue={bean.roaster} required />
+              <Label htmlFor="roaster" className="dark:text-gray-200">Roaster</Label>
+              <Input id="roaster" name="roaster" defaultValue={bean.roaster} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="origin">Origin</Label>
-              <Input id="origin" name="origin" defaultValue={bean.origin} required />
+              <Label htmlFor="origin" className="dark:text-gray-200">Origin</Label>
+              <Input id="origin" name="origin" defaultValue={bean.origin} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="roastLevel">Roast Level</Label>
+              <Label htmlFor="roastLevel" className="dark:text-gray-200">Roast Level</Label>
               <select
                 id="roastLevel"
                 name="roastLevel"
                 defaultValue={bean.roastLevel}
-                className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white"
                 required
               >
                 <option value="Light">Light</option>
@@ -114,11 +113,11 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price ($)</Label>
-              <Input id="price" name="price" type="number" step="0.01" defaultValue={bean.price} required />
+              <Label htmlFor="price" className="dark:text-gray-200">Price ($)</Label>
+              <Input id="price" name="price" type="number" step="0.01" defaultValue={bean.price} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight</Label>
+              <Label htmlFor="weight" className="dark:text-gray-200">Weight</Label>
               <div className="flex gap-2">
                 <Input 
                   id="weight" 
@@ -127,30 +126,30 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
                   step="0.1"
                   defaultValue={weightUnit === 'oz' ? bean.weight / 28.3495 : bean.weight}
                   required 
-                  className="flex-1"
+                  className="flex-1 dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white"
                 />
                 <ToggleGroup
                   type="single"
                   value={weightUnit}
                   onValueChange={(value) => value && setWeightUnit(value as 'g' | 'oz')}
-                  className="border rounded-md"
+                  className="border rounded-md dark:border-gray-700"
                 >
-                  <ToggleGroupItem value="g" className="px-2 py-1">g</ToggleGroupItem>
-                  <ToggleGroupItem value="oz" className="px-2 py-1">oz</ToggleGroupItem>
+                  <ToggleGroupItem value="g" className="px-2 py-1 dark:data-[state=on]:bg-gray-700">g</ToggleGroupItem>
+                  <ToggleGroupItem value="oz" className="px-2 py-1 dark:data-[state=on]:bg-gray-700">oz</ToggleGroupItem>
                 </ToggleGroup>
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Rank</Label>
+            <Label className="dark:text-gray-200">Rank</Label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((value) => (
                 <Button
                   key={value}
                   type="button"
                   variant={rank >= value ? "default" : "outline"}
-                  className={rank >= value ? "bg-gray-900" : ""}
+                  className={`${rank >= value ? "dark:bg-coffee dark:text-white" : "dark:border-gray-700 dark:text-gray-300"}`}
                   onClick={() => setRank(value)}
                 >
                   {value}
@@ -159,35 +158,35 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
             </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-4">
-            <h4 className="text-gray-900 font-medium mb-4">Brew Details</h4>
+          <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+            <h4 className="text-gray-900 dark:text-white font-medium mb-4">Brew Details</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="gramsIn">Dose (g)</Label>
-                <Input id="gramsIn" name="gramsIn" type="number" step="0.1" defaultValue={bean.gramsIn} required />
+                <Label htmlFor="gramsIn" className="dark:text-gray-200">Dose (g)</Label>
+                <Input id="gramsIn" name="gramsIn" type="number" step="0.1" defaultValue={bean.gramsIn} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="mlOut">Yield (ml)</Label>
-                <Input id="mlOut" name="mlOut" type="number" step="0.1" defaultValue={bean.mlOut} required />
+                <Label htmlFor="mlOut" className="dark:text-gray-200">Yield (ml)</Label>
+                <Input id="mlOut" name="mlOut" type="number" step="0.1" defaultValue={bean.mlOut} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="brewTime">Brew Time (s)</Label>
-                <Input id="brewTime" name="brewTime" type="number" defaultValue={bean.brewTime} required />
+                <Label htmlFor="brewTime" className="dark:text-gray-200">Brew Time (s)</Label>
+                <Input id="brewTime" name="brewTime" type="number" defaultValue={bean.brewTime} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="temperature">Temperature (°C)</Label>
-                <Input id="temperature" name="temperature" type="number" defaultValue={bean.temperature} required />
+                <Label htmlFor="temperature" className="dark:text-gray-200">Temperature (°C)</Label>
+                <Input id="temperature" name="temperature" type="number" defaultValue={bean.temperature} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="grindSize">Grind Size</Label>
-                <Input id="grindSize" name="grindSize" type="number" step="0.1" defaultValue={bean.grindSize} required />
+                <Label htmlFor="grindSize" className="dark:text-gray-200">Grind Size</Label>
+                <Input id="grindSize" name="grindSize" type="number" step="0.1" defaultValue={bean.grindSize} required className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white" />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="orderAgain">Order Again</Label>
+              <Label htmlFor="orderAgain" className="dark:text-gray-200">Order Again</Label>
               <Switch
                 id="orderAgain"
                 checked={orderAgain}
@@ -197,17 +196,18 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Tasting Notes</Label>
+            <Label className="dark:text-gray-200">Tasting Notes</Label>
             <div className="flex gap-2">
               <Input
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Add tasting note"
+                className="dark:bg-[#1A1A1A] dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
               />
               <Button
                 type="button"
                 onClick={addNote}
-                className="bg-gray-900 hover:bg-gray-800"
+                className="bg-coffee hover:bg-coffee-dark dark:bg-coffee dark:hover:bg-coffee-dark dark:text-white"
               >
                 Add
               </Button>
@@ -216,13 +216,13 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
               {notes.map((n) => (
                 <span
                   key={n}
-                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium group flex items-center gap-2"
+                  className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium group flex items-center gap-2 dark:bg-gray-800 dark:text-gray-200"
                 >
                   {n}
                   <button
                     type="button"
                     onClick={() => setNotes(notes.filter((note) => note !== n))}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -231,7 +231,7 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
             </div>
           </div>
 
-          <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 transition-all duration-300">
+          <Button type="submit" className="w-full bg-coffee hover:bg-coffee-dark dark:bg-coffee dark:hover:bg-coffee-dark dark:text-white transition-all duration-300">
             Update Coffee Bean
           </Button>
         </form>
