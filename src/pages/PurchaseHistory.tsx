@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Coffee, Menu, Plus } from "lucide-react";
 import { Settings } from "@/components/Settings";
 import { useToast } from "@/components/ui/use-toast";
-import { CoffeeListItem } from "@/components/CoffeeListItem";
+import { format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,8 +57,14 @@ export default function PurchaseHistory() {
     return <div className="text-red-500">Error loading coffee beans</div>;
   }
 
+  const sortedBeans = [...beans].sort((a, b) => {
+    const dateA = new Date(a.created_at || 0);
+    const dateB = new Date(b.created_at || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="container max-w-4xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
         <Link to="/" className="flex items-center gap-4 group">
           <div className="relative">
@@ -67,7 +73,7 @@ export default function PurchaseHistory() {
           </div>
           <div className="flex flex-col">
             <h1 className="text-4xl font-black text-coffee-dark dark:text-white tracking-tight group-hover:text-coffee dark:group-hover:text-cream transition-colors">
-              Purchase History
+              Purchase Log
             </h1>
             <span className="text-xl font-light text-coffee-dark dark:text-white tracking-wider group-hover:text-coffee dark:group-hover:text-cream transition-colors">
               Track your coffee journey
@@ -98,26 +104,53 @@ export default function PurchaseHistory() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
-        {beans.length === 0 ? (
+      <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden divide-y divide-gray-200 dark:divide-gray-800">
+        {sortedBeans.length === 0 ? (
           <div className="p-8 text-center">
             <p className="text-gray-600 dark:text-gray-400">No coffee beans in your collection yet.</p>
           </div>
         ) : (
-          beans.map((bean) => (
-            <div key={bean.id} className="flex items-center gap-2 group border-b border-gray-200 dark:border-gray-800 last:border-0">
-              <CoffeeListItem
-                bean={bean}
+          sortedBeans.map((bean) => (
+            <div 
+              key={bean.id}
+              className="group relative hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+            >
+              <div 
                 onClick={() => navigate('/')}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mr-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleUpdate(bean)}
+                className="flex items-center p-4 cursor-pointer"
               >
-                <Plus className="h-4 w-4" />
-              </Button>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {bean.name}
+                    </h3>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      by {bean.roaster}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    <span>Purchased {bean.purchaseCount || 1} time{(bean.purchaseCount || 1) !== 1 ? 's' : ''}</span>
+                    <span>•</span>
+                    <span>{format(new Date(bean.created_at || new Date()), 'MMM d, yyyy')}</span>
+                  </div>
+                  {bean.notes && bean.notes.length > 0 && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 italic">
+                      Notes: {bean.notes.join(', ')}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpdate(bean);
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))
         )}
