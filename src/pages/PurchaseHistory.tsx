@@ -67,10 +67,10 @@ export default function PurchaseHistory() {
           </div>
           <div className="flex flex-col">
             <h1 className="text-4xl font-black text-coffee-dark dark:text-white tracking-tight group-hover:text-coffee dark:group-hover:text-cream transition-colors">
-              Coffee Bean
+              Purchase History
             </h1>
             <span className="text-xl font-light text-coffee-dark dark:text-white tracking-wider group-hover:text-coffee dark:group-hover:text-cream transition-colors">
-              Journey
+              Track your coffee journey
             </span>
           </div>
         </Link>
@@ -98,23 +98,29 @@ export default function PurchaseHistory() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        {beans.map((bean) => (
-          <div key={bean.id} className="flex items-center gap-2">
-            <CoffeeListItem
-              bean={bean}
-              onClick={() => navigate('/')}
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              className="shrink-0"
-              onClick={() => handleUpdate(bean)}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+      <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+        {beans.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-600 dark:text-gray-400">No coffee beans in your collection yet.</p>
           </div>
-        ))}
+        ) : (
+          beans.map((bean) => (
+            <div key={bean.id} className="flex items-center gap-2 group border-b border-gray-200 dark:border-gray-800 last:border-0">
+              <CoffeeListItem
+                bean={bean}
+                onClick={() => navigate('/')}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mr-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => handleUpdate(bean)}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

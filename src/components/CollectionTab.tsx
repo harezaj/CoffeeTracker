@@ -2,17 +2,9 @@ import { CoffeeCard, type CoffeeBean } from "./CoffeeCard";
 import { CoffeeListItem } from "./CoffeeListItem";
 import { AddCoffeeForm } from "./AddCoffeeForm";
 import { useState } from "react";
-import { LayoutGrid, List, ChevronDown } from "lucide-react";
+import { LayoutGrid, List } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent } from "./ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -104,34 +96,83 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
         <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
           Your Collection
         </h2>
-        <AddCoffeeForm onAdd={onAdd} />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-white dark:bg-[#171717] rounded-lg border border-gray-200 dark:border-gray-800 p-1">
+            <Button
+              variant={viewMode === 'tiles' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setViewMode('tiles')}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+          <AddCoffeeForm onAdd={onAdd} />
+        </div>
       </div>
+
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <Input
+          placeholder="Search beans..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-xs"
+        />
+        <Select value={selectedRoaster} onValueChange={setSelectedRoaster}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by roaster" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Roasters</SelectItem>
+            {Array.from(new Set(beans.map(bean => bean.roaster))).map(roaster => (
+              <SelectItem key={roaster} value={roaster}>{roaster}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={selectedRank} onValueChange={setSelectedRank}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by rating" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Ratings</SelectItem>
+            {[1, 2, 3, 4, 5].map(rank => (
+              <SelectItem key={rank} value={rank.toString()}>{rank} Stars</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {beans.length === 0 ? (
         <div className="text-center py-16 bg-white/50 dark:bg-[#121212]/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
           <p className="text-gray-600 dark:text-gray-300 text-xl">
             No coffee beans added yet. Start by adding your first coffee bean!
           </p>
         </div>
-      ) : filteredAndSortedBeans.length === 0 ? (
-        <div className="text-center py-16 bg-white/50 dark:bg-[#121212]/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
-          <p className="text-gray-600 dark:text-gray-300 text-xl">
-            No coffee beans match your current filters.
-          </p>
-        </div>
       ) : viewMode === 'tiles' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredAndSortedBeans.map((bean) => (
-            <CoffeeCard 
-              key={bean.id} 
-              bean={bean} 
-              onDelete={onDelete}
-              onUpdate={onUpdate}
-            />
+          {beans.map((bean) => (
+            <div
+              key={bean.id}
+              onClick={() => setSelectedBean(bean)}
+              className="cursor-pointer transition-transform hover:scale-[1.02]"
+            >
+              <CoffeeCard 
+                bean={bean} 
+                onDelete={onDelete}
+                onUpdate={onUpdate}
+              />
+            </div>
           ))}
         </div>
       ) : (
         <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 divide-y divide-gray-200 dark:divide-gray-800">
-          {filteredAndSortedBeans.map((bean) => (
+          {beans.map((bean) => (
             <CoffeeListItem
               key={bean.id}
               bean={bean}
