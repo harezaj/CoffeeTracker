@@ -1,11 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchBeans } from "@/lib/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchBeans, updateBean } from "@/lib/api";
 import { CoffeeBean } from "@/components/CoffeeCard";
 import { CollectionTab } from "@/components/CollectionTab";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Coffee, Menu } from "lucide-react";
 import { Settings } from "@/components/Settings";
+import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,10 +15,35 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function PurchaseHistory() {
-  const { data: beans = [], isLoading, error } = useQuery<CoffeeBean[]>({
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ["coffee-beans"],
     queryFn: fetchBeans,
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Omit<CoffeeBean, "id">> }) => 
+      updateBean(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["coffee-beans"] });
+      toast({
+        title: "Success",
+        description: "Purchase count updated successfully!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update purchase count. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleUpdate = (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
+    updateMutation.mutate({ id, updates });
+  };
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -26,8 +52,6 @@ export default function PurchaseHistory() {
   if (error) {
     return <div className="text-red-500">Error loading coffee beans</div>;
   }
-
-  const purchasedBeans = beans.filter(bean => (bean.purchaseCount || 0) > 1);
 
   return (
     <div className="container mx-auto py-8">
@@ -71,9 +95,9 @@ export default function PurchaseHistory() {
       </div>
 
       <CollectionTab
-        beans={purchasedBeans}
+        beans={beans}
         onDelete={() => {}}
-        onUpdate={() => {}}
+        onUpdate={handleUpdate}
         onAdd={() => {}}
       />
     </div>
