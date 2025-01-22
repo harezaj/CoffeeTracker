@@ -158,14 +158,21 @@ export default function Index() {
         </Link>
         <div className="flex gap-4 items-center">
           <ThemeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-10 w-10 rounded-full"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar>
-                  <AvatarFallback>
-                    {profile?.username?.[0]?.toUpperCase() || <User className="h-4 w-4" />}
-                  </AvatarFallback>
-                </Avatar>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative h-10 w-10 rounded-full"
+              >
+                <Settings className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -188,7 +195,6 @@ export default function Index() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Settings />
         </div>
       </div>
 
