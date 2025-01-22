@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, updateBean } from "@/lib/api";
 import { CoffeeBean } from "@/components/CoffeeCard";
-import { CollectionTab } from "@/components/CollectionTab";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Coffee, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Coffee, Menu, Plus } from "lucide-react";
 import { Settings } from "@/components/Settings";
 import { useToast } from "@/components/ui/use-toast";
+import { CoffeeListItem } from "@/components/CoffeeListItem";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,7 @@ import {
 
 export default function PurchaseHistory() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: beans = [], isLoading, error } = useQuery({
     queryKey: ["coffee-beans"],
@@ -41,8 +42,11 @@ export default function PurchaseHistory() {
     },
   });
 
-  const handleUpdate = (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => {
-    updateMutation.mutate({ id, updates });
+  const handleUpdate = (bean: CoffeeBean) => {
+    updateMutation.mutate({
+      id: bean.id,
+      updates: { purchaseCount: (bean.purchaseCount || 0) + 1 },
+    });
   };
 
   if (isLoading) {
@@ -94,12 +98,24 @@ export default function PurchaseHistory() {
         </div>
       </div>
 
-      <CollectionTab
-        beans={beans}
-        onDelete={() => {}}
-        onUpdate={handleUpdate}
-        onAdd={() => {}}
-      />
+      <div className="space-y-2">
+        {beans.map((bean) => (
+          <div key={bean.id} className="flex items-center gap-2">
+            <CoffeeListItem
+              bean={bean}
+              onClick={() => navigate('/')}
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0"
+              onClick={() => handleUpdate(bean)}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
