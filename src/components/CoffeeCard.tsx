@@ -28,6 +28,7 @@ export interface CoffeeBean {
   orderAgain: boolean;
   grindSize: number;
   purchaseCount: number;
+  created_at?: string;
 }
 
 export interface CoffeeCardProps {

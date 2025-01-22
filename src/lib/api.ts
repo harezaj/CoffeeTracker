@@ -33,6 +33,7 @@ export const fetchBeans = async (): Promise<CoffeeBean[]> => {
     orderAgain: bean.order_again,
     grindSize: bean.grind_size,
     purchaseCount: bean.purchase_count,
+    created_at: bean.created_at,
   }));
 };
 
