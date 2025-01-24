@@ -130,7 +130,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Roasters</SelectItem>
-            {Array.from(new Set(beans.map(bean => bean.roaster))).map(roaster => (
+            {uniqueRoasters.slice(1).map(roaster => (
               <SelectItem key={roaster} value={roaster}>{roaster}</SelectItem>
             ))}
           </SelectContent>
@@ -148,15 +148,15 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
         </Select>
       </div>
 
-      {beans.length === 0 ? (
+      {filteredAndSortedBeans.length === 0 ? (
         <div className="text-center py-16 bg-white/50 dark:bg-[#121212]/50 rounded-xl backdrop-blur-sm border border-gray-200 dark:border-gray-800 shadow-lg animate-fade-in">
           <p className="text-gray-600 dark:text-gray-300 text-xl">
-            No coffee beans added yet. Start by adding your first coffee bean!
+            No coffee beans found matching your filters.
           </p>
         </div>
       ) : viewMode === 'tiles' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {beans.map((bean) => (
+          {filteredAndSortedBeans.map((bean) => (
             <div
               key={bean.id}
               onClick={() => setSelectedBean(bean)}
@@ -172,7 +172,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
         </div>
       ) : (
         <div className="bg-white dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-gray-800 divide-y divide-gray-200 dark:divide-gray-800">
-          {beans.map((bean) => (
+          {filteredAndSortedBeans.map((bean) => (
             <CoffeeListItem
               key={bean.id}
               bean={bean}
