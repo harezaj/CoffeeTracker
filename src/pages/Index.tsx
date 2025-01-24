@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
 import { Link, useNavigate } from "react-router-dom";
-import { Coffee, LogOut, Menu, Settings } from "lucide-react";
+import { Coffee, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
@@ -10,6 +10,7 @@ import type { CoffeeBean } from "@/components/CoffeeCard";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Settings } from "@/components/Settings";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -158,17 +159,15 @@ export default function Index() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Settings />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
+                <LogOut className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="text-red-600 dark:text-red-400 cursor-pointer">
-                <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
