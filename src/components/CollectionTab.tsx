@@ -72,14 +72,11 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
   const handleCardClick = (event: React.MouseEvent, bean: CoffeeBean) => {
     const target = event.target as HTMLElement;
     
-    // Check if the click is on or within an accordion trigger, content, or button
-    const isAccordionClick = target.closest('[data-state]') !== null;
-    const isButtonClick = target.closest('button') !== null;
-    const isInputClick = target.closest('input') !== null;
-    const isSelectClick = target.closest('select') !== null;
+    // Only prevent popup when clicking on accordion or button elements
+    const isAccordionTrigger = target.closest('[role="button"]') !== null;
+    const isButton = target.closest('button') !== null;
     
-    // Only open the dialog if we're not clicking on interactive elements
-    if (!isAccordionClick && !isButtonClick && !isInputClick && !isSelectClick) {
+    if (!isAccordionTrigger && !isButton) {
       setSelectedBean(bean);
     }
   };
