@@ -69,6 +69,16 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
 
   const filteredAndSortedBeans = sortBeans(filterBeans(beans));
 
+  const handleCardClick = (event: React.MouseEvent, bean: CoffeeBean) => {
+    // Check if the click target is part of an accordion trigger or content
+    const target = event.target as HTMLElement;
+    const isAccordionClick = target.closest('[data-state]') !== null;
+    
+    if (!isAccordionClick) {
+      setSelectedBean(bean);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -159,7 +169,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
           {filteredAndSortedBeans.map((bean) => (
             <div
               key={bean.id}
-              onClick={() => setSelectedBean(bean)}
+              onClick={(e) => handleCardClick(e, bean)}
               className="cursor-pointer transition-transform hover:scale-[1.02]"
             >
               <CoffeeCard 
