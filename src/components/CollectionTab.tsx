@@ -201,6 +201,7 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
               bean={selectedBean}
               onDelete={onDelete}
               onUpdate={onUpdate}
+              defaultExpandedAccordions={['bean-details', 'brew-details', 'cost-analysis']}
             />
           )}
         </DialogContent>

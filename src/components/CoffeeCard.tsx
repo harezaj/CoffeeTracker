@@ -36,11 +36,18 @@ export interface CoffeeCardProps {
   onDelete?: (id: string) => void;
   onUpdate?: (id: string, updates: Partial<Omit<CoffeeBean, "id">>) => void;
   isRecommendation?: boolean;
+  defaultExpandedAccordions?: string[];
 }
 
 const convertToOz = (ml: number) => (ml / 29.5735).toFixed(1);
 
-export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false }: CoffeeCardProps) {
+export function CoffeeCard({ 
+  bean, 
+  onDelete, 
+  onUpdate, 
+  isRecommendation = false,
+  defaultExpandedAccordions 
+}: CoffeeCardProps) {
   const costs = calculateCosts(bean);
   const [volumeUnit, setVolumeUnit] = useState<'ml' | 'oz'>('ml');
   const [weightUnit, setWeightUnit] = useState<'oz' | 'kg'>('oz');
@@ -94,7 +101,11 @@ export function CoffeeCard({ bean, onDelete, onUpdate, isRecommendation = false 
         <TastingNotes notes={bean.notes} toTitleCase={toTitleCase} />
         <BeanRating rank={bean.rank} orderAgain={bean.orderAgain} />
 
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion 
+          type="multiple" 
+          defaultValue={defaultExpandedAccordions}
+          className="space-y-4"
+        >
           <BeanDetails
             bean={bean}
             weightUnit={weightUnit}
