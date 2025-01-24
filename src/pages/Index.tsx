@@ -1,9 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
 import { WishlistTab } from "@/components/WishlistTab";
-import { Settings } from "@/components/Settings";
 import { Link, useNavigate } from "react-router-dom";
-import { Coffee, LogOut, Menu, User } from "lucide-react";
+import { Coffee, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchBeans, createBean, updateBean, deleteBean } from "@/lib/api";
@@ -172,7 +171,7 @@ export default function Index() {
                 size="icon"
                 className="relative h-10 w-10 rounded-full"
               >
-                <Settings className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
