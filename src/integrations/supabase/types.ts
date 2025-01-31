@@ -27,6 +27,7 @@ export type Database = {
           rank: number | null
           roast_level: string | null
           roaster: string
+          syrup_price_per_latte: number | null
           temperature: number | null
           updated_at: string | null
           user_id: string
@@ -49,6 +50,7 @@ export type Database = {
           rank?: number | null
           roast_level?: string | null
           roaster: string
+          syrup_price_per_latte?: number | null
           temperature?: number | null
           updated_at?: string | null
           user_id: string
@@ -71,6 +73,7 @@ export type Database = {
           rank?: number | null
           roast_level?: string | null
           roaster?: string
+          syrup_price_per_latte?: number | null
           temperature?: number | null
           updated_at?: string | null
           user_id?: string

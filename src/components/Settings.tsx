@@ -33,7 +33,7 @@ export function Settings() {
     milkPrice: "4.99",
     milkSize: "33.8",  // 1000ml in oz
     milkPerLatte: "6.8",  // 200ml in oz
-    syrupPrice: "12.99",
+    syrupPricePerLatte: "0.50",
     syrupSize: "750",
     syrupPerLatte: "30",
   });
@@ -345,13 +345,13 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="syrupPrice" className="dark:text-gray-300">Syrup Price ($)</Label>
+                  <Label htmlFor="syrupPricePerLatte" className="dark:text-gray-300">Syrup Price per Latte ($)</Label>
                   <Input
-                    id="syrupPrice"
+                    id="syrupPricePerLatte"
                     type="number"
                     step="0.01"
-                    value={costSettings.syrupPrice}
-                    onChange={(e) => handleCostSettingChange('syrupPrice', e.target.value)}
+                    value={costSettings.syrupPricePerLatte}
+                    onChange={(e) => handleCostSettingChange('syrupPricePerLatte', e.target.value)}
                     className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                   />
                 </div>
