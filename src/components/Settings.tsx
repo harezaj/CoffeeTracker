@@ -18,6 +18,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Settings() {
   const { toast } = useToast();
@@ -54,23 +55,47 @@ export function Settings() {
     }
   }, []);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
-      const savedBeans = localStorage.getItem('coffeeBeans');
-      const costSettings = localStorage.getItem('costSettings');
-      const beans = savedBeans ? JSON.parse(savedBeans) : [];
-      
+      const { data: beans, error } = await supabase
+        .from('coffee_beans')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
       const beansWithCosts = beans.map(bean => {
-        const costs = calculateCosts(bean);
+        const costs = calculateCosts({
+          price: bean.price,
+          weight: bean.weight,
+          gramsIn: bean.grams_in,
+        });
+        
         return {
-          ...bean,
+          id: bean.id,
+          name: bean.name,
+          roaster: bean.roaster,
+          origin: bean.origin,
+          roastLevel: bean.roast_level,
+          notes: bean.notes,
+          generalNotes: bean.general_notes,
+          rank: bean.rank,
+          gramsIn: bean.grams_in,
+          mlOut: bean.ml_out,
+          brewTime: bean.brew_time,
+          temperature: bean.temperature,
+          price: bean.price,
+          weight: bean.weight,
+          orderAgain: bean.order_again,
+          grindSize: bean.grind_size,
+          purchaseCount: bean.purchase_count,
           costAnalysis: {
             costPerGram: costs.costPerGram,
             costPerShot: costs.costPerShot,
             shotsPerBag: costs.shotsPerBag,
             costPerOz: costs.costPerOz,
             costPerLatte: costs.costPerLatte,
-            costSettings: costSettings ? JSON.parse(costSettings) : null
+            costSettings: localStorage.getItem('costSettings') ? JSON.parse(localStorage.getItem('costSettings')!) : null
           }
         };
       });
@@ -91,6 +116,7 @@ export function Settings() {
         description: "Your coffee journal has been exported successfully.",
       });
     } catch (error) {
+      console.error('Export error:', error);
       toast({
         title: "Error",
         description: "Failed to export coffee journal.",
