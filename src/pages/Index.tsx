@@ -1,6 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollectionTab } from "@/components/CollectionTab";
-import { WishlistTab } from "@/components/WishlistTab";
 import { Link, useNavigate } from "react-router-dom";
 import { Coffee, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,8 +13,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -175,24 +171,15 @@ export default function Index() {
         </div>
       </div>
 
-      <Tabs defaultValue="collection" className="dark:border-gray-800">
-        <TabsList className="grid w-full grid-cols-2 dark:bg-[#171717]">
-          <TabsTrigger value="collection" className="dark:data-[state=active]:bg-[#222222]">Collection</TabsTrigger>
-          <TabsTrigger value="wishlist" className="dark:data-[state=active]:bg-[#222222]">Wishlist</TabsTrigger>
-        </TabsList>
-        <TabsContent value="collection">
-          <CollectionTab 
-            beans={beans}
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
-            onAdd={handleAdd}
-            isLoading={isLoading}
-          />
-        </TabsContent>
-        <TabsContent value="wishlist">
-          <WishlistTab />
-        </TabsContent>
-      </Tabs>
+      <div className="space-y-6">
+        <CollectionTab 
+          beans={beans}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+          onAdd={handleAdd}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 }
