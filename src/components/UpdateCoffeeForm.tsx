@@ -33,6 +33,7 @@ export function UpdateCoffeeForm({ bean, onUpdate }: UpdateCoffeeFormProps) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
+    // Get the weight value and convert to grams if needed
     const inputWeight = Number(formData.get("weight"));
     const weightInGrams = weightUnit === 'oz' ? inputWeight * 28.3495 : inputWeight;
     

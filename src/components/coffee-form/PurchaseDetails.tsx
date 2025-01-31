@@ -13,12 +13,12 @@ interface PurchaseDetailsProps {
 }
 
 export function PurchaseDetails({ defaultValues, weightUnit, onWeightUnitChange }: PurchaseDetailsProps) {
-  // Keep track of the displayed weight value
-  const [displayWeight, setDisplayWeight] = useState(
-    weightUnit === 'oz' 
-      ? (defaultValues.weight / 28.3495).toFixed(2) 
-      : defaultValues.weight.toString()
-  );
+  // Initialize display weight based on the current unit
+  const initialWeight = weightUnit === 'oz' 
+    ? (defaultValues.weight / 28.3495).toFixed(2)
+    : defaultValues.weight.toString();
+
+  const [displayWeight, setDisplayWeight] = useState(initialWeight);
 
   // Update displayed weight when unit changes
   useEffect(() => {
