@@ -13,26 +13,37 @@ interface PurchaseDetailsProps {
 }
 
 export function PurchaseDetails({ defaultValues, weightUnit, onWeightUnitChange }: PurchaseDetailsProps) {
-  // Initialize display weight based on the current unit
-  const initialWeight = weightUnit === 'oz' 
-    ? (defaultValues.weight / 28.3495).toFixed(2)
-    : defaultValues.weight.toString();
-
-  const [displayWeight, setDisplayWeight] = useState(initialWeight);
-
-  // Update displayed weight when unit changes
-  useEffect(() => {
-    const numWeight = parseFloat(displayWeight);
-    if (isNaN(numWeight)) return;
-
+  // Convert the initial weight based on the selected unit
+  const getInitialDisplayWeight = () => {
     if (weightUnit === 'oz') {
-      setDisplayWeight((numWeight / 28.3495).toFixed(2));
-    } else {
-      setDisplayWeight((numWeight * 28.3495).toFixed(2));
+      return (defaultValues.weight / 28.3495).toFixed(2);
     }
-  }, [weightUnit]);
+    return defaultValues.weight.toString();
+  };
 
-  // Handle weight input changes
+  const [displayWeight, setDisplayWeight] = useState(getInitialDisplayWeight());
+
+  // Update the display weight when the unit changes
+  const handleUnitChange = (newUnit: 'g' | 'oz') => {
+    if (!newUnit || newUnit === weightUnit) return;
+
+    const currentValue = parseFloat(displayWeight);
+    if (isNaN(currentValue)) return;
+
+    let newValue: number;
+    if (newUnit === 'oz') {
+      // Convert from grams to ounces
+      newValue = currentValue / 28.3495;
+    } else {
+      // Convert from ounces to grams
+      newValue = currentValue * 28.3495;
+    }
+
+    setDisplayWeight(newValue.toFixed(2));
+    onWeightUnitChange(newUnit);
+  };
+
+  // Handle direct weight input changes
   const handleWeightChange = (value: string) => {
     setDisplayWeight(value);
   };
@@ -67,7 +78,7 @@ export function PurchaseDetails({ defaultValues, weightUnit, onWeightUnitChange 
           <ToggleGroup
             type="single"
             value={weightUnit}
-            onValueChange={(value) => value && onWeightUnitChange(value as 'g' | 'oz')}
+            onValueChange={handleUnitChange}
             className="border rounded-md dark:border-gray-700"
           >
             <ToggleGroupItem value="g" className="px-2 py-1 dark:data-[state=on]:bg-gray-700">g</ToggleGroupItem>
