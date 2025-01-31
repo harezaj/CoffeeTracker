@@ -14,10 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
 import { calculateCosts } from "@/lib/costCalculations";
 import { importCoffeeData } from "@/lib/importData";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Settings() {
@@ -25,17 +21,11 @@ export function Settings() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [apiKey, setApiKey] = useState("");
   const [isTestingApi, setIsTestingApi] = useState(false);
-  const [volumeUnits, setVolumeUnits] = useState({
-    syrupSize: 'ml',
-    syrupPerLatte: 'ml'
-  });
   const [costSettings, setCostSettings] = useState({
     milkPrice: "4.99",
     milkSize: "33.8",  // 1000ml in oz
     milkPerLatte: "6.8",  // 200ml in oz
     syrupPricePerLatte: "0.50",
-    syrupSize: "750",
-    syrupPerLatte: "30",
   });
 
   useEffect(() => {
@@ -45,11 +35,6 @@ export function Settings() {
     const savedCostSettings = localStorage.getItem('costSettings');
     if (savedCostSettings) {
       setCostSettings(JSON.parse(savedCostSettings));
-    }
-
-    const savedVolumeUnits = localStorage.getItem('volumeUnits');
-    if (savedVolumeUnits) {
-      setVolumeUnits(JSON.parse(savedVolumeUnits));
     }
   }, []);
 
@@ -225,24 +210,6 @@ export function Settings() {
     }
   };
 
-  const convertToOz = (ml: string) => (Number(ml) / 29.5735).toFixed(1);
-  const convertToMl = (oz: string) => (Number(oz) * 29.5735).toFixed(0);
-
-  const handleVolumeUnitChange = (field: keyof typeof volumeUnits, value: 'ml' | 'oz') => {
-    const newUnits = { ...volumeUnits, [field]: value };
-    setVolumeUnits(newUnits);
-    localStorage.setItem('volumeUnits', JSON.stringify(newUnits));
-
-    const newSettings = { ...costSettings };
-    if (value === 'oz') {
-      newSettings[field] = convertToOz(costSettings[field]);
-    } else {
-      newSettings[field] = convertToMl(costSettings[field]);
-    }
-    setCostSettings(newSettings);
-    localStorage.setItem('costSettings', JSON.stringify(newSettings));
-  };
-
   const handleCostSettingChange = (key: keyof typeof costSettings, value: string) => {
     const newSettings = { ...costSettings, [key]: value };
     setCostSettings(newSettings);
@@ -354,48 +321,6 @@ export function Settings() {
                     onChange={(e) => handleCostSettingChange('syrupPricePerLatte', e.target.value)}
                     className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="syrupSize" className="dark:text-gray-300">Syrup Size</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="syrupSize"
-                      type="number"
-                      value={costSettings.syrupSize}
-                      onChange={(e) => handleCostSettingChange('syrupSize', e.target.value)}
-                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-                    />
-                    <ToggleGroup
-                      type="single"
-                      value={volumeUnits.syrupSize}
-                      onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('syrupSize', value)}
-                      className="border rounded-md dark:border-gray-700"
-                    >
-                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="syrupPerLatte" className="dark:text-gray-300">Syrup per Latte</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="syrupPerLatte"
-                      type="number"
-                      value={costSettings.syrupPerLatte}
-                      onChange={(e) => handleCostSettingChange('syrupPerLatte', e.target.value)}
-                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-                    />
-                    <ToggleGroup
-                      type="single"
-                      value={volumeUnits.syrupPerLatte}
-                      onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('syrupPerLatte', value)}
-                      className="border rounded-md dark:border-gray-700"
-                    >
-                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
                 </div>
               </div>
             </div>

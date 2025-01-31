@@ -6,9 +6,7 @@ export const calculateCosts = (bean: CoffeeBean) => {
     milkPrice = 4.99,
     milkSize = 1000,
     milkPerLatte = 200,
-    syrupPrice = 12.99,
-    syrupSize = 750,
-    syrupPerLatte = 30,
+    syrupPricePerLatte = 0.50,
   } = costSettings ? JSON.parse(costSettings) : {};
 
   const costPerGram = bean.price / bean.weight;
@@ -17,12 +15,11 @@ export const calculateCosts = (bean: CoffeeBean) => {
   const costPerOz = ((bean.price / (bean.weight / 28.35)));
 
   const milkCostPerMl = milkPrice / milkSize;
-  const syrupCostPerMl = syrupPrice / syrupSize;
   
   const costPerLatte = 
     costPerShot + 
     (milkCostPerMl * milkPerLatte) + 
-    (syrupCostPerMl * syrupPerLatte);
+    syrupPricePerLatte;
   
   return {
     costPerGram: costPerGram.toFixed(2),
