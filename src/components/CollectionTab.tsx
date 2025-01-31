@@ -72,11 +72,15 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
   const handleCardClick = (event: React.MouseEvent, bean: CoffeeBean) => {
     const target = event.target as HTMLElement;
     
-    // Only prevent popup when clicking on accordion or button elements
+    // Check if clicking on card content vs interactive elements
+    const isCardContent = target.closest('.card-content');
     const isAccordionTrigger = target.closest('[role="button"]') !== null;
     const isButton = target.closest('button') !== null;
+    const isInput = target.closest('input') !== null;
+    const isSelect = target.closest('select') !== null;
     
-    if (!isAccordionTrigger && !isButton) {
+    // Only show dialog when clicking on card content, not on interactive elements
+    if (isCardContent && !isAccordionTrigger && !isButton && !isInput && !isSelect) {
       setSelectedBean(bean);
     }
   };
@@ -174,11 +178,13 @@ export function CollectionTab({ beans, onDelete, onUpdate, onAdd, isLoading = fa
               onClick={(e) => handleCardClick(e, bean)}
               className="cursor-pointer transition-transform hover:scale-[1.02]"
             >
-              <CoffeeCard 
-                bean={bean} 
-                onDelete={onDelete}
-                onUpdate={onUpdate}
-              />
+              <div className="card-content">
+                <CoffeeCard 
+                  bean={bean} 
+                  onDelete={onDelete}
+                  onUpdate={onUpdate}
+                />
+              </div>
             </div>
           ))}
         </div>
