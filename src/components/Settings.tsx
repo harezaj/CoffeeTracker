@@ -26,15 +26,13 @@ export function Settings() {
   const [apiKey, setApiKey] = useState("");
   const [isTestingApi, setIsTestingApi] = useState(false);
   const [volumeUnits, setVolumeUnits] = useState({
-    milkSize: 'ml',
-    milkPerLatte: 'ml',
     syrupSize: 'ml',
     syrupPerLatte: 'ml'
   });
   const [costSettings, setCostSettings] = useState({
     milkPrice: "4.99",
-    milkSize: "1000",
-    milkPerLatte: "200",
+    milkSize: "33.8",  // 1000ml in oz
+    milkPerLatte: "6.8",  // 200ml in oz
     syrupPrice: "12.99",
     syrupSize: "750",
     syrupPerLatte: "30",
@@ -327,46 +325,24 @@ export function Settings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkSize" className="dark:text-gray-300">Milk Size</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="milkSize"
-                      type="number"
-                      value={costSettings.milkSize}
-                      onChange={(e) => handleCostSettingChange('milkSize', e.target.value)}
-                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-                    />
-                    <ToggleGroup
-                      type="single"
-                      value={volumeUnits.milkSize}
-                      onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('milkSize', value)}
-                      className="border rounded-md dark:border-gray-700"
-                    >
-                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
+                  <Label htmlFor="milkSize" className="dark:text-gray-300">Milk Size (oz)</Label>
+                  <Input
+                    id="milkSize"
+                    type="number"
+                    value={costSettings.milkSize}
+                    onChange={(e) => handleCostSettingChange('milkSize', e.target.value)}
+                    className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="milkPerLatte" className="dark:text-gray-300">Milk per Latte</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="milkPerLatte"
-                      type="number"
-                      value={costSettings.milkPerLatte}
-                      onChange={(e) => handleCostSettingChange('milkPerLatte', e.target.value)}
-                      className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
-                    />
-                    <ToggleGroup
-                      type="single"
-                      value={volumeUnits.milkPerLatte}
-                      onValueChange={(value: 'ml' | 'oz') => handleVolumeUnitChange('milkPerLatte', value)}
-                      className="border rounded-md dark:border-gray-700"
-                    >
-                      <ToggleGroupItem value="ml" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">ml</ToggleGroupItem>
-                      <ToggleGroupItem value="oz" className="px-2 py-1 dark:text-gray-300 dark:data-[state=on]:bg-[#2a2a2a]">oz</ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
+                  <Label htmlFor="milkPerLatte" className="dark:text-gray-300">Milk per Latte (oz)</Label>
+                  <Input
+                    id="milkPerLatte"
+                    type="number"
+                    value={costSettings.milkPerLatte}
+                    onChange={(e) => handleCostSettingChange('milkPerLatte', e.target.value)}
+                    className="bg-white dark:bg-[#222222] border-coffee/20 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="syrupPrice" className="dark:text-gray-300">Syrup Price ($)</Label>
