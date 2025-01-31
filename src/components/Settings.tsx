@@ -66,9 +66,23 @@ export function Settings() {
 
       const beansWithCosts = beans.map(bean => {
         const costs = calculateCosts({
-          price: bean.price,
-          weight: bean.weight,
-          gramsIn: bean.grams_in,
+          id: bean.id,
+          name: bean.name,
+          roaster: bean.roaster,
+          origin: bean.origin || '',
+          roastLevel: bean.roast_level || '',
+          notes: bean.notes || [],
+          generalNotes: bean.general_notes || '',
+          rank: bean.rank || 0,
+          gramsIn: bean.grams_in || 0,
+          mlOut: bean.ml_out || 0,
+          brewTime: bean.brew_time || 0,
+          temperature: bean.temperature || 0,
+          price: bean.price || 0,
+          weight: bean.weight || 0,
+          orderAgain: !!bean.order_again,
+          grindSize: bean.grind_size || 0,
+          purchaseCount: bean.purchase_count || 0
         });
         
         return {
